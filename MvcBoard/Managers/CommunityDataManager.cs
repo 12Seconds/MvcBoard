@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using MvcBoard.Models.Community;
+using MvcBoard.Models;
 
 namespace MvcBoard.Managers
 {
@@ -26,7 +27,7 @@ namespace MvcBoard.Managers
 
             int pageCount = 0;
 
-            List<Post> Posts = new List<Post>();
+            List<PostWithUser> Posts = new List<PostWithUser>();
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -39,23 +40,26 @@ namespace MvcBoard.Managers
 
                     SqlDataReader reader = command.ExecuteReader();
 
-                    Post? post = null;
+                    PostWithUser? post = null;
 
                     while (reader.Read())
                     {
-                        post = new Post();
-                        post.PostId = int.Parse(reader["PostId"].ToString());
-                        post.Title = reader["Title"].ToString();
-                        post.Contents = reader["Contents"].ToString();
-                        post.UserId = int.Parse(reader["UserId"].ToString());
-                        post.Likes = int.Parse(reader["Likes"].ToString());
-                        post.Views = int.Parse(reader["Views"].ToString());
-                        post.Category = int.Parse(reader["Category"].ToString());
+                        post = new PostWithUser();
 
-                        post.CreateDate = DateTime.Parse(reader["CreateDate"].ToString());
-                        if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"].ToString());
-                        if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"].ToString());
-                        
+                        post.PostId = int.Parse(reader["PostId"]?.ToString() ?? "0");
+                        post.Title = reader["Title"]?.ToString() ?? "";
+                        post.Contents = reader["Contents"].ToString();
+                        post.UserId = int.Parse(reader["UserId"]?.ToString() ?? "0");
+                        post.Likes = int.Parse(reader["Likes"]?.ToString() ?? "0");
+                        post.Views = int.Parse(reader["Views"]?.ToString() ?? "0");
+                        post.Category = int.Parse(reader["Category"]?.ToString() ?? "1"); // TODO 0 or 1
+
+                        post.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
+                        if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
+                        if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
+
+                        // Join 테이블 데이터
+                        post.UserName = reader["Name"]?.ToString() ?? "";
 
                         Posts.Add(post);
                     }
@@ -238,18 +242,19 @@ namespace MvcBoard.Managers
                     while (reader.Read())
                     {
                         comment = new Comment();
-                        comment.CommentId = int.Parse(reader["CommentId"].ToString());
-                        comment.PostId = int.Parse(reader["PostId"].ToString());
-                        comment.UserId= int.Parse(reader["UserId"].ToString());
-                        comment.ParentId= int.Parse(reader["ParentId"].ToString());
-                        comment.Contents = reader["Contents"].ToString();
-                       
-                        comment.Likes = int.Parse(reader["Likes"].ToString());
-                        comment.IsAnonymous = bool.Parse(reader["IsAnonymous"].ToString());
+                        comment.CommentId = int.Parse(reader["CommentId"]?.ToString() ?? "0");
+                        comment.PostId = int.Parse(reader["PostId"].ToString() ?? "0");
+                        comment.UserId= int.Parse(reader["UserId"].ToString() ?? "0");
+                        if (reader["ParentId"] != DBNull.Value) comment.ParentId = int.Parse(reader["ParentId"]?.ToString() ?? "0");
+                        comment.Contents = reader["Contents"]?.ToString() ?? "";
+                        comment.Likes = int.Parse(reader["Likes"].ToString() ?? "0");
 
-                        comment.CreateDate = DateTime.Parse(reader["CreateDate"].ToString());
-                        if (reader["UpdateDate"] != DBNull.Value) comment.UpdateDate = DateTime.Parse(reader["UpdateDate"].ToString());
-                        if (reader["DeleteDate"] != DBNull.Value) comment.DeleteDate = DateTime.Parse(reader["DeleteDate"].ToString());
+                        comment.IsAnonymous = reader.GetBoolean(reader.GetOrdinal("IsAnonymous"));
+                        // comment.IsAnonymous = bool.Parse(reader["IsAnonymous"]?.ToString() ?? "false");
+
+                        comment.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
+                        if (reader["UpdateDate"] != DBNull.Value) comment.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
+                        if (reader["DeleteDate"] != DBNull.Value) comment.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
 
                         Comments.Add(comment);
                     }
