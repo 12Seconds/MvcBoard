@@ -1,9 +1,9 @@
-﻿@model MvcBoard.Models.Community.BoardViewModel;
+﻿@model MvcBoard.Models.Community.WriteViewModel;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    var BoardTitle = "전체 게시판"; // Category 값에 따라 변경 필요 (Controller 에서 변경된 상태로 넘겨주거나)
+    var BoardTitle = "게시물 작성";
 
     ViewData["Title"] = BoardTitle;
 }
@@ -17,7 +17,7 @@
         </div>
 
         <a asp-area="" asp-controller="Community" asp-action="Index">
-            <div class="category_list_item selected">
+            <div class="category_list_item">
                 @* 그냥 긁어와도 되나 *@
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="18" rx="9" fill="#333333"></rect><path d="M5.25 5.66602H12.75V6.49935H5.25V5.66602ZM5.25 8.58268H12.75V9.41602H5.25V8.58268ZM5.25 11.4993H12.75V12.3327H5.25V11.4993Z" fill="white"></path></svg>
                 &nbsp;전체 게시판
@@ -35,53 +35,32 @@
                 &nbsp;공지 게시판
             </div>
         </a>
-        
+
     </aside>
 
-    <div class="community_main">
-        <h3>@BoardTitle</h3>
-        <hr/>
+    <div class="community_main write">
+        <h3 class="title">@BoardTitle</h3>
 
-        <div class="rating_filter">실시간 주간 월간</div>
+        <div class="category_dropbox">게시판 선택 (드롭 박스) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 태그 없음 (드롭 박스)</div>
 
-        <div class="rated_scroll_board"></div>
+        <hr />
+        <input class="intput_title" type="text" placeholder="제목을 입력해주세요." />
+        <hr />
 
-        <a asp-area="" asp-controller="Community" asp-action="write">
-            <div class="write_button"> 새 글을 작성해보세요 </div>
-        </a>
+        <textarea class="editor"> @* TODO Trumbowyg 에디터에 placeholder 적용하는 방법 알아보기 *@
+        </textarea>
 
-        <div class="board_label">전체</div> @* TODO 필터 (장터 게시판) *@
+        <input class="input_tag" placeholder="TODO # 태그 입력"></input>
 
-        @* 게시판 영역 *@
-        <div class="board">
+        <div class="button_area">
+            <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("Index", "Community")'">취소</button>
+            <button type="button" class="btn btn-secondary">게시하기</button>
+        </div>  
 
-            <div class="item labels">
-                <div class="category">게시판</div>
-                <div class="title">제목</div>
-                <div class="writer">작성자</div>
-                <div class="date">날짜</div>
-                <div class="views">조회수</div>
-            </div>
-           
-            @foreach (var item in Model.PostListData)
-            {
-                <div class="item post">
-                    <div class="category">자유 게시판</div> @*TODO Category 에 따라 *@
-                    <div class="title"><a>@item.Title</a></div> @* 클릭 시 페이지 이동 처리 필요*@
-                    <div class="writer">@item.UserName</div>
-                    <div class="date">@(item.CreateDate.ToString("yyyy.MM.dd"))</div> @* 7일 전 처리 필요 *@
-                    <div class="views">@item.Views</div>
-                </div>
-            }
-        </div> 
-
-        @* 페이지 인디케이터 영역 *@
-        <div class="page_indicator"><< 처음 1 2 3 4 5 ... 마지막 >></div>
-        
     </div>
 
     <aside class="community_aside_right">
         광고 배너 영역
     </aside>
-    
+
 </div>

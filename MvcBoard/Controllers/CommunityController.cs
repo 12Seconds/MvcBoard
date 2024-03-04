@@ -22,6 +22,7 @@ namespace MvcBoard.Controllers
         public IActionResult Index()
         {
             BoardViewModel viewModel = _dataManagers.GetBoardViewData();
+
             return View(viewModel);
         }
 
@@ -30,6 +31,7 @@ namespace MvcBoard.Controllers
         {
             // TODO 별도 함수 만들어서 호출 필요
             BoardViewModel viewModel = _dataManagers.GetBoardViewData(2, 1); // 2는 질문답변 게시판 카테고리 번호임
+
             return View(viewModel);
         }
 
@@ -40,6 +42,36 @@ namespace MvcBoard.Controllers
             BoardViewModel viewModel = _dataManagers.GetBoardViewData(99, page);
 
             return View(viewModel);
+        }
+
+        public IActionResult Write(int category = 0)
+        {
+            WriteViewModel viewModel = new WriteViewModel(category);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Write(Post postData)
+        {
+            if (ModelState.IsValid)
+            {
+                _dataManagers.CreatePost(postData);
+
+                // todo 정의될 category 에 맞게 수정 필요
+                switch (postData.Category)
+                {
+                    case 0:
+                    case 1: return RedirectToAction("Index"); break;
+                    case 2: return RedirectToAction("Hot"); break;
+                    case 99: return RedirectToAction("Notice"); break;
+
+                    default: return RedirectToAction("Index"); break;
+                }
+
+                // ModelState.AddModelError(string.Empty, "게시물을 저장할 수 없습니다."); // TODO
+            }
+            return View(postData); // TODO
         }
 
         // TODO 게시물 뷰 페이지 
