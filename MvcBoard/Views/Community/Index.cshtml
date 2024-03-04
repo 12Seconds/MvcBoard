@@ -1,0 +1,85 @@
+﻿@model MvcBoard.Models.Community.BoardViewModel;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var BoardTitle = "전체 게시판"; // Category 값에 따라 변경 필요 (Controller 에서 변경된 상태로 넘겨주거나)
+
+    ViewData["Title"] = BoardTitle;
+}
+
+<div class="community">
+
+    <aside class="community_aside_left">
+
+        <div class="user_info">
+            <button class="login">로그인/회원가입</button>
+        </div>
+
+        <a asp-area="" asp-controller="Community" asp-action="Index">
+            <div class="category_list_item selected">
+                @* 그냥 긁어와도 되나 *@
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="18" rx="9" fill="#333333"></rect><path d="M5.25 5.66602H12.75V6.49935H5.25V5.66602ZM5.25 8.58268H12.75V9.41602H5.25V8.58268ZM5.25 11.4993H12.75V12.3327H5.25V11.4993Z" fill="white"></path></svg>
+                &nbsp;전체 게시판
+            </div>
+        </a>
+        <a asp-area="" asp-controller="Community" asp-action="Hot">
+            <div class="category_list_item">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="18" rx="9" fill="#333333"></rect><path d="M10.8752 5.25C12.141 5.25 13.1668 6.29167 13.1668 7.75C13.1668 10.6667 10.0418 12.3333 9.00016 12.9583C7.9585 12.3333 4.8335 10.6667 4.8335 7.75C4.8335 6.29167 5.87516 5.25 7.12516 5.25C7.90016 5.25 8.5835 5.66667 9.00016 6.08333C9.41683 5.66667 10.1002 5.25 10.8752 5.25Z" fill="white"></path></svg>
+                &nbsp;인기 게시판
+            </div>
+        </a>
+        <a asp-area="" asp-controller="Community" asp-action="Notice">
+            <div class="category_list_item">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="18" rx="9" fill="#333333"></rect><path d="M11.5002 5.25V6.08333H11.0835V8.58333L11.9168 9.83333V10.6667H9.41683V13.5833H8.5835V10.6667H6.0835V9.83333L6.91683 8.58333V6.08333H6.50016V5.25H11.5002Z" fill="white"></path></svg>
+                &nbsp;공지 게시판
+            </div>
+        </a>
+        
+    </aside>
+
+    <div class="community_main">
+        <h3>@BoardTitle</h3>
+        <hr/>
+
+        <div class="rating_filter">실시간 주간 월간</div>
+
+        <div class="rated_scroll_board"></div>
+
+        <div class="write_button"> 새 글을 작성해보세요 </div>
+
+        <div class="board_label">전체</div> @* TODO 필터 (장터 게시판) *@
+
+        @* 게시판 영역 *@
+        <div class="board">
+
+            <div class="item labels">
+                <div class="category">게시판</div>
+                <div class="title">제목</div>
+                <div class="writer">작성자</div>
+                <div class="date">날짜</div>
+                <div class="views">조회수</div>
+            </div>
+           
+            @foreach (var item in Model.PostListData)
+            {
+                <div class="item post">
+                    <div class="category">자유 게시판</div> @*TODO Category 에 따라 *@
+                    <div class="title"><a>@item.Title</a></div> @* 클릭 시 페이지 이동 처리 필요*@
+                    <div class="writer">@item.UserId</div> @* join 필요하네 .... *@
+                    <div class="date">@(item.CreateDate.ToString("yyyy.MM.dd"))</div> @* 7일 전 처리 필요 *@
+                    <div class="views">@item.Views</div>
+                </div>
+            }
+        </div> 
+
+        @* 페이지 인디케이터 영역 *@
+        <div class="page_indicator"><< 처음 1 2 3 4 5 ... 마지막 >></div>
+        
+    </div>
+
+    <aside class="community_aside_right">
+        광고 배너 영역
+    </aside>
+    
+</div>

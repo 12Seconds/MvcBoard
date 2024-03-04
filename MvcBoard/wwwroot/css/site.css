@@ -1,0 +1,196 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* TODO 파일 분리할 것 */
+
+/* Community */
+.community {
+    display: flex;
+    padding-top: 50px;
+
+    
+}
+
+.community a {
+    text-decoration: none;
+    color: #333333;
+}
+
+.community_aside_left {
+    width: 264px;
+    height: 800px;
+    min-width: 264px;
+    /*background-color: #ffff00;*/
+    margin-right: 30px; /* 사실 magin 대신 padding */
+}
+
+.community .user_info {
+    width: 264px;
+    height: 264px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    /*background-color: aqua;*/
+    border-radius: 10px;
+    border: 1px solid rgb(230,230,230);
+    text-align: center;
+}
+
+ .community .user_info .login {
+    width: 220px;
+    height: 40px;
+    border-radius: 10px;
+    margin-top: 200px;
+    margin-bottom: 20px;
+}
+
+.category_list_item {
+    display: flex;
+    align-items: center;
+
+    height: 50px;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.category_list_item.selected {
+    background-color: rgb(230,230,230);
+}
+
+.category_list_item:hover {
+    background-color: rgb(230,230,230);
+}
+
+
+.community_aside_right {
+    width: 184px;
+    min-width: 184px;
+    margin-left: 30px; /* 사실 magin 대신 padding */
+    background-color: #ff00ff;
+    text-align: center
+}
+
+.community_main {
+    width: 780px;
+    min-width: 400px;
+    height: auto;
+    font-size: 13px;
+}
+
+.community_main .rating_filter {
+    height: 30px;
+    background-color: cadetblue;
+    margin-bottom: 20px;
+}
+
+.community_main .rated_scroll_board {
+    height: 190px;
+    background-color: cadetblue;
+}
+
+.community_main .write_button {
+    padding: 9px 12px 9px 12px;
+    height: 44px;
+    margin-top: 30px;
+    background-color: rgb(230,230,230);
+    border-radius: 10px;
+    border: 1px solid lightgray;
+}
+
+.community_main .board_label {
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.community_main .board {
+    background-color: rgb(230,230,230);
+}
+
+.community_main .board .item {
+    display: flex;
+    /* background-color: lightpink; Todo 공지사항인 경우, 별도 class 추가하여 색 변경 필요 */
+}
+
+.community_main .board .labels {
+    border-top: 2px solid red;
+    border-bottom: 2px solid red;
+}
+
+.community_main .board .post {
+    border-bottom: 1px solid rgb(225 225 225);
+}
+
+.community_main .board .item .category { /* TODO ellipsis 처리 */
+    width: 120px;
+    min-width: 120px;
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: antiquewhite;
+}
+
+.community_main .board .item .title { /* TODO ellipsis 처리 */
+    width: 350px;
+    min-width: 350px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    background-color: antiquewhite;
+
+}
+.community_main .board .item .writer { /* TODO ellipsis 처리 */
+    width: 100px;
+    min-width: 100px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    background-color: antiquewhite;
+
+}
+.community_main .board .item .date {
+    width: 80px;
+    min-width: 80px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    background-color: antiquewhite;
+    text-align: center;
+
+}
+.community_main .board .item .views {
+    width: 80px;
+    min-width: 80px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    background-color: antiquewhite;
+    text-align: center;
+}
+
+.community_main .category_dropbox {
+    padding: 9px 12px 9px 12px;
+    height: 44px;
+    margin-top: 30px;
+    margin-bottom: 25px;
+    background-color: rgb(230,230,230);
+    border-radius: 10px;
+    border: 1px solid lightgray;
+}
+
+.community_main .page_indicator {
+    margin-top: 20px;
+    text-align: center;
+}
