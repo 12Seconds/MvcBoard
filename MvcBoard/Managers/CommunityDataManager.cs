@@ -102,12 +102,9 @@ namespace MvcBoard.Managers
                     command.Parameters.AddWithValue("@Title", post.Title);
                     command.Parameters.AddWithValue("@Contents", post.Contents);
                     command.Parameters.AddWithValue("@UserId", post.UserId);
-                    command.Parameters.AddWithValue("@Likes", post.Likes);
-                    command.Parameters.AddWithValue("@Views", post.Views);
                     command.Parameters.AddWithValue("@Category", post.Category);
                     command.Parameters.AddWithValue("@CreateDate", DateTime.Now);
-                    command.Parameters.AddWithValue("@UpdateDate", DBNull.Value);
-                    command.Parameters.AddWithValue("@DeleteDate", DBNull.Value);
+                   
 
                     // 출력 파라미터
                     // SqlParameter result = new SqlParameter("@???", SqlDbType.VarChar);

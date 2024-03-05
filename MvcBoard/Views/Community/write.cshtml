@@ -1,4 +1,5 @@
-﻿@model MvcBoard.Models.Community.WriteViewModel;
+﻿@* @model MvcBoard.Models.Community.WriteViewModel; *@
+@model MvcBoard.Models.Post;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -43,19 +44,23 @@
 
         <div class="category_dropbox">게시판 선택 (드롭 박스) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 태그 없음 (드롭 박스)</div>
 
-        <hr />
-        <input class="intput_title" type="text" placeholder="제목을 입력해주세요." />
-        <hr />
+        @using (Html.BeginForm("Write", "Community", FormMethod.Post))
+        {
+            <hr />
+            @Html.TextBoxFor(m => m.Title, new { @class = "intput_title", @placeholder = "제목을 입력해주세요." })
+            <span class = "text-danger" asp-validation-for="Title"></span>
+            <hr />
 
-        <textarea class="editor"> @* TODO Trumbowyg 에디터에 placeholder 적용하는 방법 알아보기 *@
-        </textarea>
+            @Html.TextAreaFor(m => m.Contents, new { @class = "editor"}) // TODO Trumbowyg 에디터에 placeholder 적용하는 방법 알아보기
+            <div><span class="text-danger" asp-validation-for="Contents"></span></div>
 
-        <input class="input_tag" placeholder="TODO # 태그 입력"></input>
+            <input class="input_tag" placeholder="TODO # 태그 입력"></input>
 
-        <div class="button_area">
-            <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("Index", "Community")'">취소</button>
-            <button type="button" class="btn btn-secondary">게시하기</button>
-        </div>  
+            <div class="button_area">
+                <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("Index", "Community")'">취소</button>
+                <button type="submit" class="btn btn-secondary">게시하기</button>
+            </div>
+        }
 
     </div>
 

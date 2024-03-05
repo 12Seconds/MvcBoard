@@ -46,7 +46,9 @@ namespace MvcBoard.Controllers
 
         public IActionResult Write(int category = 0)
         {
-            WriteViewModel viewModel = new WriteViewModel(category);
+            // WriteViewModel viewModel = new WriteViewModel(category); // TODO WreiteViewModel class 삭제 고려
+            Post viewModel = new Post();
+            viewModel.Category = category;
 
             return View(viewModel);
         }
@@ -54,39 +56,46 @@ namespace MvcBoard.Controllers
         [HttpPost]
         public IActionResult Write(Post postData)
         {
+            Console.WriteLine($"[Controller] Community >> Write() postData.Category: {postData.Category},  IsValid: {ModelState.IsValid}"); // TODO stringify
+
             if (ModelState.IsValid)
             {
+                if (postData.Category == 0) postData.Category = 1; // 1: 자유게시판 (default), todo 드롭다운 or 모달 구현하면 필요 없음
+
+                // TODO 작성자 UserId 매핑 필요 (로그인 구현 후)
+                postData.UserId = 1;
+
                 _dataManagers.CreatePost(postData);
 
                 // todo 정의될 category 에 맞게 수정 필요
                 switch (postData.Category)
                 {
                     case 0:
-                    case 1: return RedirectToAction("Index"); break;
-                    case 2: return RedirectToAction("Hot"); break;
-                    case 99: return RedirectToAction("Notice"); break;
+                    case 1: return RedirectToAction("Index");
+                    case 2: return RedirectToAction("Hot");
+                    case 99: return RedirectToAction("Notice");
 
-                    default: return RedirectToAction("Index"); break;
+                    default: return RedirectToAction("Index");
                 }
 
                 // ModelState.AddModelError(string.Empty, "게시물을 저장할 수 없습니다."); // TODO
             }
-            return View(postData); // TODO
+            return View(postData);
         }
 
         // TODO 게시물 뷰 페이지 
-        /*
-        public IActionResult View(int postId, int page, int category) // 안되면 PostView
-        {
-            // 게시물  데이터 
-            // 댓글 데이터
-            // 해당 카테고리의 게시판 데이터 (페이지) 필요함
+            /*
+            public IActionResult View(int postId, int page, int category) // 안되면 PostView
+            {
+                // 게시물  데이터 
+                // 댓글 데이터
+                // 해당 카테고리의 게시판 데이터 (페이지) 필요함
 
-            return View();
-        }
-        */
+                return View();
+            }
+            */
 
-        // 글쓰기 테스트
+            // 글쓰기 테스트
         public IActionResult CreateTest()
         {
             Post postData = new Post
