@@ -1,12 +1,14 @@
-﻿@model MvcBoard.Models.Community.BoardViewModel;
+﻿@model MvcBoard.Models.Community.PostViewModel;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    var BoardTitle = "전체 게시판"; // Category 값에 따라 변경 필요 (Controller 에서 변경된 상태로 넘겨주거나)
+    var BoardTitle = "자유 게시판"; // Category 값에 따라 변경 필요 (Controller 에서 변경된 상태로 넘겨주거나)
 
-    ViewData["Title"] = BoardTitle;
+    ViewData["Title"] = BoardTitle; // TODO 게시물 제목 넘기기
 }
+
+<link rel="stylesheet" href="@(Url.Content("~/css/community/view.css"))" />
 
 <div class="community">
 
@@ -35,22 +37,33 @@
                 &nbsp;공지 게시판
             </div>
         </a>
-        
+
     </aside>
 
-    <div class="community_main">
+    <div class="community_main view">
         <h3>@BoardTitle</h3>
-        <hr/>
+        <hr />
 
-        <div class="rating_filter">실시간 주간 월간</div>
+        <div class="post_area">
 
-        <div class="rated_scroll_board"></div>
+        </div>
 
-        <a asp-area="" asp-controller="Community" asp-action="write">
-            <div class="write_button"> 새 글을 작성해보세요 </div>
-        </a>
+        @* 댓글 영역 *@
+       <div class="comments">
+           <div class="label">댓글 3</div>
+           <div class="input_area">
+               댓글을 입력해주세요.
+           </div>
+           <div class="comments_area">
+               @* todo 댓글 생성 *@
+                @for (var i = 0; i < 3; i++)
+                {
+                    <div class="comment_item">댓글 @(i)</div>
+                }
+            </div>
+           <div class="page_area""><< 처음 1 2 3 마지막 >></div>
 
-        <div class="board_label">전체</div> @* TODO 필터 (장터 게시판) *@
+       </div>
 
         @* 게시판 영역 *@
         <div class="board">
@@ -62,36 +75,26 @@
                 <div class="date">날짜</div>
                 <div class="views">조회수</div>
             </div>
-           
+
             @foreach (var item in Model.PostListData)
             {
                 <div class="item post">
                     <div class="category">자유 게시판</div> @*TODO Category 에 따라 *@
-                    <div class="title">
-                        <a asp-area="" asp-controller="Community" asp-action="View" 
-                            asp-route-postId="0" 
-                            asp-route-page="0"
-                            asp-route-category="0"
-                            asp-route-commentPage="0"
-                        >@item.Title</a>
-
-                        @* <a href="/Community/View/12">SpeakerId: 12</a> *@
-
-                    </div> @* 클릭 시 페이지 이동 처리 필요*@
+                    <div class="title"><a>@item.Title</a></div> @* 클릭 시 페이지 이동 처리 필요*@
                     <div class="writer">@item.UserName</div>
                     <div class="date">@(item.CreateDate.ToString("yyyy.MM.dd"))</div> @* 7일 전 처리 필요 *@
                     <div class="views">@item.Views</div>
                 </div>
             }
-        </div> 
+        </div>
 
         @* 페이지 인디케이터 영역 *@
         <div class="page_indicator"><< 처음 1 2 3 4 5 ... 마지막 >></div>
-        
+
     </div>
 
     <aside class="community_aside_right">
         광고 배너 영역
     </aside>
-    
+
 </div>

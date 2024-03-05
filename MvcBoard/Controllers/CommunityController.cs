@@ -76,7 +76,7 @@ namespace MvcBoard.Controllers
                     case 99: return RedirectToAction("Notice");
 
                     default: return RedirectToAction("Index");
-                }
+                }   
 
                 // ModelState.AddModelError(string.Empty, "게시물을 저장할 수 없습니다."); // TODO
             }
@@ -84,16 +84,17 @@ namespace MvcBoard.Controllers
         }
 
         // TODO 게시물 뷰 페이지 
-            /*
-            public IActionResult View(int postId, int page, int category) // 안되면 PostView
-            {
-                // 게시물  데이터 
-                // 댓글 데이터
-                // 해당 카테고리의 게시판 데이터 (페이지) 필요함
+        public IActionResult View(int postId, int page, int category = 0, int commentPage = 1)
+        {
+            // PostViewModel viewModel = _dataManagers.GetPostViewData()
+            BoardViewModel boardViewModel = _dataManagers.GetBoardViewData(category, page);
+            // TODO 게시물 데이터 (by postId), 댓글 데이터
 
-                return View();
-            }
-            */
+            PostViewModel viewModel = new PostViewModel(new PostWithUser(), boardViewModel.PageCount, boardViewModel.PageIndex, boardViewModel.PostListData);
+
+            return View(viewModel);
+        }
+           
 
             // 글쓰기 테스트
         public IActionResult CreateTest()

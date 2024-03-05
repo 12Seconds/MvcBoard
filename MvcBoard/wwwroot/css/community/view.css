@@ -1,0 +1,47 @@
+﻿body {
+}
+
+/* 게시물 영역 */
+.community_main.view .post_area {
+    background-color: aquamarine;
+    height: 300px;
+}
+
+/* 댓글 영역 */
+.community_main.view .comments {
+
+}
+
+.community_main.view .comments .label {
+    width: 100%;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.community_main.view .comments .input_area {
+    width: 100%;
+    height: 46px;
+    display: flex;
+    align-items: center;
+}
+
+.community_main.view .comments .comments_area {
+
+}
+
+.community_main.view .comments .comments_area .comment_item {
+    background-color: bisque;
+
+}
+
+.community_main.view .comments .page_area {
+    width: 100%;
+    height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
