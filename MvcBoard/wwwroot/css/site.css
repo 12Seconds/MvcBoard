@@ -229,3 +229,34 @@ body {
     margin-left: 15px;
 }
 
+.community_main.write .openCategoryModalBtn {
+    padding: 9px 12px 9px 12px;
+    height: 44px;
+    margin-top: 30px;
+    margin-bottom: 25px;
+    background-color: rgb(230,230,230);
+    border-radius: 10px;
+    border: 1px solid lightgray;
+
+    display: flex;
+    appearance: none;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#CategoryModal {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#CategoryModal .modal-content {
+    position: absolute;
+    top: calc(50vh - 200px);
+    left: calc(50vw - 200px);
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    width: 400px;
+    height: 400px;
+}

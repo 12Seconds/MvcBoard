@@ -19,7 +19,7 @@ namespace MvcBoard.Managers
         private string ConnectionString = "Server=DESKTOP-5AFMG8G;Database=MVC_BOARD_DB;Trusted_Connection=true;TrustServerCertificate=True";
 
         // 게시판 조회 --TODO ReadPost함수 분리...필요한가?
-        public BoardViewModel GetBoardViewData(int category = 1, int page = 1) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
+        public BoardViewModel GetBoardViewData(int category = 0, int page = 1) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
         {
 
             // TODO 로그 모듈(매니저) 만들기

@@ -11,7 +11,7 @@ public partial class Post
     [Required(ErrorMessage = "제목이 올바르지 않습니다.")] // errorMessage 출력하려면 input tag 뒤에 <span asp-validation-for="필드명"></span> 필요
     public string Title { get; set; } = null!;
 
-    [Required(ErrorMessage = "내용을 입력해 주세요.")]
+    [Required(ErrorMessage = "내용을 입력해주세요.")]
     public string? Contents { get; set; }
 
     /*[Required]*/
@@ -21,7 +21,7 @@ public partial class Post
 
     public int Views { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "게시판을 선택해주세요.")]
     public int Category { get; set; }
 
     public DateTime CreateDate { get; set; }
