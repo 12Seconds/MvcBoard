@@ -42,10 +42,18 @@
     <div class="community_main write">
         <h3 class="title">@BoardTitle</h3>
 
-        <div class="category_dropbox">게시판 선택 (드롭 박스) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 태그 없음 (드롭 박스)</div>
+        @* <div class="category_dropbox">게시판 선택 (모달) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 태그 없음 (모달)</div> *@
+
+        <button type="button" id="openCategoryModalBtn" class="openCategoryModalBtn">
+            <span id="categoryModalBtn_text">게시판 선택</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.00048 8.78145L11.3005 5.48145L12.2431 6.42411L8.00048 10.6668L3.75781 6.42411L4.70048 5.48145L8.00048 8.78145Z" fill="black"></path></svg>
+        </button>
+        <span class="text-danger" asp-validation-for="Category"></span>
 
         @using (Html.BeginForm("Write", "Community", FormMethod.Post))
         {
+            @Html.HiddenFor(m => m.Category, new { @id = "CategoryValue", @name = "Category" })
+
             <hr />
             @Html.TextBoxFor(m => m.Title, new { @class = "intput_title", @placeholder = "제목을 입력해주세요." })
             <span class = "text-danger" asp-validation-for="Title"></span>
@@ -54,13 +62,26 @@
             @Html.TextAreaFor(m => m.Contents, new { @class = "editor"}) // TODO Trumbowyg 에디터에 placeholder 적용하는 방법 알아보기
             <div><span class="text-danger" asp-validation-for="Contents"></span></div>
 
-            <input class="input_tag" placeholder="TODO # 태그 입력"></input>
+            <input class="input_tag" placeholder="TODO # 태그 입력"/>
 
             <div class="button_area">
                 <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("Index", "Community")'">취소</button>
                 <button type="submit" class="btn btn-secondary">게시하기</button>
             </div>
         }
+
+        @* 카테고리 선택 모달 *@
+         <div id="CategoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>             
+                @Html.DropDownListFor(model => model.Category, new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "자유 게시판", Value = "1" },
+                    new SelectListItem { Text = "공지 게시판", Value = "99" }
+                }, "게시판 선택", new { @id = "categoryItemList", @class = "form-control" })
+
+            </div>
+        </div>
 
     </div>
 
@@ -69,3 +90,45 @@
     </aside>
 
 </div>
+
+<script>
+
+    // 게시판 선택 버튼 클릭 시 모달 띄우기
+    document.getElementById('openCategoryModalBtn').addEventListener('click', function () {
+        var modal = document.getElementById('CategoryModal');
+        modal.style.display = 'block';
+    });
+
+    // X 버튼 클릭 시 닫힘
+    document.querySelector('.close').addEventListener('click', function () {
+        var modal = document.getElementById('CategoryModal');
+        modal.style.display = 'none';
+    });
+
+    // 배경 영역 클릭 시 닫힘
+    document.getElementById('CategoryModal').addEventListener('click', function (e) {
+        if (e.target == this) this.style.display = 'none';
+    })
+
+    // 게시판 항목 선택 시 값 처리 - TODO 동일 항목 선택 시 안닫히고 있음 -> dropDown 에서 다른 형태로 변경하면 해결 될 듯
+    document.getElementById('categoryItemList').addEventListener('change', function () {
+        var selectedValue = document.getElementById('CategoryValue');
+        var modal = document.getElementById('CategoryModal');
+        var selectedItem = modal.querySelector('select').value;
+
+        if (selectedItem == '') selectedItem = '0'; // TODO
+
+        selectedValue.value = selectedItem;
+        modal.style.display = 'none';
+
+        var string = "";
+        switch (selectedItem) {
+            case '0': string = "게시판 선택"; break; // TODO 카테고리별 게시판 이름 DB테이블 만들고 그걸 받아서 사용할 것, (가능하면 전역에 저장)
+            case '1': string = "자유 게시판"; break;
+            case '99': string = "공지 게시판"; break;
+        }
+
+        $('#categoryModalBtn_text').text(string);
+    });
+
+</script>
