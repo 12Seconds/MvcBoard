@@ -87,13 +87,20 @@ namespace MvcBoard.Controllers
         [HttpGet("Community/View/{PostId}")]
         public IActionResult View(int postId, int? page, int category = 0, int commentPage = 1)
         {
-            // PostViewModel viewModel = _dataManagers.GetPostViewData()
-            BoardViewModel boardViewModel = _dataManagers.GetBoardViewData(category, page ?? 1);
-            // TODO 게시물 데이터 (by postId), 댓글 데이터
+            // TODO 게시물 데이터 (by postId), 댓글 데이터 조인 필요?
+            PostWithUser? postData = _dataManagers.GetPostDataById(postId);
 
-            PostViewModel viewModel = new PostViewModel(new PostWithUser(), boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PostListData);
-
-            return View(viewModel);
+            if (postData == null) {
+                // TODO IExceptionFilter 를 구현한 별도 예외 처리 로직 및 뷰 만들어서 넘기기
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                // 게시물 하단 게시판 데이터 조회
+                BoardViewModel boardViewModel = _dataManagers.GetBoardViewData(category, page ?? 1);
+                PostViewModel viewModel = new PostViewModel(postData, boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PostListData);
+                return View(viewModel);
+            }
         }
            
 

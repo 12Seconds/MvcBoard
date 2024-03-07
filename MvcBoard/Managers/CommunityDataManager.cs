@@ -18,6 +18,58 @@ namespace MvcBoard.Managers
         // string ConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
         private string ConnectionString = "Server=DESKTOP-5AFMG8G;Database=MVC_BOARD_DB;Trusted_Connection=true;TrustServerCertificate=True";
 
+        // 게시물 조회 (TODO 댓글 데이터)
+        public PostWithUser? GetPostDataById(int? postId = null)
+        {
+            List<PostWithUser> posts = new List<PostWithUser>();
+
+            if (postId == null) return null;
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("ReadPostById", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@PostId", postId);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    PostWithUser? post = null;
+
+                    while (reader.Read())
+                    {
+                        post = new PostWithUser();
+
+                        post.PostId = int.Parse(reader["PostId"]?.ToString() ?? "0");
+                        post.Title = reader["Title"]?.ToString() ?? "";
+                        post.Contents = reader["Contents"].ToString();
+                        post.UserId = int.Parse(reader["UserId"]?.ToString() ?? "0");
+                        post.Likes = int.Parse(reader["Likes"]?.ToString() ?? "0");
+                        post.Views = int.Parse(reader["Views"]?.ToString() ?? "0");
+                        post.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
+
+                        post.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
+                        if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
+                        if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
+
+                        // Join 테이블 데이터
+                        post.UserName = reader["Name"]?.ToString() ?? "";
+
+                        posts.Add(post);
+                    }
+
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            if (posts.Count > 0)
+                return posts[0];
+            else 
+                return null;
+        }
+
         // 게시판 조회 --TODO ReadPost함수 분리...필요한가?
         public BoardViewModel GetBoardViewData(int category = 0, int page = 1) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
         {
@@ -52,7 +104,7 @@ namespace MvcBoard.Managers
                         post.UserId = int.Parse(reader["UserId"]?.ToString() ?? "0");
                         post.Likes = int.Parse(reader["Likes"]?.ToString() ?? "0");
                         post.Views = int.Parse(reader["Views"]?.ToString() ?? "0");
-                        post.Category = int.Parse(reader["Category"]?.ToString() ?? "1"); // TODO 0 or 1
+                        post.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
 
                         post.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
                         if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");

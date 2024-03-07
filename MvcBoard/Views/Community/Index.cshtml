@@ -80,7 +80,6 @@
                             asp-route-category=@Model.Category
                             asp-route-commentPage=@null
                         >@item.Title</a>
-
                     </div> @* 클릭 시 페이지 이동 처리 필요*@
                     <div class="writer">@item.UserName</div>
                     <div class="date">@(item.CreateDate.ToString("yyyy.MM.dd"))</div> @* 7일 전 처리 필요 *@

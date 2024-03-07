@@ -19,7 +19,7 @@
         }
         
 
-        public PostWithUser? PostData { get; set; }
+        public PostWithUser PostData { get; set; }
 
         // TODO
         // public <List>Comment CommentListData { get; set; }
