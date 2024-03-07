@@ -35,6 +35,18 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+// TODO 더 알아볼 것
+/*
+app.MapControllerRoute(
+    name: "community",
+    pattern: "Community/{action}/{category?}/{page?}", // 추가적인 매개변수를 옵셔널로 지정
+    defaults: new { controller = "Community", action = "Index" });
+*/
+app.MapControllerRoute(
+    name: "community",
+    pattern: "Community/{action}/{id?}",
+    defaults: new { controller = "Community", action = "Index" });
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
