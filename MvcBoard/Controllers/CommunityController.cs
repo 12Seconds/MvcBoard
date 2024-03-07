@@ -19,27 +19,27 @@ namespace MvcBoard.Controllers
         }
 
         // 전체 게시판
-        public IActionResult Index(int? category = null)
+        public IActionResult Index(int? category = null, int? page = 1)
         {
-            BoardViewModel viewModel = _dataManagers.GetBoardViewData(category ?? 0);
+            BoardViewModel viewModel = _dataManagers.GetBoardViewData(category ?? 0, page ?? 1);
 
             return View(viewModel);
         }
 
         // 인기 게시판
-        public IActionResult Hot()
+        public IActionResult Hot(int? category = null, int? page = 1)
         {
             // TODO 별도 함수 만들어서 호출 필요
-            BoardViewModel viewModel = _dataManagers.GetBoardViewData(2, 1); // 2는 질문답변 게시판 카테고리 번호임
+            BoardViewModel viewModel = _dataManagers.GetBoardViewData(2, page ?? 1); // 2는 질문답변 게시판 카테고리 번호임
 
             return View(viewModel);
         }
 
         // 공지 게시판
-        public IActionResult Notice(int page = 1)
+        public IActionResult Notice(int? category = null, int? page = 1)
         {
-            // TODO 1 -> 99 (CategoryType 상수 정의 참조할 것)
-            BoardViewModel viewModel = _dataManagers.GetBoardViewData(99, page);
+            // TODO 별도 함수 만들어서 호출 필요 (isNotice)
+            BoardViewModel viewModel = _dataManagers.GetBoardViewData(99, page ?? 1); // TODO 99 는 임시, 수정 필요
 
             return View(viewModel);
         }

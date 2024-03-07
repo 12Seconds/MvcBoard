@@ -71,7 +71,7 @@ namespace MvcBoard.Managers
         }
 
         // 게시판 조회 --TODO ReadPost함수 분리...필요한가?
-        public BoardViewModel GetBoardViewData(int category = 0, int page = 1) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
+        public BoardViewModel GetBoardViewData(int category = 0, int page = 1, int size = 0) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
         {
 
             // TODO 로그 모듈(매니저) 만들기
@@ -88,7 +88,8 @@ namespace MvcBoard.Managers
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@Category", category);
-                    command.Parameters.AddWithValue("@page", page);
+                    command.Parameters.AddWithValue("@Page", page);
+                    command.Parameters.AddWithValue("@Size", size);
 
                     SqlDataReader reader = command.ExecuteReader();
 

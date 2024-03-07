@@ -44,6 +44,7 @@
         <h3>@BoardTitle</h3>
         <hr />
 
+        @* 게시물 영역 *@
         <div class="post_area">
 
             <div class="actions">
@@ -76,13 +77,9 @@
             </div>
             <hr />
 
-            
             <div class="post_title">@Model.PostData.Title</div>
             <div class="post_content">@Html.Raw(Model.PostData.Contents)</div>
-            @*
-            <div class="post_title">제목</div>
-            <div class="post_content">내용</div>
-            *@
+
             <div class="tag_list">
                 @{
                     // TODO tag list 데이터로 연동 필요
@@ -150,7 +147,7 @@
            
             @foreach (var item in Model.PostListData)
             {
-                <div class="item post">
+                <div class="item post @(item.PostId == Model.PostData.PostId ? "selected" : "")">
                     <div class="category">자유 게시판</div> @*TODO Category 에 따라 *@
                     <div class="title">
                         <a asp-area="" asp-controller="Community" asp-action="View" 
@@ -158,7 +155,7 @@
                             asp-route-page=@Model.Page
                             asp-route-category=@Model.Category
                             asp-route-commentPage=@null
-                        >@item.Title</a>
+                        >@item.Title @item.PostId</a> @* TODO 임시 postId 지울 것 *@
                     </div> @* 클릭 시 페이지 이동 처리 필요*@
                     <div class="writer">@item.UserName</div>
                     <div class="date">@(item.CreateDate.ToString("yyyy.MM.dd"))</div> @* 7일 전 처리 필요 *@

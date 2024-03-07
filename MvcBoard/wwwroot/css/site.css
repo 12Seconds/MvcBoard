@@ -121,7 +121,7 @@ body {
 }
 
 .community_main .board {
-    background-color: rgb(230,230,230);
+    /*background-color: rgb(230,230,230);*/
 }
 
 .community_main .board .item {
@@ -143,7 +143,6 @@ body {
     min-width: 120px;
     margin-right: 10px;
     padding: 5px 10px;
-    background-color: antiquewhite;
 }
 
 .community_main .board .item .title { /* TODO ellipsis 贸府 */
@@ -151,23 +150,18 @@ body {
     min-width: 350px;
     margin-right: 10px;
     padding: 5px 1px;
-    background-color: antiquewhite;
-
 }
 .community_main .board .item .writer { /* TODO ellipsis 贸府 */
     width: 100px;
     min-width: 100px;
     margin-right: 10px;
     padding: 5px 1px;
-    background-color: antiquewhite;
-
 }
 .community_main .board .item .date {
     width: 80px;
     min-width: 80px;
     margin-right: 10px;
     padding: 5px 1px;
-    background-color: antiquewhite;
     text-align: center;
 
 }
@@ -176,7 +170,6 @@ body {
     min-width: 80px;
     margin-right: 10px;
     padding: 5px 1px;
-    background-color: antiquewhite;
     text-align: center;
 }
 
