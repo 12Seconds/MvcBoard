@@ -35,6 +35,12 @@
                 &nbsp;공지 게시판
             </div>
         </a>
+        <a asp-area="" asp-controller="Community" asp-action="Index" asp-route-category="1">
+            <div class="category_list_item">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="18" rx="9" fill="#333333"></rect><path d="M5.25 5.66602H12.75V6.49935H5.25V5.66602ZM5.25 8.58268H12.75V9.41602H5.25V8.58268ZM5.25 11.4993H12.75V12.3327H5.25V11.4993Z" fill="white"></path></svg>
+                &nbsp;자유 게시판(임시)
+            </div>
+        </a>
         
     </aside>
 
@@ -69,13 +75,11 @@
                     <div class="category">자유 게시판</div> @*TODO Category 에 따라 *@
                     <div class="title">
                         <a asp-area="" asp-controller="Community" asp-action="View" 
-                            asp-route-postId="0" 
-                            asp-route-page="0"
-                            asp-route-category="0"
-                            asp-route-commentPage="0"
+                            asp-route-postId="@item.PostId"
+                            asp-route-page=@Model.Page
+                            asp-route-category=@Model.Category
+                            asp-route-commentPage=@null
                         >@item.Title</a>
-
-                        @* <a href="/Community/View/12">SpeakerId: 12</a> *@
 
                     </div> @* 클릭 시 페이지 이동 처리 필요*@
                     <div class="writer">@item.UserName</div>

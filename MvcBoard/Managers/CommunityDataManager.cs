@@ -84,7 +84,7 @@ namespace MvcBoard.Managers
                 PostListData = Posts
             };
             */
-            return new BoardViewModel(pageCount, page, Posts);
+            return new BoardViewModel(pageCount, page, category, Posts);
         }
 
         // 게시물 작성 (todo return 타입 수정 필요)

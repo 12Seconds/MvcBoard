@@ -5,10 +5,11 @@
     /// </summary>
     public class BoardViewModel
     {
-        public BoardViewModel(int pageCount = 0, int pageIndex = 1, List<PostWithUser>? postListData = null)
+        public BoardViewModel(int? pageCount = 0, int? page = null, int? category = null, List<PostWithUser>? postListData = null)
         {
             PageCount = pageCount;
-            PageIndex = pageIndex;
+            Page = page;
+            Category = category;
 
             if (postListData == null)
                 PostListData = new List<PostWithUser>();
@@ -25,8 +26,9 @@
             // }
         }
 
-        public int PageCount { get; set; }
-        public int PageIndex { get; set; }
+        public int? PageCount { get; set; }
+        public int? Page { get; set; }
+        public int? Category { get; set; } // 현재 카테고리
         public List<PostWithUser> PostListData { get; set; } // Q. nullable 로 해야 할까? nullable로 하면 생성자 안쓸 수 있음 (프론트 쪽에서 null check 필요성)
     }
 }

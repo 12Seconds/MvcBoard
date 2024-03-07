@@ -19,9 +19,9 @@ namespace MvcBoard.Controllers
         }
 
         // 전체 게시판
-        public IActionResult Index()
+        public IActionResult Index(int? category = null)
         {
-            BoardViewModel viewModel = _dataManagers.GetBoardViewData();
+            BoardViewModel viewModel = _dataManagers.GetBoardViewData(category ?? 0);
 
             return View(viewModel);
         }
@@ -76,7 +76,7 @@ namespace MvcBoard.Controllers
                     case 99: return RedirectToAction("Notice");
 
                     default: return RedirectToAction("Index");
-                }   
+                }
 
                 // ModelState.AddModelError(string.Empty, "게시물을 저장할 수 없습니다."); // TODO
             }
@@ -84,13 +84,14 @@ namespace MvcBoard.Controllers
         }
 
         // TODO 게시물 뷰 페이지 
-        public IActionResult View(int postId, int page, int category = 0, int commentPage = 1)
+        [HttpGet("Community/View/{PostId}")]
+        public IActionResult View(int postId, int? page, int category = 0, int commentPage = 1)
         {
             // PostViewModel viewModel = _dataManagers.GetPostViewData()
-            BoardViewModel boardViewModel = _dataManagers.GetBoardViewData(category, page);
+            BoardViewModel boardViewModel = _dataManagers.GetBoardViewData(category, page ?? 1);
             // TODO 게시물 데이터 (by postId), 댓글 데이터
 
-            PostViewModel viewModel = new PostViewModel(new PostWithUser(), boardViewModel.PageCount, boardViewModel.PageIndex, boardViewModel.PostListData);
+            PostViewModel viewModel = new PostViewModel(new PostWithUser(), boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PostListData);
 
             return View(viewModel);
         }

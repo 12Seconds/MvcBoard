@@ -6,7 +6,7 @@
     public class PostViewModel : BoardViewModel // 굳이 상속 안받아도 될 것 같긴 한데..
     {
         
-        public PostViewModel(PostWithUser postData, int pageCount = 0, int pageIndex = 1, List<PostWithUser>? postListData = null) : base(pageCount, pageIndex, postListData)
+        public PostViewModel(PostWithUser postData, int? pageCount = 0, int? page = 1, int? category = null, List<PostWithUser>? postListData = null) : base(pageCount, page, category, postListData)
         {
             PostData = postData;
             /*
