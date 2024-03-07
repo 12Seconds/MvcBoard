@@ -1,4 +1,5 @@
-﻿@model MvcBoard.Models.Community.BoardViewModel;
+﻿@using MvcBoard.Models.Community
+@model MvcBoard.Models.Community.BoardViewModel;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -74,7 +75,38 @@
         </div>
 
         @* 페이지 인디케이터 영역 *@
-        <div class="page_indicator"><< 처음 1 2 3 4 5 ... 마지막 >></div>
+        @{
+            // TODO 가능하면 간소화 필요 --> 마지막 페이지 쯤에서 5개 노출 안되는 문제 있음, offset 조절 필요
+            int page = Model.Page ?? 1;
+            int first_center_index = BoardViewModel.DisplayPageCount / 2 + 1;
+            int start = Math.Max(page - (BoardViewModel.DisplayPageCount - 1) / 2, 1);
+            int offset = (first_center_index > page) ? first_center_index - page : 0;
+            int end = Math.Min(page + offset + (BoardViewModel.DisplayPageCount - 1) / 2, Model.PageCount); // TODO PageCount 도 DisplayPageCount 처럼 상수로 바꿀것
+
+            Console.WriteLine($"####### page: {page}, offset: {offset}, start: {start}, end: {end}, display: {BoardViewModel.DisplayPageCount}");
+
+            if (Model.PostListData.Count > 0)
+            {
+                <div class="page_indicator">
+                    <a asp-area="" asp-controller="Community" asp-action="Notice" asp-route-category=@Model.Category asp-route-page=1>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
+                        처음
+                    </a>
+                    @* TODO 이전 페이지 버튼 *@
+
+                    @for (var i = start; i <= end; i++)
+                    {
+                        <a class=@(i == Model.Page ? "selected" : "") asp-area="" asp-controller="Community" asp-action="Notice" asp-route-category=@Model.Category asp-route-page=@i >@i</a> 
+                    }
+
+                    @* TODO 다음 페이지 버튼 *@
+                    <a asp-area="" asp-controller="Community" asp-action="Notice" asp-route-category=@Model.Category asp-route-page=@Model.PageCount>
+                        마지막
+                        <svg style="transform: rotate(180deg)" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
+                    </a>
+                </div>
+            }
+        }
 
     </div>
 

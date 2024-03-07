@@ -71,8 +71,9 @@ namespace MvcBoard.Managers
         }
 
         // 게시판 조회 --TODO ReadPost함수 분리...필요한가?
-        public BoardViewModel GetBoardViewData(int category = 0, int page = 1, int size = 0) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
+        public BoardViewModel GetBoardViewData(int category = 0, int page = 1, int size = 20) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
         {
+            // if (page < 1) page = 1; // TODO 파라미터의 값을 바꿔도 이렇게 되나?
 
             // TODO 로그 모듈(매니저) 만들기
             Console.WriteLine($"@@@ CommunityDataManager >> GetBoardViewData(category = {category}, page = {page})");
@@ -88,13 +89,14 @@ namespace MvcBoard.Managers
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@Category", category);
-                    command.Parameters.AddWithValue("@Page", page);
+                    command.Parameters.AddWithValue("@Page", page); // 1 이상이어야 함
                     command.Parameters.AddWithValue("@Size", size);
 
                     SqlDataReader reader = command.ExecuteReader();
 
                     PostWithUser? post = null;
 
+                    /* 게시판 데이터 */
                     while (reader.Read())
                     {
                         post = new PostWithUser();
@@ -117,27 +119,20 @@ namespace MvcBoard.Managers
                         Posts.Add(post);
                     }
 
+                    /* 총 페이지 수 */
+                    reader.NextResult();
+                    if (reader.Read())
+                    {
+                        pageCount = Convert.ToInt32(reader["TotalPageCount"]);
+                        Console.WriteLine($"@@@@@@@ ## pageCount: {pageCount}"); // TODO 삭제
+                    }
+
                     reader.Close();
                 }
                 connection.Close();
             }
 
-            int r = Posts.Count % 20; // TODO 한 페이지에 노출되는 게시물 수 상수 정의 필요
-
-            if (Posts.Count > 0)
-                pageCount = r == 0 ? Posts.Count / 20 : Posts.Count / 20 + 1; // todo 노출 수 20 상수 정의 필요
-            else 
-                pageCount = 0;
-
-            /*
-            return new BoardViewModel
-            {
-                PageCount = pageCount,
-                PageIndex = page,
-                PostListData = Posts
-            };
-            */
-            return new BoardViewModel(pageCount, page, category, Posts);
+            return new BoardViewModel(pageCount, page, category, size, Posts);
         }
 
         // 게시물 작성 (todo return 타입 수정 필요)
@@ -317,11 +312,12 @@ namespace MvcBoard.Managers
             int r = Comments.Count % 20; // TODO 한 페이지에 노출되는 게시물 수 상수 정의 필요
 
             // TODO 옮길 것
+            /*
             if (Comments.Count > 0)
                 pageCount = r == 0 ? Comments.Count / 10 : Comments.Count / 10 + 1; // todo 노출 수 10 상수 정의 필요
             else
                 pageCount = 0;
-
+            */
             return Comments;
         }
 

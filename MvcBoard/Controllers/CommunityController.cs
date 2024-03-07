@@ -87,7 +87,7 @@ namespace MvcBoard.Controllers
         [HttpGet("Community/View/{PostId}")]
         public IActionResult View(int postId, int? page, int category = 0, int commentPage = 1)
         {
-            // TODO 게시물 데이터 (by postId), 댓글 데이터 조인 필요?
+            // TODO 게시물 데이터 (by postId), 댓글 데이터 조인 필요? -> 조인이 아니고 저장프로시저에서 SELECT 쿼리 결과 2개 반환하고 reader.NextResult()
             PostWithUser? postData = _dataManagers.GetPostDataById(postId);
 
             if (postData == null) {
@@ -98,7 +98,7 @@ namespace MvcBoard.Controllers
             {
                 // 게시물 하단 게시판 데이터 조회
                 BoardViewModel boardViewModel = _dataManagers.GetBoardViewData(category, page ?? 1);
-                PostViewModel viewModel = new PostViewModel(postData, boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PostListData);
+                PostViewModel viewModel = new PostViewModel(postData, boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PageSize, boardViewModel.PostListData);
                 return View(viewModel);
             }
         }

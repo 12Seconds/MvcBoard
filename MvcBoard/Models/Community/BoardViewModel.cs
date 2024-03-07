@@ -5,11 +5,12 @@
     /// </summary>
     public class BoardViewModel
     {
-        public BoardViewModel(int? pageCount = 0, int? page = null, int? category = null, List<PostWithUser>? postListData = null)
+        public BoardViewModel(int pageCount = 1, int? page = null, int? category = null, int pageSize = 20, List<PostWithUser>? postListData = null)
         {
             PageCount = pageCount;
             Page = page;
             Category = category;
+            PageSize = pageSize;
 
             if (postListData == null)
                 PostListData = new List<PostWithUser>();
@@ -25,10 +26,11 @@
             //     }
             // }
         }
-
-        public int? PageCount { get; set; }
-        public int? Page { get; set; }
+        public const int DisplayPageCount = 5; // 인디케이터에 노출되는 최대 페이지 수 (홀수)
+        public int PageCount { get; set; } // 총 페이지 수
+        public int? Page { get; set; } // 현재 페이지 인덱스
         public int? Category { get; set; } // 현재 카테고리
+        public int PageSize { get; set; } // 한 페이지에 노출되는 게시물 수 (TODO nullable?)
         public List<PostWithUser> PostListData { get; set; } // Q. nullable 로 해야 할까? nullable로 하면 생성자 안쓸 수 있음 (프론트 쪽에서 null check 필요성)
     }
 }
