@@ -90,7 +90,8 @@ namespace MvcBoard.Controllers
             // TODO 게시물 데이터 (by postId), 댓글 데이터 조인 필요? -> 조인이 아니고 저장프로시저에서 SELECT 쿼리 결과 2개 반환하고 reader.NextResult()
             PostWithUser? postData = _dataManagers.GetPostDataById(postId);
 
-            if (postData == null) {
+            if (postData == null)
+            {
                 // TODO IExceptionFilter 를 구현한 별도 예외 처리 로직 및 뷰 만들어서 넘기기
                 return RedirectToAction("Index", "Home");
             }
@@ -102,9 +103,9 @@ namespace MvcBoard.Controllers
                 return View(viewModel);
             }
         }
-           
 
-            // 글쓰기 테스트
+
+        // 글쓰기 테스트
         public IActionResult CreateTest()
         {
             Post postData = new Post
@@ -159,7 +160,7 @@ namespace MvcBoard.Controllers
             {
                 _dataManagers.DeletePost(postId);
             }
-         
+
             return View();
         }
 
@@ -178,7 +179,7 @@ namespace MvcBoard.Controllers
             int count = 0;
 
             List<Post> Posts = new List<Post>();
-            
+
             using (SqlConnection con = new SqlConnection("Server=DESKTOP-5AFMG8G;Database=MVC_BOARD_DB;Trusted_Connection=true;TrustServerCertificate=True"))
             {
                 con.Open();
@@ -219,12 +220,12 @@ namespace MvcBoard.Controllers
                     */
 
                     // 방법3
-                   
+
                     SqlDataReader reader = cmd.ExecuteReader();
                     // List<Post> Posts = new List<Post>();
                     Post post = null;
 
-                    while (reader.Read()) 
+                    while (reader.Read())
                     {
                         post = new Post();
                         post.PostId = int.Parse(reader["PostId"].ToString());
@@ -266,7 +267,12 @@ namespace MvcBoard.Controllers
             return Posts;
             // return nReturn?. "";
         }
-        
 
+        [HttpPost]
+        public IActionResult WriteComment(Comment comment) // TODO 새 모델 객체?
+        {
+            return RedirectToAction("Index"); // 임시
+            // return View(comment);
+        }
     }
 }
