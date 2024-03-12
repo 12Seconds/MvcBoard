@@ -28,7 +28,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// HTTPS -> HTTP 변경 처리
+// app.UseHttpsRedirection(); 
 app.UseStaticFiles();
 
 app.UseRouting();
