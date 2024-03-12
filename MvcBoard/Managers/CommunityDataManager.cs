@@ -10,64 +10,11 @@ namespace MvcBoard.Managers
     /// <summary>
     /// 커뮤니티 (게시판) 기능과 관련된 데이터를 처리하는 매니저로, DB와의 통신은 Stored Procedure 호출로만 이루어진다.
     /// </summary>
-    public class CommunityDataManagers
+    public class CommunityDataManagers : DBManager
     {
-        public CommunityDataManagers() { }
-
-        // TODO 상수 정의 필요
-        // string ConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
-        private string ConnectionString = "Server=DESKTOP-5AFMG8G;Database=MVC_BOARD_DB;Trusted_Connection=true;TrustServerCertificate=True";
-
-        // 게시물 조회 (TODO 댓글 데이터)
-        public PostWithUser? GetPostDataById(int? postId = null)
+        public CommunityDataManagers(IWebHostEnvironment env) : base(env)
         {
-            List<PostWithUser> posts = new List<PostWithUser>();
-
-            if (postId == null) return null;
-
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("ReadPostById", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@PostId", postId);
-
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    PostWithUser? post = null;
-
-                    while (reader.Read())
-                    {
-                        post = new PostWithUser();
-
-                        post.PostId = int.Parse(reader["PostId"]?.ToString() ?? "0");
-                        post.Title = reader["Title"]?.ToString() ?? "";
-                        post.Contents = reader["Contents"].ToString();
-                        post.UserId = int.Parse(reader["UserId"]?.ToString() ?? "0");
-                        post.Likes = int.Parse(reader["Likes"]?.ToString() ?? "0");
-                        post.Views = int.Parse(reader["Views"]?.ToString() ?? "0");
-                        post.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
-
-                        post.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
-                        if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
-                        if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
-
-                        // Join 테이블 데이터
-                        post.UserName = reader["Name"]?.ToString() ?? "";
-
-                        posts.Add(post);
-                    }
-
-                    reader.Close();
-                }
-                connection.Close();
-            }
-
-            if (posts.Count > 0)
-                return posts[0];
-            else 
-                return null;
+            Console.WriteLine("### CommunityDataManagers() initialized...");
         }
 
         // 게시판 조회 --TODO ReadPost함수 분리...필요한가?
@@ -82,7 +29,7 @@ namespace MvcBoard.Managers
 
             List<PostWithUser> Posts = new List<PostWithUser>();
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand("ReadPost", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.READPOST 이런 식
@@ -141,7 +88,7 @@ namespace MvcBoard.Managers
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
             Console.WriteLine($"@@@ CommunityDataManager >> CreatePost(postData = {post.Title} | {post.Contents})"); // postData json 형태로 stringify 하여 출력?
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand("CreatePost", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.CreatePost 이런 식
@@ -175,13 +122,65 @@ namespace MvcBoard.Managers
             }
         }
 
+        // 게시물 조회 (TODO 댓글 데이터)
+        public PostWithUser? GetPostDataById(int? postId = null)
+        {
+            List<PostWithUser> posts = new List<PostWithUser>();
+
+            if (postId == null) return null;
+
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("ReadPostById", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@PostId", postId);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    PostWithUser? post = null;
+
+                    while (reader.Read())
+                    {
+                        post = new PostWithUser();
+
+                        post.PostId = int.Parse(reader["PostId"]?.ToString() ?? "0");
+                        post.Title = reader["Title"]?.ToString() ?? "";
+                        post.Contents = reader["Contents"].ToString();
+                        post.UserId = int.Parse(reader["UserId"]?.ToString() ?? "0");
+                        post.Likes = int.Parse(reader["Likes"]?.ToString() ?? "0");
+                        post.Views = int.Parse(reader["Views"]?.ToString() ?? "0");
+                        post.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
+
+                        post.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
+                        if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
+                        if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
+
+                        // Join 테이블 데이터
+                        post.UserName = reader["Name"]?.ToString() ?? "";
+
+                        posts.Add(post);
+                    }
+
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            if (posts.Count > 0)
+                return posts[0];
+            else
+                return null;
+        }
+
         // 게시물 수정
         public void UpdatePost(Post post)
         {
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
             Console.WriteLine($"@@@ CommunityDataManager >> UpdatePost(postData = {post.PostId} | {post.Title})"); // postData json 형태로 stringify 하여 출력?
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand("UpdatePost", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.CreatePost 이런 식
@@ -220,7 +219,7 @@ namespace MvcBoard.Managers
         public void DeletePost(int postId)
         {
             Console.WriteLine($"@@@ CommunityDataManager >> DeletePost(postId = {postId})");
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand("DeletePost", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.CreatePost 이런 식
@@ -272,7 +271,7 @@ namespace MvcBoard.Managers
 
             List<Comment> Comments = new List<Comment>();
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand("ReadComment", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.ReadComment 이런 식
@@ -327,7 +326,7 @@ namespace MvcBoard.Managers
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
             Console.WriteLine($"@@@ CommunityDataManager >> createComment(commentData = {comment.PostId} | {comment.Contents})"); // postData json 형태로 stringify 하여 출력?
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand("CreateComment", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.CreateComment 이런 식
@@ -370,7 +369,7 @@ namespace MvcBoard.Managers
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
             Console.WriteLine($"@@@ CommunityDataManager >> UpdateComment(commentData = {comment.CommentId} | {comment.Contents})"); // postData json 형태로 stringify 하여 출력?
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand("UpdateComment", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.UpdateComment 이런 식
@@ -408,7 +407,7 @@ namespace MvcBoard.Managers
         public void DeleteComment(int commentId)
         {
             Console.WriteLine($"@@@ CommunityDataManager >> DeleteComment(commentId = {commentId})");
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand("DeleteComment", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.DeleteComment 이런 식

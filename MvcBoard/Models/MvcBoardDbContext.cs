@@ -21,9 +21,11 @@ public partial class MvcBoardDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    /* TODO DbContext 제거 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=DESKTOP-5AFMG8G;Database=MVC_BOARD_DB;Trusted_Connection=true;TrustServerCertificate=True");
+    */
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
