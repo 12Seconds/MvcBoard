@@ -8,33 +8,33 @@ namespace MvcBoard.Controllers
     {
         private readonly CommunityService _service;
 
-        public CommunityController(IWebHostEnvironment env)
+        public CommunityController(CommunityService service)
         {
-            _service = new CommunityService(env);
+            _service = service;
         }
 
         // 전체 게시판
-        public IActionResult Index(int? category = null, int? page = 1) // TODO Params 객체로 만들어 넘기기
+        public IActionResult Index(BoardViewParams? _params)
         {
-            BoardViewModel viewModel = _service.GetBoardViewData(category ?? 0, page ?? 1);
+            BoardViewModel viewModel = _service.GetBoardViewData(_params ?? new BoardViewParams());
 
             return View(viewModel);
         }
 
         // 인기 게시판
-        public IActionResult Hot(int? category = null, int? page = 1)
+        public IActionResult Hot(BoardViewParams? _params)
         {
-            // TODO 별도 함수 만들어서 호출 필요
-            BoardViewModel viewModel = _service.GetBoardViewData(2, page ?? 1); // 2는 질문답변 게시판 카테고리 번호임
+            // TODO 별도 SP 및 함수 만들어서 호출 필요, 지금은 임시로 Category 값이 2이면 인기
+            BoardViewModel viewModel = _service.GetBoardViewData(new BoardViewParams { Category = 2 });
 
             return View(viewModel);
         }
 
         // 공지 게시판
-        public IActionResult Notice(int? category = null, int? page = 1)
+        public IActionResult Notice(BoardViewParams? _params)
         {
-            // TODO 별도 함수 만들어서 호출 필요 (isNotice)
-            BoardViewModel viewModel = _service.GetBoardViewData(99, page ?? 1); // TODO 99 는 임시, 수정 필요
+            // TODO 별도 함수 만들어서 호출 필요 (isNotice 컬럼 추가하고 GetNoticeBoardViewData(_params) 호출 필요함, 지금은 임시로 Category 값이 99면 공지
+            BoardViewModel viewModel = _service.GetBoardViewData(new BoardViewParams{ Category = 99 }); // 임시
 
             return View(viewModel);
         }
@@ -82,14 +82,14 @@ namespace MvcBoard.Controllers
 
         // 게시물 상세 페이지 (진입 화면)
         [HttpGet("Community/View/{PostId}")]
-        public IActionResult View(int postId, int? page, int category = 0, int commentPage = 1)
+        public IActionResult View(PostViewParams _params)
         {
-            // TODO 게시물 데이터 (by postId)
-            PostWithUser? postData = _service.GetPostDataById(postId);
+            // 게시물 데이터 획득 (by postId)
+            PostWithUser? postData = _service.GetPostDataById(_params.PostId);
 
             if (postData == null)
             {
-                // TODO IExceptionFilter 를 구현한 별도 예외 처리 로직 및 뷰 만들어서 넘기기
+                // TODO IExceptionFilter 를 구현한 별도 예외 처리 로직 및 뷰 만들어서 넘기기 (존재하지 않는 게시물 입니다.)
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -97,7 +97,7 @@ namespace MvcBoard.Controllers
                 // TODO 댓글 데이터
 
                 // 게시물 하단 게시판 데이터 조회
-                BoardViewModel boardViewModel = _service.GetBoardViewData(category, page ?? 1);
+                BoardViewModel boardViewModel = _service.GetBoardViewData(_params); // TODO 업캐스팅 되나?
                 PostViewModel viewModel = new PostViewModel(postData, boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PageSize, boardViewModel.PostListData);
                 return View(viewModel);
             }

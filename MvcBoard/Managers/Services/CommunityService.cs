@@ -1,28 +1,39 @@
-﻿using MvcBoard.Models.Community;
+﻿using MvcBoard.Managers.Models;
+using MvcBoard.Models.Community;
 
 namespace MvcBoard.Managers.Services
 {
     /// <summary>
-    /// 커뮤니티 (게시판) 기능과 관련된 비즈니스 로직 처리
+    /// 커뮤니티 (게시판) 기능과 관련된 비즈니스 로직 처리 
+    ///  - 유효성 검증 (Validation check)
+    ///  - 캐시 관리 (Caching)
     /// </summary>
     public class CommunityService
     {
         private readonly CommunityDataManagers _dataManagers;
-        public CommunityService(IWebHostEnvironment env)
+        
+        public CommunityService(CommunityDataManagers dataManager)
         {
-            Console.WriteLine("### CommunityService() initialized...");
-            _dataManagers = new CommunityDataManagers(env);
+            _dataManagers = dataManager;
         }
 
         // 게시판 조회
-        public BoardViewModel GetBoardViewData(int category = 0, int page = 1) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
+        public BoardViewModel GetBoardViewData(BoardViewParams _params) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
         {
-            return _dataManagers.GetBoardViewData(category, page);
+            Console.WriteLine($"### CommunityService >> GetBoardViewData() _params.Category: {_params.Category}, _params.Page: {_params.Page}");
+
+            GetBoardParams @params = new GetBoardParams();
+
+            @params.Category = _params.Category;
+            @params.Page = (_params.Page < 0) ? 1 : _params.Page;
+
+            return _dataManagers.GetBoardViewData(@params);
         }
 
         // 게시물 작성
         public void CreatePost(Post post)
         {
+            // TODO 유효성 검증
             _dataManagers.CreatePost(post);
         }
 

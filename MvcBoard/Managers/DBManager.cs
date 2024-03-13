@@ -11,7 +11,11 @@ namespace MvcBoard.Managers
         private string CONNECTION_STRING = "";
 
         private SqlConnection? connection { get; set; }
-        public DBManager(IWebHostEnvironment env) {
+        public DBManager(IWebHostEnvironment env/*, IConfiguration config*/) {
+
+            _env = env;
+
+            // config.GetConnectionString(); TODO 작업중
 
             try
             {

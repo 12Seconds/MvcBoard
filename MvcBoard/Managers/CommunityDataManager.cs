@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using MvcBoard.Models.Community;
-using MvcBoard.Models;
+using MvcBoard.Managers.Models;
 
 namespace MvcBoard.Managers
 {
@@ -18,12 +18,10 @@ namespace MvcBoard.Managers
         }
 
         // 게시판 조회 --TODO ReadPost함수 분리...필요한가?
-        public BoardViewModel GetBoardViewData(int category = 0, int page = 1, int size = 20) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
+        public BoardViewModel GetBoardViewData(GetBoardParams _params)
         {
-            // if (page < 1) page = 1; // TODO 파라미터의 값을 바꿔도 이렇게 되나?
-
             // TODO 로그 모듈(매니저) 만들기
-            Console.WriteLine($"@@@ CommunityDataManager >> GetBoardViewData(category = {category}, page = {page})");
+            Console.WriteLine($"## CommunityDataManager >> GetBoardViewData(category = {_params.Category}, page = {_params.Page}), size = {_params.Size})");
 
             int pageCount = 0;
 
@@ -35,9 +33,9 @@ namespace MvcBoard.Managers
                 using (SqlCommand command = new SqlCommand("ReadPost", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.READPOST 이런 식
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@Category", category);
-                    command.Parameters.AddWithValue("@Page", page); // 1 이상이어야 함
-                    command.Parameters.AddWithValue("@Size", size);
+                    command.Parameters.AddWithValue("@Category", _params.Category);
+                    command.Parameters.AddWithValue("@Page", _params.Page);
+                    command.Parameters.AddWithValue("@Size", _params.Size);
 
                     SqlDataReader reader = command.ExecuteReader();
 
@@ -78,15 +76,16 @@ namespace MvcBoard.Managers
                 }
                 connection.Close();
             }
-
-            return new BoardViewModel(pageCount, page, category, size, Posts);
+            
+            // TODO 여기도.. 뭔가 간소화 필요
+            return new BoardViewModel(pageCount, _params.Page, _params.Category, _params.Size, Posts); 
         }
 
         // 게시물 작성 (todo return 타입 수정 필요)
         public void CreatePost(Post post)
         {
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
-            Console.WriteLine($"@@@ CommunityDataManager >> CreatePost(postData = {post.Title} | {post.Contents})"); // postData json 형태로 stringify 하여 출력?
+            Console.WriteLine($"## CommunityDataManager >> CreatePost(postData = {post.Title} | {post.Contents})"); // postData json 형태로 stringify 하여 출력?
 
             using (var connection = GetConnection())
             {
@@ -178,7 +177,7 @@ namespace MvcBoard.Managers
         public void UpdatePost(Post post)
         {
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
-            Console.WriteLine($"@@@ CommunityDataManager >> UpdatePost(postData = {post.PostId} | {post.Title})"); // postData json 형태로 stringify 하여 출력?
+            Console.WriteLine($"## CommunityDataManager >> UpdatePost(postData = {post.PostId} | {post.Title})"); // postData json 형태로 stringify 하여 출력?
 
             using (var connection = GetConnection())
             {
@@ -218,7 +217,7 @@ namespace MvcBoard.Managers
         // 게시물 삭제
         public void DeletePost(int postId)
         {
-            Console.WriteLine($"@@@ CommunityDataManager >> DeletePost(postId = {postId})");
+            Console.WriteLine($"## CommunityDataManager >> DeletePost(postId = {postId})");
             using (var connection = GetConnection())
             {
                 connection.Open();
@@ -265,7 +264,7 @@ namespace MvcBoard.Managers
         public List<Comment> ReadComment(int postId)
         {
             // TODO 로그 모듈(매니저) 만들기
-            Console.WriteLine($"@@@ CommunityDataManager >> ReadComment(postId = {postId})");
+            Console.WriteLine($"## CommunityDataManager >> ReadComment(postId = {postId})");
 
             int pageCount = 0;
 
@@ -324,7 +323,7 @@ namespace MvcBoard.Managers
         public void CreateComment(Comment comment)
         {
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
-            Console.WriteLine($"@@@ CommunityDataManager >> createComment(commentData = {comment.PostId} | {comment.Contents})"); // postData json 형태로 stringify 하여 출력?
+            Console.WriteLine($"## CommunityDataManager >> createComment(commentData = {comment.PostId} | {comment.Contents})"); // postData json 형태로 stringify 하여 출력?
 
             using (var connection = GetConnection())
             {
@@ -367,7 +366,7 @@ namespace MvcBoard.Managers
         public void UpdateComment(Comment comment)
         {
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
-            Console.WriteLine($"@@@ CommunityDataManager >> UpdateComment(commentData = {comment.CommentId} | {comment.Contents})"); // postData json 형태로 stringify 하여 출력?
+            Console.WriteLine($"## CommunityDataManager >> UpdateComment(commentData = {comment.CommentId} | {comment.Contents})"); // postData json 형태로 stringify 하여 출력?
 
             using (var connection = GetConnection())
             {
@@ -406,7 +405,7 @@ namespace MvcBoard.Managers
         // TODO 댓글을 삭제하더라도 대댓글은 남겨야 하므로 IsDeleted 필드를 추가해서 살려놓아야 할 것 같은데...
         public void DeleteComment(int commentId)
         {
-            Console.WriteLine($"@@@ CommunityDataManager >> DeleteComment(commentId = {commentId})");
+            Console.WriteLine($"## CommunityDataManager >> DeleteComment(commentId = {commentId})");
             using (var connection = GetConnection())
             {
                 connection.Open();
