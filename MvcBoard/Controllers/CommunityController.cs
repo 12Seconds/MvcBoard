@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MvcBoard.Managers.Services;
 using MvcBoard.Models.Community;
+using MvcBoard.Services;
 
 namespace MvcBoard.Controllers
 {

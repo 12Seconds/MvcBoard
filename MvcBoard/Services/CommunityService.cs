@@ -1,7 +1,8 @@
-﻿using MvcBoard.Managers.Models;
+﻿using MvcBoard.Managers;
+using MvcBoard.Managers.Models;
 using MvcBoard.Models.Community;
 
-namespace MvcBoard.Managers.Services
+namespace MvcBoard.Services
 {
     /// <summary>
     /// 커뮤니티 (게시판) 기능과 관련된 비즈니스 로직 처리 
@@ -11,7 +12,7 @@ namespace MvcBoard.Managers.Services
     public class CommunityService
     {
         private readonly CommunityDataManagers _dataManagers;
-        
+
         public CommunityService(CommunityDataManagers dataManager)
         {
             _dataManagers = dataManager;
@@ -25,7 +26,7 @@ namespace MvcBoard.Managers.Services
             GetBoardParams @params = new GetBoardParams();
 
             @params.Category = _params.Category;
-            @params.Page = (_params.Page < 0) ? 1 : _params.Page;
+            @params.Page = _params.Page < 0 ? 1 : _params.Page;
 
             return _dataManagers.GetBoardViewData(@params);
         }

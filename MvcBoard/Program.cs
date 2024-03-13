@@ -2,7 +2,7 @@ global using MvcBoard.Models;
 global using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using MvcBoard.Managers;
-using MvcBoard.Managers.Services;
+using MvcBoard.Services;
 // Add services to the container.
 
 var builder = WebApplication.CreateBuilder(args);
