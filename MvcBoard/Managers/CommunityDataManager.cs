@@ -2,6 +2,7 @@
 using System.Data;
 using MvcBoard.Models.Community;
 using MvcBoard.Managers.Models;
+using MvcBoard.Models;
 
 namespace MvcBoard.Managers
 {
@@ -14,7 +15,7 @@ namespace MvcBoard.Managers
     {
         public CommunityDataManagers(IWebHostEnvironment env) : base(env)
         {
-            Console.WriteLine("### CommunityDataManagers() initialized...");
+            Console.WriteLine("## CommunityDataManagers() initialized...");
         }
 
         // 게시판 조회 --TODO ReadPost함수 분리...필요한가?
@@ -260,15 +261,15 @@ namespace MvcBoard.Managers
 
         /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-        // 특정 게시물에 작성된 모든 댓글 조회 (테스트 필요)
-        public List<Comment> ReadComment(int postId)
+        // 특정 게시물에 작성된 모든 댓글 조회
+        public CommentsViewModel ReadCommentByPostId(GetCommentsByPostIdParams _params)
         {
             // TODO 로그 모듈(매니저) 만들기
-            Console.WriteLine($"## CommunityDataManager >> ReadComment(postId = {postId})");
+            Console.WriteLine($"## CommunityDataManager >> ReadCommentByPostId(postId = {_params.PostId})");
 
             int pageCount = 0;
 
-            List<Comment> Comments = new List<Comment>();
+            List<CommentWithUser> Comments = new List<CommentWithUser>();
 
             using (var connection = GetConnection())
             {
@@ -276,19 +277,21 @@ namespace MvcBoard.Managers
                 using (SqlCommand command = new SqlCommand("ReadComment", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.ReadComment 이런 식
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@PostId", postId);
+                    command.Parameters.AddWithValue("@PostId", _params.PostId);
+                    command.Parameters.AddWithValue("@Page", _params.CommentPage);
+                    command.Parameters.AddWithValue("@Size", _params.CommentPageSize);
 
                     SqlDataReader reader = command.ExecuteReader();
 
-                    Comment? comment = null;
+                    CommentWithUser? comment = null;
 
                     while (reader.Read())
                     {
-                        comment = new Comment();
+                        comment = new CommentWithUser();
                         comment.CommentId = int.Parse(reader["CommentId"]?.ToString() ?? "0");
                         comment.PostId = int.Parse(reader["PostId"].ToString() ?? "0");
                         comment.UserId= int.Parse(reader["UserId"].ToString() ?? "0");
-                        if (reader["ParentId"] != DBNull.Value) comment.ParentId = int.Parse(reader["ParentId"]?.ToString() ?? "0");
+                        comment.ParentId = (reader["ParentId"] != DBNull.Value) ? int.Parse(reader["ParentId"]?.ToString() ?? "0") : 0;
                         comment.Contents = reader["Contents"]?.ToString() ?? "";
                         comment.Likes = int.Parse(reader["Likes"].ToString() ?? "0");
 
@@ -299,7 +302,18 @@ namespace MvcBoard.Managers
                         if (reader["UpdateDate"] != DBNull.Value) comment.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
                         if (reader["DeleteDate"] != DBNull.Value) comment.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
 
+                        // Join 테이블 데이터
+                        comment.UserName = reader["Name"]?.ToString() ?? "";
+
                         Comments.Add(comment);
+                    }
+
+                    /* 총 페이지 수 */
+                    reader.NextResult();
+                    if (reader.Read())
+                    {
+                        pageCount = Convert.ToInt32(reader["TotalPageCount"]);
+                        Console.WriteLine($"@@@@@@@ ## pageCount: {pageCount}"); // TODO 삭제
                     }
 
                     reader.Close();
@@ -307,19 +321,20 @@ namespace MvcBoard.Managers
                 connection.Close();
             }
 
-            int r = Comments.Count % 20; // TODO 한 페이지에 노출되는 게시물 수 상수 정의 필요
-
-            // TODO 옮길 것
-            /*
-            if (Comments.Count > 0)
-                pageCount = r == 0 ? Comments.Count / 10 : Comments.Count / 10 + 1; // todo 노출 수 10 상수 정의 필요
-            else
-                pageCount = 0;
-            */
-            return Comments;
+            return new CommentsViewModel
+            {
+                CommentListData = Comments,
+                CommentPage = _params.CommentPage,
+                CommentPageSize = _params.CommentPageSize,
+                CommentPageCount = pageCount, // todo Page
+                // TODO 진짜 이게 맞나
+                PostId = _params.PostId,
+                Category = _params.Category,
+                Page = _params.Page,
+            };
         }
 
-        // 댓글 작성 (테스트 필요)
+        // 댓글 작성
         public void CreateComment(Comment comment)
         {
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
@@ -335,11 +350,8 @@ namespace MvcBoard.Managers
                     command.Parameters.AddWithValue("@UserId", comment.UserId);
                     command.Parameters.AddWithValue("@ParentId", comment.ParentId);
                     command.Parameters.AddWithValue("@Contents", comment.Contents);
-                    command.Parameters.AddWithValue("@Likes", comment.Likes);
                     command.Parameters.AddWithValue("@IsAnonymous", comment.IsAnonymous);
                     command.Parameters.AddWithValue("@CreateDate", DateTime.Now);
-                    command.Parameters.AddWithValue("@UpdateDate", DBNull.Value);
-                    command.Parameters.AddWithValue("@DeleteDate", DBNull.Value);
 
                     // 출력 파라미터
                     // SqlParameter result = new SqlParameter("@???", SqlDbType.VarChar);

@@ -68,5 +68,41 @@ namespace MvcBoard.Services
 
         // TODO CommunityDataManager의 다른 SP 호출 함수들 구현, 매칭 필요
 
+        // 댓글 작성 (TODO 리턴 타입으로 Result 객체 만들어서 처리하거나..)
+        public void CreateComment(Comment comment)
+        {
+            //TODO 유효성 검증
+            if (comment.PostId < 0 || comment.UserId < 0 || comment.Contents.Length == 0)
+            {
+                return;
+            }
+            _dataManagers.CreateComment(comment);
+
+            // TODO return
+        }
+
+        // 댓글 조회
+        public CommentsViewModel GetCommentByPostId(CommentsViewParams _params)
+        {
+            Console.WriteLine($"### CommunityService >> GetCommentByPostId() PostId: {_params.PostId}, Page: {_params.Page}, CommentPage: {_params.CommentPage}, Category: {_params.Category}");
+
+            if (_params.PostId > 0)
+            {
+                GetCommentsByPostIdParams @params = new();
+                
+                @params.PostId = _params.PostId;
+                @params.Page = _params.Page < 0 ? 1 : _params.Page;
+                // TODO 이게 맞나
+                @params.Category = _params.Category;
+                @params.CommentPage = _params.CommentPage < 0 ? 1 : _params.CommentPage;
+
+                return _dataManagers.ReadCommentByPostId(@params);
+            }
+            else
+            {
+                return new CommentsViewModel();
+            }
+        }
+
     }
 }

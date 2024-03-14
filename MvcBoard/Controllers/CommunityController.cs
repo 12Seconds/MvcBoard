@@ -84,7 +84,7 @@ namespace MvcBoard.Controllers
         [HttpGet("Community/View/{PostId}")]
         public IActionResult View(PostViewParams _params)
         {
-            // 게시물 데이터 획득 (by postId)
+            // 게시물 데이터 조회 (by postId)
             PostWithUser? postData = _service.GetPostDataById(_params.PostId);
 
             if (postData == null)
@@ -94,23 +94,31 @@ namespace MvcBoard.Controllers
             }
             else
             {
-                // TODO 댓글 데이터
+                // 댓글 데이터 조회
+                CommentsViewModel commentListData = _service.GetCommentByPostId(new CommentsViewParams { PostId = _params.PostId, Page = _params.Page, CommentPage = _params.CommentPage, Category = _params.Category});
 
                 // 게시물 하단 게시판 데이터 조회
                 BoardViewModel boardViewModel = _service.GetBoardViewData(_params); // TODO 업캐스팅 되나?
                 PostViewModel viewModel = new PostViewModel(postData, boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PageSize, boardViewModel.PostListData);
+
+                viewModel.CommentListModel = commentListData; // TODO 위에 (....) 생성자 방식 수정할 것
                 return View(viewModel);
             }
         }
 
-        // TODO 게시물 수정, 삭제 개발 필요 
+        // TODO 게시물 수정, 삭제 개발 필요
+        // TODO   댓글 수정, 삭제 개발 필요
 
 
         [HttpPost]
-        public IActionResult WriteComment(Comment comment) // TODO 새 모델 객체?
+        public IActionResult WriteComment(Comment comment)
         {
-            return RedirectToAction("Index"); // 임시
-            // return View(comment);
+            Console.WriteLine($"## CommunityController >> WriteComment() PostId: {comment.PostId}, UserId: {comment.UserId}, ParentId: {comment.ParentId}, Contents: {comment.Contents}, IsAnonymous: {comment.IsAnonymous}");
+
+            _service.CreateComment(comment);
+            // TODO 동일한 PostId, Page, Category, 그리고 가장 마지막 comment 페이지로 새로고침 되어야 함
+            return RedirectToAction("Index");
         }
+
     }
 }

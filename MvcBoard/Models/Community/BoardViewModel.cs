@@ -5,6 +5,7 @@
     /// </summary>
     public class BoardViewModel
     {
+        // TODO 생성자 구조 바꿀 것..
         public BoardViewModel(int pageCount = 1, int? page = null, int? category = null, int pageSize = 20, List<PostWithUser>? postListData = null)
         {
             PageCount = pageCount;

@@ -91,13 +91,13 @@
 
         @* 페이지 인디케이터 영역 *@
         @{
-            // TODO 가능하면 간소화 필요 --> 마지막 페이지 쯤에서 5개 노출 안되는 문제 있음, offset 조절 필요
+            // TODO 가능하면 간소화 필요
             int page = Model.Page ?? 1;
             int count = BoardViewModel.DisplayPageCount;
             int first_center_index = count / 2 + 1;
             int start = Math.Max(page - (count - 1) / 2, 1);
             int offset_left = (first_center_index > page) ? first_center_index - page : 0;
-            int end = Math.Min(page + offset_left + (count - 1) / 2, Model.PageCount); // TODO PageCount 도 DisplayPageCount 처럼 상수로 바꿀것
+            int end = Math.Min(page + offset_left + (count - 1) / 2, Model.PageCount);
             int offset_right = (start + count - 1) - end;
 
             start = Math.Max(start - offset_right, 1);

@@ -5,7 +5,7 @@
     /// </summary>
     public class PostViewModel : BoardViewModel // 굳이 상속 안받아도 될 것 같긴 한데..
     {
-        
+        // TODO 생성자 구조 바꿀 것..
         public PostViewModel(PostWithUser postData, int pageCount = 1, int? page = 1, int? category = null, int pageSize = 20, List<PostWithUser>? postListData = null) : base(pageCount, page, category, pageSize, postListData)
         {
             PostData = postData;
@@ -17,13 +17,8 @@
 
             // TODO CommentListData
         }
-        
 
         public PostWithUser PostData { get; set; }
-
-        // TODO
-        // public <List>Comment CommentListData { get; set; }
-        // public int CommentPage { get; set; }
-        // public int CommentPageCount { get; set; }
+        public CommentsViewModel CommentListModel { get; set; } // = new CommentsViewModel();
     }
 }

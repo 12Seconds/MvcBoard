@@ -136,7 +136,7 @@
 
 /* 댓글 영역 */
 .community_main.view .comments {
-
+    
 }
 
 .community_main.view .comments .label {
@@ -218,10 +218,15 @@
 }
 
 .community_main.view .comments .comments_area {
+    /* TODO 왜 안먹힐까 */
+    margin-bottom: 20px;
+}
+
+.community_main.view .comments .comments_area .comments_list {
     margin-top: 11px;
 }
 
-.community_main.view .comments .comments_area .comment_item {
+.community_main.view .comments .comments_area .comments_list .comment_item {
     background-color: bisque;
 
 }

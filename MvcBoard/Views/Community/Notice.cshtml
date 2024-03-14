@@ -82,7 +82,7 @@
             int first_center_index = count / 2 + 1;
             int start = Math.Max(page - (count - 1) / 2, 1);
             int offset_left = (first_center_index > page) ? first_center_index - page : 0;
-            int end = Math.Min(page + offset_left + (count - 1) / 2, Model.PageCount); // TODO PageCount 도 DisplayPageCount 처럼 상수로 바꿀것
+            int end = Math.Min(page + offset_left + (count - 1) / 2, Model.PageCount);
             int offset_right = (start + count - 1) - end;
 
             start = Math.Max(start - offset_right, 1);
