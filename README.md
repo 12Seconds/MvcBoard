@@ -1,5 +1,10 @@
 # MvcBoard
-
+#####  2024.03.14
++ 게시물 상세화면 댓글 작성 및 노출 구현 1/2
++ Enterprise Architecture 개념 학습
++ 의존성 주입 (DI & IoT Container) 개념 학습 및 적용
++ PartialView 개념 학습 및 적용
+  
 -----
 #####  2024.03.13
 + [CI/CD] AWS RDS MS SQL Server 생성 및 연동
@@ -10,7 +15,7 @@
 
 -----
 ##### 2024.03.12
-+ [CI/CD] AWS EC2 Instance 생성 및 상용 배포   
++ [CI/CD] AWS EC2 Instance 생성 및 웹서버 구동 (nginx 리버스 프록시)
   - Amazon Linux AMI 에서 .NET SDK 설치가 잘 진행되지 않아 Red Hat Enterprise Linux 9 (HVM) 으로 변경
 
 -----
