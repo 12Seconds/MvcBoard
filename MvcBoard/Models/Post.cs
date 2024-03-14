@@ -24,7 +24,7 @@ public partial class Post
     [Required(ErrorMessage = "게시판을 선택해주세요.")]
     public int Category { get; set; }
 
-    public DateTime CreateDate { get; set; }
+    public DateTime? CreateDate { get; set; }
 
     public DateTime? UpdateDate { get; set; }
 

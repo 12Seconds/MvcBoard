@@ -1,5 +1,4 @@
-﻿@* @model MvcBoard.Models.Community.WriteViewModel; *@
-@model MvcBoard.Models.Post;
+﻿@model MvcBoard.Models.Post;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -52,14 +51,19 @@
 
         @using (Html.BeginForm("Write", "Community", FormMethod.Post))
         {
-            @Html.HiddenFor(m => m.Category, new { @id = "CategoryValue", @name = "Category" })
+            @Html.HiddenFor(m => m.PostId, new { @value = Model.PostId })
+            @Html.HiddenFor(m => m.UserId, new { @value = Model.UserId })
+            @Html.HiddenFor(m => m.CreateDate, new { @value = Model.CreateDate })
+
+            @Html.HiddenFor(m => m.Category, new { @id = "CategoryValue", @name = "Category", @value = Model.Category })
 
             <hr />
-            @Html.TextBoxFor(m => m.Title, new { @class = "intput_title", @placeholder = "제목을 입력해주세요." })
+            @Html.TextBoxFor(m => m.Title, new { @class = "intput_title", @placeholder = "제목을 입력해주세요.", @value = Model.Title })
             <span class = "text-danger" asp-validation-for="Title"></span>
             <hr />
 
-            @Html.TextAreaFor(m => m.Contents, new { @class = "editor"}) // TODO Trumbowyg 에디터에 placeholder 적용하는 방법 알아보기
+            @Html.TextAreaFor(m => m.Contents, new { @class = "editor", @value = Model.Contents })
+            // TODO Trumbowyg 에디터에 placeholder 적용하는 방법 알아보기
             <div><span class="text-danger" asp-validation-for="Contents"></span></div>
 
             <input class="input_tag" placeholder="TODO # 태그 입력"/>
@@ -92,6 +96,19 @@
 </div>
 
 <script>
+
+    // 최초 진입 시, 선택된 카테고리 텍스트 세팅
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var string = '';
+
+        switch (@Model.Category) {
+            case 0: string = "게시판 선택"; break; // TODO 카테고리별 게시판 이름 DB테이블 만들고 그걸 받아서 사용할 것, (가능하면 전역에 저장)
+            case 1: string = "자유 게시판"; break;
+            case 99: string = "공지 게시판"; break;
+        }
+        $('#categoryModalBtn_text').text(string);
+    })
 
     // 게시판 선택 버튼 클릭 시 모달 띄우기
     document.getElementById('openCategoryModalBtn').addEventListener('click', function () {

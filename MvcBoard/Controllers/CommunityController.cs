@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MvcBoard.Controllers.Models;
 using MvcBoard.Models.Community;
 using MvcBoard.Services;
 
@@ -40,18 +41,21 @@ namespace MvcBoard.Controllers
         }
 
         // 게시물 작성
-        public IActionResult Write(int category = 0)
+        public IActionResult Write(WritePostParams _params)
         {
-            // WriteViewModel viewModel = new WriteViewModel(category); // TODO WriteViewModel class 삭제 고려
-            Post viewModel = new Post();
-            viewModel.Category = category;
+            Post? viewModel = null;
 
-            return View(viewModel);
+            if (_params.PostId != null && _params.PostId > 0)
+            {
+                viewModel = _service.GetPostWithUserById(_params.PostId); // PostWithUser -> Post 캐스팅 일어남
+            }
+
+            return View(viewModel ?? new Post());
         }
 
-        // 게시물 작성
+        // 게시물 작성 or 수정
         [HttpPost]
-        public IActionResult Write(Post postData)
+        public IActionResult Write(Post postData) // TODO 파라미터의 값을 바꾸는게 맞나...이래도 되나...
         {
             Console.WriteLine($"[Controller] Community >> Write() postData.Category: {postData.Category},  IsValid: {ModelState.IsValid}"); // TODO stringify
 
@@ -60,9 +64,19 @@ namespace MvcBoard.Controllers
                 if (postData.Category == 0) postData.Category = 1; // 1: 자유게시판 (default), todo 드롭다운 or 모달 구현하면 필요 없음
 
                 // TODO 작성자 UserId 매핑 필요 (로그인 구현 후)
-                postData.UserId = 1;
+                if (postData.PostId == 0)
+                {
+                    postData.UserId = 1;
+                }
 
-                _service.CreatePost(postData);
+                if (postData.PostId == 0)
+                {
+                    _service.CreatePost(postData);
+                }
+                else if (postData.PostId > 0)
+                {
+                    _service.UpdatePost(postData);
+                }
 
                 // todo 정의될 category 에 맞게 수정 필요
                 switch (postData.Category)
@@ -85,7 +99,7 @@ namespace MvcBoard.Controllers
         public IActionResult View(PostViewParams _params)
         {
             // 게시물 데이터 조회 (by postId)
-            PostWithUser? postData = _service.GetPostDataById(_params.PostId);
+            PostWithUser? postData = _service.GetPostWithUserById(_params.PostId);
 
             if (postData == null)
             {

@@ -38,10 +38,16 @@ namespace MvcBoard.Services
             _dataManagers.CreatePost(post);
         }
 
-        // 게시물 조회
-        public PostWithUser? GetPostDataById(int? postId = null/* int postId, int? page, int category = 0, int commentPage = 1 */)
+        public void UpdatePost(Post post)
         {
-            return _dataManagers.GetPostDataById(postId);
+            // TODO 유효성 검증
+            _dataManagers.UpdatePost(post);
+        }
+
+        // 게시물 조회
+        public PostWithUser? GetPostWithUserById(int? postId = null/* int postId, int? page, int category = 0, int commentPage = 1 */)
+        {
+            return _dataManagers.GetPostWithUserById(postId);
 
             /*
             

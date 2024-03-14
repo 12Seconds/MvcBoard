@@ -122,8 +122,12 @@ namespace MvcBoard.Managers
             }
         }
 
-        // 게시물 조회 (TODO 댓글 데이터)
-        public PostWithUser? GetPostDataById(int? postId = null)
+        // 게시물 조회
+        // 코드를 중복하느냐, 불필요한 Join을 공유하느냐..
+        // public PostWithUser? GetPostById(int? postId = null) { }
+
+        // 게시물 상세 조회 (유저 테이블 조인)
+        public PostWithUser? GetPostWithUserById(int? postId = null)
         {
             List<PostWithUser> posts = new List<PostWithUser>();
 
@@ -175,7 +179,7 @@ namespace MvcBoard.Managers
         }
 
         // 게시물 수정
-        public void UpdatePost(Post post)
+        public void UpdatePost(Post post) // TODO SP 에서 postId 유효성 처리 해야함
         {
             // Newtonsoft.Json https://www.delftstack.com/ko/howto/csharp/how-to-convert-a-csharp-object-to-a-json-string-in-csharp/ 
             Console.WriteLine($"## CommunityDataManager >> UpdatePost(postData = {post.PostId} | {post.Title})"); // postData json 형태로 stringify 하여 출력?

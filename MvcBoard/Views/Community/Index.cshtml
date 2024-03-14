@@ -53,7 +53,7 @@
 
         <div class="rated_scroll_board"></div>
 
-        <a asp-area="" asp-controller="Community" asp-action="write">
+        <a asp-area="" asp-controller="Community" asp-action="write" asp-route-Category=@Model.Category>
             <div class="write_button"> 새 글을 작성해보세요 </div>
         </a>
 
@@ -83,7 +83,7 @@
                         >@item.Title @item.PostId</a> @* TODO 임시 postId 지울 것 *@
                     </div> @* 클릭 시 페이지 이동 처리 필요*@
                     <div class="writer">@item.UserName</div>
-                    <div class="date">@(item.CreateDate.ToString("yyyy.MM.dd"))</div> @* 7일 전 처리 필요 *@
+                    <div class="date">@(item.CreateDate?.ToString("yyyy.MM.dd"))</div> @* 7일 전 처리 필요 *@
                     <div class="views">@item.Views</div>
                 </div>
             }
