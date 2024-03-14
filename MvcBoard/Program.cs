@@ -3,6 +3,7 @@ global using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using MvcBoard.Managers;
 using MvcBoard.Services;
+using AspNetCore.Unobtrusive.Ajax;
 // Add services to the container.
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,9 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration); // 이걸까?
 // TODO Transient, Singleton, Scope 중 뭐가 맞을까
 builder.Services.AddTransient<CommunityDataManagers>(); 
 builder.Services.AddTransient<CommunityService>();
+
+// Html.AjaxBeginForm 사용을 위한 AspNetCore.Unobtrusive.Ajax 패키지 설치 및 설정 작업 (MVC 5 의 Ajax.BeginForm 대체)
+builder.Services.AddUnobtrusiveAjax();
 
 // DbContext 추가
 // builder.Services.AddDbContext<MvcBoardDbContext>(); // TODO DbContext 제거
@@ -44,6 +48,9 @@ if (!app.Environment.IsDevelopment())
 // HTTPS -> HTTP 변경 처리
 // app.UseHttpsRedirection(); 
 app.UseStaticFiles();
+
+// Html.AjaxBeginForm 사용을 위한 AspNetCore.Unobtrusive.Ajax 패키지 설치 및 설정 작업 (MVC 5 의 Ajax.BeginForm 대체)
+app.UseUnobtrusiveAjax();
 
 app.UseRouting();
 
