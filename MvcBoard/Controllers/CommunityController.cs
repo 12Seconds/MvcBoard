@@ -94,9 +94,11 @@ namespace MvcBoard.Controllers
             }
             else
             {
+                // TODO CommentsViewParams 과 PostViewParams 사실상 같음
+
                 // 댓글 데이터 조회
                 CommentsViewModel commentListData = _service.GetCommentByPostId(new CommentsViewParams { PostId = _params.PostId, Page = _params.Page, CommentPage = _params.CommentPage, Category = _params.Category});
-
+                
                 // 게시물 하단 게시판 데이터 조회
                 BoardViewModel boardViewModel = _service.GetBoardViewData(_params); // TODO 업캐스팅 되나?
                 PostViewModel viewModel = new PostViewModel(postData, boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PageSize, boardViewModel.PostListData);
@@ -109,15 +111,15 @@ namespace MvcBoard.Controllers
         // TODO 게시물 수정, 삭제 개발 필요
         // TODO   댓글 수정, 삭제 개발 필요
 
-
+        // 댓글 작성
         [HttpPost]
-        public IActionResult WriteComment(Comment comment)
+        public IActionResult WriteComment(WriteCommentParams commentParams) 
         {
-            Console.WriteLine($"## CommunityController >> WriteComment() PostId: {comment.PostId}, UserId: {comment.UserId}, ParentId: {comment.ParentId}, Contents: {comment.Contents}, IsAnonymous: {comment.IsAnonymous}");
+            Console.WriteLine($"## CommunityController >> WriteComment() PostId: {commentParams.PostId}, UserId: {commentParams.UserId}, ParentId: {commentParams.ParentId}, Contents: {commentParams.Contents}, IsAnonymous: {commentParams.IsAnonymous}");
 
-            _service.CreateComment(comment);
-            // TODO 동일한 PostId, Page, Category, 그리고 가장 마지막 comment 페이지로 새로고침 되어야 함
-            return RedirectToAction("Index");
+            _service.CreateComment(commentParams); // TODO 업캐스팅
+          
+            return PartialView("_Comments", _service.GetCommentByPostId(commentParams.ViewParams));
         }
 
     }
