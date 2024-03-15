@@ -10,6 +10,9 @@
   - https://github.com/mjebrahimi/AspNetCore.Unobtrusive.Ajax/blob/master/README.md (세팅 참고할 것)
   - jquery.unobtrusive-ajax.js 파일은 1번 패키지를 설치했을 때 생긴 파일이었는데..   
   아마 3번 패키지만 설치해도 동작 될 것 같다. (파일 생길 듯, 안되면 1번도 같이 설치할 것)
++ 게시물 수정 기능 구현
++ 일반 계정 로그인, 회원가입 UI 구현
++ 일반 계정 회원가입 기능 구현
 
 #####  2024.03.14
 + 게시물 상세화면 댓글 작성 및 노출 구현 1/2
