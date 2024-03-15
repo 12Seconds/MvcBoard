@@ -4,6 +4,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using MvcBoard.Managers;
 using MvcBoard.Services;
 using AspNetCore.Unobtrusive.Ajax;
+using MvcBoard.Utills;
 // Add services to the container.
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,8 +18,14 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration); // 이걸까?
 
 // TODO Transient, Singleton, Scope 중 뭐가 맞을까
+
+builder.Services.AddSingleton<Utillity>();
+
 builder.Services.AddTransient<CommunityDataManagers>(); 
 builder.Services.AddTransient<CommunityService>();
+
+builder.Services.AddTransient<UserDataManager>();
+builder.Services.AddTransient<UserService>();
 
 // Html.AjaxBeginForm 사용을 위한 AspNetCore.Unobtrusive.Ajax 패키지 설치 및 설정 작업 (MVC 5 의 Ajax.BeginForm 대체)
 builder.Services.AddUnobtrusiveAjax();
@@ -63,6 +70,23 @@ app.MapControllerRoute(
     pattern: "Community/{action}/{category?}/{page?}", // 추가적인 매개변수를 옵셔널로 지정
     defaults: new { controller = "Community", action = "Index" });
 */
+/*
+app.MapControllerRoute(
+    name: "login",
+    pattern: "login/{id?}",
+    defaults: new { controller = "User", action = "Login" });
+*/
+
+app.MapControllerRoute(
+    name: "login",
+    pattern: "Login/{id?}",
+    defaults: new { controller = "User", action = "Index" });
+
+app.MapControllerRoute(
+    name: "user",
+    pattern: "User/{action}/{id?}",
+    defaults: new { controller = "User", action = "Index" });
+
 app.MapControllerRoute(
     name: "community",
     pattern: "Community/{action}/{id?}",

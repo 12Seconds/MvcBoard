@@ -1,0 +1,70 @@
+﻿
+.sign_up_page {
+   background-color: aliceblue;
+   display: flex;
+   justify-content: center;
+}
+
+.sign_up_page .sign_up_container {
+    width: 500px;
+    height: 100%;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: antiquewhite;
+}
+
+.sign_up_page .sign_up_container .sign_up_form {
+    width: 300px;
+    height: 270px;
+    background-color: aquamarine;
+    border-radius: 10px;
+    border: 1px solid green;
+    margin-bottom: 10px;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    .sign_up_page .sign_up_container .sign_up_form .logo {
+        width: 100px;
+        height: 100px;
+        background-color: cornflowerblue;
+        display: inline-block;
+        background-image: url("https://i.namu.wiki/i/BERVAVbRYG8ef4QwkyH3j2MHU_8gWcVxuoMEIftdZnxZlMTqBrwUBCeH9B6fz4pCigtsU63eEg7jWA3rF2AmQjk1lA6Wy66_4AA6GgX3RAxA0LEoMEYV9zLXRfb41XBj5r1CwFQzJ4uBKuTx4WSuUQ.webp");
+        background-size: cover;
+        margin-bottom: 20px;
+    }
+
+.sign_up_page .sign_up_container .sign_up_form .id_pw_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign_up_page .sign_up_container .sign_up_form .text_box {
+    /*all:unset;*/
+    width: 100%;
+    height: 25px;
+    margin-bottom: 5px;
+}
+
+.sign_up_page .sign_up_container .sign_up_form .btn_list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign_up_page .sign_up_container .sign_up_form .sign_up_btn {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+

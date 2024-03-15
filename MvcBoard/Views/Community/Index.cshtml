@@ -14,7 +14,9 @@
     <aside class="community_aside_left">
 
         <div class="user_info">
-            <button class="login">로그인/회원가입</button>
+            <a asp-area="" asp-controller="User" asp-action="Index">
+                <button class="login">로그인/회원가입</button>
+            </a>
         </div>
 
         <a asp-area="" asp-controller="Community" asp-action="Index">

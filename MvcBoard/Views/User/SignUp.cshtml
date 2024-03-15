@@ -1,0 +1,52 @@
+﻿@model MvcBoard.Controllers.Models.SignUpParams
+
+@{
+    ViewData["Title"] = "회원가입";
+}
+
+<link rel="stylesheet" href="@(Url.Content("~/css/user/sign_up.css"))" />
+
+<div class="sign_up_page">
+
+    <div class="sign_up_container">
+
+        <div class="sign_up_form">
+            @using (Html.BeginForm("SignUp", "User", FormMethod.Post, new { @class = "id_pw_container" }))
+            {
+                @Html.TextBoxFor(m => m.Id, new { @class = "text_box", @placeholder = "아이디", @autoComplete = "off" })
+                @Html.TextBoxFor(m => m.Name, new { @class = "text_box", @placeholder = "이름", @autoComplete = "off" })
+                @Html.PasswordFor(m => m.Password, new { @class = "text_box", @placeholder = "비밀번호", @id = "sign_up_pw" })
+                @* TODO Image *@
+
+                <input type="password" id="sign_up_pw_check" placeholder="비밀번호 확인" />
+                <div class="btn_list">
+                    <button type="submit" id="submit_btn" class="btn btn-secondary sign_up_btn">확인</button>
+                    <a asp-area="" asp-action="Index" asp-controller="User"><button type="button" class="btn btn-secondary sign_up_btn">취소</button></a>
+                </div>
+                
+            }
+        </div>
+        @* <div asp-validation-summary=All></div> *@
+
+    </div>
+
+</div>
+
+<script>
+
+    // 비밀번호 확인 체크
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var submit_btn = document.getElementById('submit_btn');
+        var pw = document.getElementById('sign_up_pw');
+        var pw_check = document.getElementById('sign_up_pw_check');
+
+        submit_btn.addEventListener('click', function(event) {
+            if (pw.value.trim().length == 0 || (pw.value.trim() !== pw_check.value.trim())) {
+                event.preventDefault();
+            }
+        });
+
+    });
+
+</script>

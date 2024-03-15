@@ -1,0 +1,32 @@
+﻿@model MvcBoard.Controllers.Models.LoginParams
+
+@{
+    ViewData["Title"] = "로그인";
+}
+
+<link rel="stylesheet" href="@(Url.Content("~/css/user/login.css"))" />
+
+<div class="login_page">
+
+    <div class="login_container">
+
+        <div class="login_form">
+            <div class="logo"></div>
+            @using (Html.BeginForm("Login", "User", FormMethod.Post, new { @class = "id_pw_container"}))
+            {
+                @Html.TextBoxFor(m => m.Id, new { @class = "text_box", @placeholder = "아이디", @autoComplete = "off" })
+                @Html.PasswordFor(m => m.Password, new { @class = "text_box", @placeholder = "비밀번호" })
+
+                <button type="submit" class="btn btn-secondary login_btn">로그인</button>
+                <a asp-area="" asp-action="SignUp" asp-controller="User"> 회원가입 </a>
+            }
+        </div>
+
+        <div class="sns_login_btn"> 네이버 로그인 </div>
+        <div class="sns_login_btn"> 카카오 로그인 </div>
+        <div class="sns_login_btn"> 구글 로그인 </div>
+        @* <div asp-validation-summary=All></div> *@
+    </div>
+
+
+</div>
