@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Data.SqlClient;
 using MvcBoard.Controllers.Models;
+using MvcBoard.Managers.Models;
 using System.Data;
 
 namespace MvcBoard.Managers
@@ -13,9 +14,38 @@ namespace MvcBoard.Managers
         }
 
         // 로그인
-        public void Login()
+        public LogInResultParams Login(LoginParams _params)
         {
+            // Password 를 로그 찍어도 되나
+            Console.WriteLine($"## UserDataManager >> Login(Id = {_params.Id}, Password = {_params.Password})");
 
+            LogInResultParams Result = new LogInResultParams();
+
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("LogIn", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Id", _params.Id);
+                    command.Parameters.AddWithValue("@Password", _params.Password);
+
+                    // TODO 타입 지정
+                    // command.Parameters.Add("@Id", SqlDbType.NVarChar, 50).Value = _params.Id;
+                    // command.Parameters.Add("@Password", SqlDbType.NVarChar, 50).Value = _params.Password;
+
+                   Result.ResultCode = (int)command.ExecuteScalar();
+
+                    Result.ResultMsg = Result.ResultCode switch
+                    {
+                        0 => "로그인 실패",
+                        1 => "로그인 성공",
+                        -1 or _ => "입력값 오류"
+                    };
+                }
+                connection.Close();
+            }
+            return Result;
         }
 
         // 로그아웃
@@ -28,7 +58,7 @@ namespace MvcBoard.Managers
         public void SignUp(SignUpParams _params)
         {
             // Password 를 로그 찍어도 되나
-            Console.WriteLine($"## UserDataManager >> SignUp(UserId = {_params.Id}, Password = {_params.Password}), Name = {_params.Name})");
+            Console.WriteLine($"## UserDataManager >> SignUp(Id = {_params.Id}, Password = {_params.Password}), Name = {_params.Name})");
 
             using (var connection = GetConnection())
             {

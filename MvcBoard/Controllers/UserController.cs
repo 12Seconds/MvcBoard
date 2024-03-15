@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoard.Controllers.Models;
+using MvcBoard.Managers.Models;
 using MvcBoard.Services;
 
 namespace MvcBoard.Controllers
@@ -34,13 +35,22 @@ namespace MvcBoard.Controllers
         [HttpPost]
         public IActionResult Login(LoginParams _params)
         {
+            LogInResultParams Result = new();
+
             if (ModelState.IsValid)
             {
                 // TODO
-                _service.Login();
+                Result = _service.Login(_params);
 
-                return RedirectToAction("Index", "Community");
+                if (Result.ResultCode == 1)
+                {
+                    return RedirectToAction("Index", "Community");
+                }
+
+                // TODO 나머지 경우..
+                // ModelState.AddModelError  Result.Msg 같은거 처리?
             }
+           
             return View("Index", _params);
         }
 

@@ -1,5 +1,7 @@
-﻿using MvcBoard.Controllers.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using MvcBoard.Controllers.Models;
 using MvcBoard.Managers;
+using MvcBoard.Managers.Models;
 using MvcBoard.Utills;
 
 namespace MvcBoard.Services
@@ -14,9 +16,27 @@ namespace MvcBoard.Services
         }
 
         // 로그인
-        public void Login()
+        public LogInResultParams Login(LoginParams _params)
         {
-            _dataManager.Login();
+            // TODO 유효성 검증 (네이버는 비밀번호 앞뒤 trim 처리 안하는 것 같음)
+            (bool IsValid, List<String> Strings) = Utillity.Vaildataion.CheckStrings(
+                new List<string>() { 
+                    _params.Id, 
+                    _params.Password 
+                });
+            
+            LogInResultParams Result = _dataManager.Login(new LoginParams() { Id = Strings[0], Password = Strings[1] });
+
+            if (Result.ResultCode == 1)
+            {
+
+            }
+            else
+            {
+                
+            }
+
+            return Result;
         }
 
         // 로그아웃

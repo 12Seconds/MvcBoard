@@ -26,7 +26,12 @@
                 
             }
         </div>
-        @* <div asp-validation-summary=All></div> *@
+        @* 
+            <div asp-validation-summary=All></div> 
+            @Html.ValidationSummary();
+            @Html.ValidationMessage();
+            @Html.ValidationMessageFor(); 
+        *@
 
     </div>
 
