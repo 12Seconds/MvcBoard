@@ -12,7 +12,7 @@
 
         <div class="login_form">
             <div class="logo"></div>
-            @using (Html.BeginForm("Login", "User", FormMethod.Post, new { @class = "id_pw_container"}))
+            @using (Html.BeginForm("Login", "User", FormMethod.Post, new { @id = "login_form", @class = "id_pw_container"}))
             {
                 @Html.TextBoxFor(m => m.Id, new { @class = "text_box", @placeholder = "아이디", @autoComplete = "off" })
                 @Html.PasswordFor(m => m.Password, new { @class = "text_box", @placeholder = "비밀번호" })
@@ -28,5 +28,61 @@
         @* <div asp-validation-summary=All></div> *@
     </div>
 
+    @using (Html.BeginForm("Index", "Community", FormMethod.Post, new { @id = "route_community_index" })){}
 
 </div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.getElementById('login_form').addEventListener('submit', function (event) {
+
+            event.preventDefault();
+
+            var formData = new FormData(this);
+
+            /* 폼 데이터 확인 코드 (테스트용)
+            for (let key of formData.keys()) {
+                console.log(key, ":", formData.get(key));
+            }
+            */
+
+           // TODO 비동기 처리인데 그전에 더 누르면?
+            fetch('/User/Login', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                // 로그인 성공
+                if (response.ok) {
+                        return response.json(); // 전달 받은 객체를 형변환
+                }
+                // 실패
+                else {
+                    // TODO
+                    console.log("login fail");
+                    throw new Error("");
+                }
+            })
+            .then(data => {
+                    // 토큰을 쿠키에 저장
+                    document.cookie = `jwtToken=${data.token}; path=/`;  // 추가 속성 `jwtToken=${data.token}; path=/; HttpOnly; Secure`;
+                   
+                    // 페이지 이동
+                    document.getElementById('route_community_index').submit();
+
+                    /* 추가 속성에 대한 설명
+                        path: 쿠키의 유효 경로 설정 
+                        HttpOnly: XSS 보안, javascript 에서 쿠키에 접근할 수 없음
+                        Secure : HTTPS 연결에서만 쿠키가 전송될 수 있도록 함
+                     */
+            })
+            .catch(function (error) {
+                // 오류 처리
+                console.log("login error");
+            });
+        });
+    });
+
+</script>

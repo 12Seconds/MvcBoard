@@ -27,6 +27,7 @@ namespace MvcBoard.Services
             
             LogInResultParams Result = _dataManager.Login(new LoginParams() { Id = Strings[0], Password = Strings[1] });
 
+            // JWT 토큰 발급을 여기서 해야 할까
             if (Result.ResultCode == 1)
             {
 

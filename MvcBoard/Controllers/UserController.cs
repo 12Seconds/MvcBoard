@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoard.Controllers.Models;
+using MvcBoard.Managers.JWT;
 using MvcBoard.Managers.Models;
 using MvcBoard.Services;
 
@@ -8,9 +9,11 @@ namespace MvcBoard.Controllers
     public class UserController : Controller
     {
         private readonly UserService _service;
-        public UserController(UserService service)
+        private readonly JWTManager _jwtManager;
+        public UserController(UserService service, JWTManager jwtManager)
         {
             _service = service;
+            _jwtManager = jwtManager;
         }
 
         // 로그인 화면
@@ -44,11 +47,18 @@ namespace MvcBoard.Controllers
 
                 if (Result.ResultCode == 1)
                 {
-                    return RedirectToAction("Index", "Community");
-                }
+                    // 성공 시 토큰 발급
+                    string token = _jwtManager.GenerateToken(_params.Id);
 
-                // TODO 나머지 경우..
-                // ModelState.AddModelError  Result.Msg 같은거 처리?
+                    return Ok(new { token });
+                }
+                else
+                {
+                    // TODO 나머지 경우..
+                    // ModelState.AddModelError  Result.Msg 같은거 처리?
+
+                    return Unauthorized(new { message = "Invalid username or password" });
+                }
             }
            
             return View("Index", _params);

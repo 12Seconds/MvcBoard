@@ -5,6 +5,7 @@ using MvcBoard.Managers;
 using MvcBoard.Services;
 using AspNetCore.Unobtrusive.Ajax;
 using MvcBoard.Utills;
+using MvcBoard.Managers.JWT;
 // Add services to the container.
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration); // 이걸까?
 
 // TODO Transient, Singleton, Scope 중 뭐가 맞을까
-
+builder.Services.AddSingleton<JWTManager>();
 builder.Services.AddSingleton<Utillity>();
 
 builder.Services.AddTransient<CommunityDataManagers>(); 
@@ -29,6 +30,17 @@ builder.Services.AddTransient<UserService>();
 
 // Html.AjaxBeginForm 사용을 위한 AspNetCore.Unobtrusive.Ajax 패키지 설치 및 설정 작업 (MVC 5 의 Ajax.BeginForm 대체)
 builder.Services.AddUnobtrusiveAjax();
+
+// 세션 사용 설정
+/*
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+
+});
+*/
 
 // DbContext 추가
 // builder.Services.AddDbContext<MvcBoardDbContext>(); // TODO DbContext 제거
@@ -62,6 +74,9 @@ app.UseUnobtrusiveAjax();
 app.UseRouting();
 
 app.UseAuthorization();
+
+// 세션 사용 설정
+// app.UseSession();
 
 // TODO 더 알아볼 것
 /*
