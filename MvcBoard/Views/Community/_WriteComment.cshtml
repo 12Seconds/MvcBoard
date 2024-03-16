@@ -34,7 +34,7 @@
 
         </div>
         @* TODO 댓글 내용이 입력 되지 않으면 눌러도 동작을 안하도록 해야함 *@
-        <button type="button" id="_WriteComment_submit_btn" class="btn btn-secondary comment_button">등록</button> @* TODO html heler? *@
+        <button type="submit" id="_WriteComment_submit_btn" class="btn btn-secondary comment_button">등록</button> @* TODO html heler? *@
     </div>
 }
 
@@ -56,6 +56,15 @@
                 event.preventDefault();
             }
         });
+
+        /*
+        댓글 등록 후 값 지우기
+        setTimeout(function () {
+            var input = document.getElementById('_WriteComment_input');
+            textBox.value = "";
+        }, 0);
+        */
+
     });
 
 
