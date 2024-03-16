@@ -8,9 +8,9 @@ namespace MvcBoard.Managers.JWT
     public class JWTManager
     {
 
+        // 주의. Program.cs 에서도 사용해야 함, Key값 환경변수 처리 필요
         private readonly string issuer = "MusicGround";
         private readonly string audience = "MvcBoard";
-
         private readonly string _tempKey = "LetsGoHaul_ejaldjxjwlfakszmaekcodnj";
 
         /* 토큰 생성 */
@@ -41,13 +41,13 @@ namespace MvcBoard.Managers.JWT
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        /* 토큰 검증 */
+        /* 토큰 검증 (수동) */
         public ClaimsPrincipal ValidateJwtToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_tempKey); // 여기도 시크릿 키 필요
 
-            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+            ClaimsPrincipal principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -59,9 +59,11 @@ namespace MvcBoard.Managers.JWT
                 ClockSkew = TimeSpan.Zero // 토큰 검증 시 허용되는 시간의 오차 범위 (Zero: 토큰의 발행 시간과 서버의 시간이 정확히 일치 해야 유효함)
             }, out var _validatedToken);
 
-            // return (principal as ClaimsPrincipal)?.Claims;
+            // bool IsAuthenticated = principal.Identity.IsAuthenticated;
 
-            return (ClaimsPrincipal)(_validatedToken as JwtSecurityToken).Claims; // 이게 맞나
+            return principal; // TODO validatedToken 을 꼭 사용해야 되는지는 모르겠다. 아래 대로 하면 계속 타입 오류 발생
+
+            // return (ClaimsPrincipal)(_validatedToken as JwtSecurityToken).Claims; // 오류 발생
         }
 
     }

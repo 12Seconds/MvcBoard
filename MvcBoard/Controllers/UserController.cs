@@ -15,7 +15,7 @@ namespace MvcBoard.Controllers
             _service = service;
             _jwtManager = jwtManager;
         }
-
+        
         // 로그인 화면
         public IActionResult Index()
         {

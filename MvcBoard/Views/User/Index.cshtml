@@ -28,7 +28,11 @@
         @* <div asp-validation-summary=All></div> *@
     </div>
 
-    @using (Html.BeginForm("Index", "Community", FormMethod.Post, new { @id = "route_community_index" })){}
+    @* TODO GET 사용법 맞는지 확인 *@
+    @using (Html.BeginForm("Index", "Community", FormMethod.Get, new { @id = "route_community_index" }))
+    {
+        @* @Html.HiddenFor(m => m., new { @value = Model.PostId }) *@
+    }
 
 </div>
 

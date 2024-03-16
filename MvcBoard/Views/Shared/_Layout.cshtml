@@ -58,4 +58,19 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
+<script>
+    // 쿠키에서 JWT 토큰 가져오는 함수 Global 정의 TODO 검토 후 지울 것
+    function getJwtToken() {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'jwtToken') {
+                return value;
+            }
+        }
+        return null;
+    }
+</script>
+
 </html>

@@ -1,11 +1,13 @@
 global using MvcBoard.Models;
 global using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using MvcBoard.Managers;
 using MvcBoard.Services;
 using AspNetCore.Unobtrusive.Ajax;
 using MvcBoard.Utills;
 using MvcBoard.Managers.JWT;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 // Add services to the container.
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +44,23 @@ builder.Services.AddSession(options =>
 });
 */
 
+// JWT 인증 미들웨어 등록
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("LetsGoHaul_ejaldjxjwlfakszmaekcodnj")), // TODO 주의 @@@@@
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = "MusicGround",
+            ValidAudience = "MvcBoard",
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+
 // DbContext 추가
 // builder.Services.AddDbContext<MvcBoardDbContext>(); // TODO DbContext 제거
 
@@ -50,6 +69,11 @@ builder.Services.AddSession(options =>
 // builder.Services.AddDbContext<MvcBoardDbContext>(options => options.UseSqlServer(conString));
 
 var app = builder.Build();
+
+// 인증 및 권한 부여 미들웨어 사용
+app.UseAuthentication();
+app.UseAuthorization();
+// app.MapControllers(); // 컨트롤러 라우팅
 
 // TODO 지울 것 (또는 로그 모듈 붙이면 그걸로 변경)
 Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");

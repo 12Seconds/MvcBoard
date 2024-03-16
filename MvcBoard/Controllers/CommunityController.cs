@@ -1,17 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MvcBoard.Controllers.Models;
+using MvcBoard.Managers.JWT;
 using MvcBoard.Models.Community;
 using MvcBoard.Services;
+using System.Security.Claims;
 
 namespace MvcBoard.Controllers
 {
     public class CommunityController : Controller
     {
         private readonly CommunityService _service;
+        private readonly JWTManager _jwtManager;
 
-        public CommunityController(CommunityService service)
+        public CommunityController(CommunityService service, JWTManager jwtManager)
         {
             _service = service;
+            _jwtManager = jwtManager;
         }
 
         // 전체 게시판
@@ -40,18 +45,83 @@ namespace MvcBoard.Controllers
             return View(viewModel);
         }
 
-        // 게시물 작성
+        // 게시물 작성 화면 이동 - 자동 인증
+        /*
+        [Authorize]
         public IActionResult Write(WritePostParams _params)
         {
             Post? viewModel = null;
+
+            if (User.Identity == null || !User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                Console.WriteLine($"IsAuthenticated: {User.Identity.IsAuthenticated}");
+            }
 
             if (_params.PostId != null && _params.PostId > 0)
             {
                 viewModel = _service.GetPostWithUserById(_params.PostId); // PostWithUser -> Post 캐스팅 일어남
             }
 
-            return View(viewModel ?? new Post());
+            Console.WriteLine($"@@@@@@@@@@ Write category: {_params.Category}");
+
+            // return View("Write", viewModel ?? new Post());
+            // return Ok(new { key1 = value1, key2 = value2 });
+
+            // 아니 이러면 수정인 경우 기존 Post 데이터를 뷰로 못넘기잖아...
+            return Ok(new {  }); 
         }
+        */
+
+        // 게시물 작성 화면 이동 - 수동 인증
+        
+        public IActionResult Write(WritePostParams _params) // public string jwtToken { get; set; } = ""; 추가
+        {
+            Post? viewModel = null;
+
+            // 쿠키 받아올 수 있음 -> 근데 이게 클라이언트 구분이 되는 건가?
+            string cookie = HttpContext.Request.Cookies["jwtToken"] ?? "";
+
+            // if (User.Identity == null || !User.Identity.IsAuthenticated)
+            // Console.WriteLine($"IsAuthenticated: {User.Identity.IsAuthenticated}");
+
+            Console.WriteLine($"@@@@@@@@@@ cookie: {cookie}");
+
+            ClaimsPrincipal Principal = _jwtManager.ValidateJwtToken(cookie);
+
+            // 인증 성공
+            if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
+            {
+                // 여기서 principal 객체를 사용하여 사용자의 클레임을 가져오거나 다른 인증 관련 작업을 수행
+                // ex) 클레임 읽기
+                string Id = Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                Console.WriteLine($"@@@@@@@@@@ 인증 성공");
+                Console.WriteLine($"@@@@@@@@@@ Claim Id: {Id}");
+
+
+                if (_params.PostId != null && _params.PostId > 0)
+                {
+                    viewModel = _service.GetPostWithUserById(_params.PostId); // PostWithUser -> Post 캐스팅 일어남
+                }
+
+                Console.WriteLine($"@@@@@@@@@@ Write category: {_params.Category}");
+                Console.WriteLine($"@@@@@@@@@@ cookie: {cookie}");
+
+                return View("Write", viewModel ?? new Post());
+            }
+            // TODO 인증 실패 처리
+            else
+            {
+                Console.WriteLine($"@@@@@@@@@@ 인증 실패");
+                return RedirectToAction("Index");
+            }
+        }
+
+
 
         // 게시물 작성 or 수정
         [HttpPost]
