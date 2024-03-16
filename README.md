@@ -1,5 +1,10 @@
 # MvcBoard
 
+#####  2024.03.16
++ Cookie, Session, JSON Web Token
+  사용자 인증을 구현하기 위해 여러 개념 학습하고, JWT 패키지 설치하여 적용함
+  로그인 구현 (완성도는 낮음)
+
 #####  2024.03.15
 + Html.AjaxBeginForm (MVC 5 Ajax.BeginForm 대체)사용을 위한 종속성 패키지 설치
   - 컨트롤러의 액션 메서드를 Ajax Post 방식으로 호출하고 처리하기 위해 Ajax.BeginForm 를 사용하려 시도해보았지만 실패   
