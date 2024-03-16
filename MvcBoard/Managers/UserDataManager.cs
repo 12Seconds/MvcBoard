@@ -24,7 +24,7 @@ namespace MvcBoard.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("LogIn", connection))
+                using (SqlCommand command = new SqlCommand("UserLogIn", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@Id", _params.Id);
