@@ -252,8 +252,6 @@ namespace MvcBoard.Controllers
             }
         }
 
-
-        // TODO 게시물 수정, 삭제 개발 필요
         // TODO   댓글 수정, 삭제 개발 필요
 
         // 댓글 작성
@@ -262,9 +260,83 @@ namespace MvcBoard.Controllers
         {
             Console.WriteLine($"## CommunityController >> WriteComment() PostId: {commentParams.PostId}, UserId: {commentParams.UserId}, ParentId: {commentParams.ParentId}, Contents: {commentParams.Contents}, IsAnonymous: {commentParams.IsAnonymous}");
 
-            _service.CreateComment(commentParams); // TODO 업캐스팅
-          
-            return PartialView("_Comments", _service.GetCommentByPostId(commentParams.ViewParams));
+            // TODO 유효성 체크
+            if (ModelState.IsValid)
+            {
+                // 인증
+                (bool IsAuthenticated, ClaimsPrincipal? Principal) = Authentication();
+                if (IsAuthenticated && Principal != null)
+                {
+                    int userNumber = GetUserNumber(Principal);
+
+                    // 댓글 작성자 매핑
+                    commentParams.UserId = userNumber;
+
+                    _service.CreateComment(commentParams); // TODO 업캐스팅
+                    return PartialView("_Comments", _service.GetCommentByPostId(commentParams.ViewParams));
+                }
+                else
+                {
+                    // TODO 인증 실패 시, 로그인 페이지로 보내야 함
+                    return PartialView("_Comments", _service.GetCommentByPostId(commentParams.ViewParams));
+
+                    // return RedirectToAction("Index", "User"); 
+                    // 위와 같이 RedirectToAction 를 반환하면 UpdateTarget 영역이 User/Index 로 리다이렉트됨
+                    // . _WriteComment.cshtml 에서 Html.AjaxBeginForm 대신 Javascript 로 Ajax 호출하여 return 결과에 따라 window.location.href = '/User/Index'; 해야 할까
+
+                    // return View(commentParams);
+                }
+            }
+            else
+            {
+                // TODO PartialView 라서 이렇게 처리하면 안되는데
+                // return View(commentParams);
+                return PartialView("_Comments", _service.GetCommentByPostId(commentParams.ViewParams));
+            }
+        }
+
+        /// <summary>
+        /// 쿠키에서 JWT 토큰을 읽어 인증
+        /// </summary>
+        /// <returns>
+        /// bool: 인증 성공 여부
+        /// ClaimsPrincipal?: Principal 객체
+        /// </returns>
+        public (bool, ClaimsPrincipal?) Authentication()
+        {
+            bool IsAuthenticated = false;
+
+            string cookie = Request.Cookies["jwtToken"] ?? "";
+            ClaimsPrincipal Principal = _jwtManager.ValidateJwtToken(cookie);
+
+            if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
+            {
+                IsAuthenticated = true;
+                return (IsAuthenticated, Principal);
+            }
+            else
+            {
+                return (IsAuthenticated, null);
+            }
+        }
+
+        /// <summary>
+        /// 현재 인증된 토큰의 Principal 객체에서 유저 고유 번호 클레임을 읽어 반환
+        /// </summary>
+        /// <param name="Principal"></param>
+        /// <returns>int: 유저 고유 번호 (UserId -> UserNumber 바꿀 것)</returns>
+        public int GetUserNumber(ClaimsPrincipal Principal)
+        {
+            int userNumber = 0;
+            try
+            {
+                userNumber = Convert.ToInt32(Principal.FindFirst(MvcBoardClaimTypes.UserNumber)?.Value);
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return userNumber;
         }
 
     }
