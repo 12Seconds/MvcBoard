@@ -234,6 +234,25 @@ namespace MvcBoard.Controllers
             }
         }
 
+        // 게시물 삭제
+        [HttpPost]
+        public IActionResult DeletePost(int postId)
+        {
+            string cookie = Request.Cookies["jwtToken"] ?? "";
+            ClaimsPrincipal Principal = _jwtManager.ValidateJwtToken(cookie);
+            if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
+            {
+                _service.DeletePost(postId);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                // TODO 삭제 실패 처리
+                return RedirectToAction("Index");
+            }
+        }
+
+
         // TODO 게시물 수정, 삭제 개발 필요
         // TODO   댓글 수정, 삭제 개발 필요
 

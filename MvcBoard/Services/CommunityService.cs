@@ -38,6 +38,7 @@ namespace MvcBoard.Services
             _dataManagers.CreatePost(post);
         }
 
+        // 게시물 수정
         public void UpdatePost(Post post)
         {
             // TODO 유효성 검증
@@ -73,6 +74,17 @@ namespace MvcBoard.Services
                 return View(viewModel);
             }
             */
+        }
+
+        // 게시물 삭제
+        public bool DeletePost(int postId)
+        {
+            // 유효성 검증
+            // if (postId)
+            _dataManagers.DeletePost(postId);
+
+            // todo 처리 필요
+            return true;
         }
 
         // TODO CommunityDataManager의 다른 SP 호출 함수들 구현, 매칭 필요
