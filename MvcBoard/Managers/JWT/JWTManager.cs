@@ -14,14 +14,15 @@ namespace MvcBoard.Managers.JWT
         private readonly string _tempKey = "LetsGoHaul_ejaldjxjwlfakszmaekcodnj";
 
         /* 토큰 생성 */
-        public string GenerateToken(string _Id) // 로그인 Id
+        public string GenerateToken(int _UserNumber, string _LoginId)
         {
             // 클레임 생성
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.NameId, _Id), // TODO Name: 이름, NameId: 고유 식별자 (ID 또는 이메일 주소)
-                // new Claim(MvcBoardClaimTypes.Id, _Id), // TODO, _params.Id
-                // new Claim(MvcBoardClaimTypes.Name, _Id), // TODO _params.Name
+                new Claim(JwtRegisteredClaimNames.NameId, _LoginId), // TODO Name: 이름, NameId: 고유 식별자 (ID 또는 이메일 주소)
+
+                new Claim(MvcBoardClaimTypes.UserNumber, _UserNumber.ToString()),
+                new Claim(MvcBoardClaimTypes.Id, _LoginId), // TODO, _params.Id
                 // new Claim(MvcBoardClaimTypes.Role, ""), Admin, User 등?
             };
 
@@ -95,7 +96,7 @@ namespace MvcBoard.Managers.JWT
     // 서비스(앱) 인증 및 비즈니스 로직에 사용할 클레임 타임 정의
     public static class MvcBoardClaimTypes
     {
-        public const string UserId = "MvcBoard_CT_UserId";
+        public const string UserNumber = "MvcBoard_CT_UserId";
         public const string Id = "MvcBoard_CT_Id";
         public const string Name = "MvcBoard_CT_Name";
         public const string Image = "MvcBoard_CT_Image";

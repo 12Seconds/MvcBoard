@@ -52,7 +52,7 @@ namespace MvcBoard.Controllers
                     // TODO 토큰에 Id 외 다른 정보(클레임)도 저장하려면 _service.Login 반환 타입이 수정되어야 함 (유저의 정보를 포함해야 함)
 
                     // 성공 시 토큰 발급
-                    string token = _jwtManager.GenerateToken(_params.Id);
+                    string token = _jwtManager.GenerateToken(Result.UserNumber, _params.Id);
 
                     // TODO 로그인에 성공하여 토큰이 발급된 유저의 정보를 배열로 저장하고 관리를 하면 서버 메모리 부하가 심할까?
 

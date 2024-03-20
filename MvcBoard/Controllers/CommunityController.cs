@@ -95,15 +95,6 @@ namespace MvcBoard.Controllers
             // 인증 성공
             if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
             {
-                // 여기서 principal 객체를 사용하여 사용자의 클레임을 가져오거나 다른 인증 관련 작업을 수행
-
-                // ex) 클레임 읽기
-                string Id = Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // TODO UserNumber
-                
-                Console.WriteLine($"@@@@@@@@@@ 인증 성공");
-                Console.WriteLine($"@@@@@@@@@@ Claim Id: {Id}");
-
-
                 if (_params.PostId != null && _params.PostId > 0)
                 {
                     viewModel = _service.GetPostWithUserById(_params.PostId); // PostWithUser -> Post 캐스팅 일어남
@@ -123,22 +114,49 @@ namespace MvcBoard.Controllers
         }
 
 
-
+       
         // 게시물 작성 or 수정
         [HttpPost]
         public IActionResult Write(Post postData) // TODO 파라미터의 값을 바꾸는게 맞나...이래도 되나...
         {
             Console.WriteLine($"[Controller] Community >> Write() postData.Category: {postData.Category},  IsValid: {ModelState.IsValid}"); // TODO stringify
 
+            int UserNumber = 0;
+
+            // 로그인 인증
+            string cookie = Request.Cookies["jwtToken"] ?? "";
+            Console.WriteLine($"@@@@@@@@@@ cookie: {cookie}");
+            ClaimsPrincipal Principal = _jwtManager.ValidateJwtToken(cookie);
+            if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
+            {
+                // string Id = Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // TODO UserNumber
+
+                UserNumber = int.Parse(Principal.FindFirst(MvcBoardClaimTypes.UserNumber)?.Value);
+                // string LoginId = Principal.FindFirst(MvcBoardClaimTypes.Id)?.Value;
+
+            }
+            else
+            {
+                // TODO 로그인 정보가 만료되었음을 알려야함 (또는 토큰 리프레쉬)
+                return RedirectToAction("Index", "User");
+            }
+
             if (ModelState.IsValid)
             {
                 if (postData.Category == 0) postData.Category = 1; // 1: 자유게시판 (default), todo 드롭다운 or 모달 구현하면 필요 없음
 
                 // TODO 작성자 UserId 매핑 필요 (로그인 구현 후)
+                postData.UserId = UserNumber;
+
+                Console.WriteLine($"@@@@@@@@@@ 바꿔치기 UserNumber: {UserNumber}");
+                /*
                 if (postData.PostId == 0)
                 {
+                    Console.WriteLine($"@@@@@@@@@@ 바꿔치기 UserNumber: {UserNumber}");
                     postData.UserId = 1;
+                    // postData.UserId = UserNumber;
                 }
+                */
 
                 if (postData.PostId == 0)
                 {
@@ -188,15 +206,20 @@ namespace MvcBoard.Controllers
 
                 ClaimsPrincipal Principal = _jwtManager.ValidateJwtToken(cookie);
 
-                // 인증 성공
+                // 인증 성공 - TODO 단순히 게시물을 읽는 건데 매번 내 게시물임을 알기 위해서 인증을 해야하는게 맞을까
                 if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
                 {
-                    string Id = Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // TODO UserNumber
+                    int userNumber = Convert.ToInt32(Principal.FindFirst(MvcBoardClaimTypes.UserNumber)?.Value);
 
-                    if (postData.LoginId == Id)
+                    if (postData.UserId == userNumber)
                     {
                         postData.IsCurrunLoginUser = true;
                     }
+                }
+                else
+                {
+                    // return RedirectToAction("Index", "User");
+                    // postData.IsCurrunLoginUser = true; // TODO 토큰이 만료된 경우, 이 처리를 어떻게 해주지?
                 }
 
                 // 댓글 데이터 조회

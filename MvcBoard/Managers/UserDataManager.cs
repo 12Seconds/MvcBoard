@@ -34,7 +34,18 @@ namespace MvcBoard.Managers
                     // command.Parameters.Add("@Id", SqlDbType.NVarChar, 50).Value = _params.Id;
                     // command.Parameters.Add("@Password", SqlDbType.NVarChar, 50).Value = _params.Password;
 
-                   Result.ResultCode = (int)command.ExecuteScalar();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    try
+                    {
+                        reader.Read();
+                        Result.ResultCode = int.Parse(reader["Result"]?.ToString() ?? "0");
+                        Result.UserNumber = int.Parse(reader["UserNumber"]?.ToString() ?? "0");
+
+                    }
+                    catch (Exception ex)
+                    {
+                    }
 
                     Result.ResultMsg = Result.ResultCode switch
                     {

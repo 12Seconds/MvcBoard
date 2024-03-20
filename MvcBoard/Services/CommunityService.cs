@@ -49,12 +49,7 @@ namespace MvcBoard.Services
         {
             PostWithUser postData = _dataManagers.GetPostWithUserById(postId);
 
-            if (postData == null)
-            {
-                postData.IsCurrunLoginUser = true;
-
-            }
-
+          
             return postData;
 
             /*
