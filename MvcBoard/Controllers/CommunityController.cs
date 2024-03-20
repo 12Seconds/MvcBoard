@@ -83,22 +83,23 @@ namespace MvcBoard.Controllers
             Post? viewModel = null;
 
             // 쿠키 받아올 수 있음 -> 근데 이게 클라이언트 구분이 되는 건가?
-            string cookie = HttpContext.Request.Cookies["jwtToken"] ?? "";
+            string cookie = Request.Cookies["jwtToken"] ?? ""; // ControllerBase 의 Requst (Httpcontext 도 있음)
 
             // if (User.Identity == null || !User.Identity.IsAuthenticated)
             // Console.WriteLine($"IsAuthenticated: {User.Identity.IsAuthenticated}");
 
             Console.WriteLine($"@@@@@@@@@@ cookie: {cookie}");
-
+           
             ClaimsPrincipal Principal = _jwtManager.ValidateJwtToken(cookie);
 
             // 인증 성공
             if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
             {
                 // 여기서 principal 객체를 사용하여 사용자의 클레임을 가져오거나 다른 인증 관련 작업을 수행
-                // ex) 클레임 읽기
-                string Id = Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+                // ex) 클레임 읽기
+                string Id = Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // TODO UserNumber
+                
                 Console.WriteLine($"@@@@@@@@@@ 인증 성공");
                 Console.WriteLine($"@@@@@@@@@@ Claim Id: {Id}");
 
@@ -117,7 +118,7 @@ namespace MvcBoard.Controllers
             else
             {
                 Console.WriteLine($"@@@@@@@@@@ 인증 실패");
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "User");
             }
         }
 
@@ -179,6 +180,24 @@ namespace MvcBoard.Controllers
             else
             {
                 // TODO CommentsViewParams 과 PostViewParams 사실상 같음
+
+                // TODO Service 로 옮길 것?
+                string cookie = Request.Cookies["jwtToken"] ?? "";
+
+                Console.WriteLine($"@@@@@@@@@@ cookie: {cookie}");
+
+                ClaimsPrincipal Principal = _jwtManager.ValidateJwtToken(cookie);
+
+                // 인증 성공
+                if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
+                {
+                    string Id = Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // TODO UserNumber
+
+                    if (postData.LoginId == Id)
+                    {
+                        postData.IsCurrunLoginUser = true;
+                    }
+                }
 
                 // 댓글 데이터 조회
                 CommentsViewModel commentListData = _service.GetCommentByPostId(new CommentsViewParams { PostId = _params.PostId, Page = _params.Page, CommentPage = _params.CommentPage, Category = _params.Category});

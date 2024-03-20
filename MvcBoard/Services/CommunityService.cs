@@ -47,7 +47,15 @@ namespace MvcBoard.Services
         // 게시물 조회
         public PostWithUser? GetPostWithUserById(int? postId = null/* int postId, int? page, int category = 0, int commentPage = 1 */)
         {
-            return _dataManagers.GetPostWithUserById(postId);
+            PostWithUser postData = _dataManagers.GetPostWithUserById(postId);
+
+            if (postData == null)
+            {
+                postData.IsCurrunLoginUser = true;
+
+            }
+
+            return postData;
 
             /*
             

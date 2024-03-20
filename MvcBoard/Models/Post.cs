@@ -15,7 +15,7 @@ public partial class Post
     public string? Contents { get; set; }
 
     /*[Required]*/
-    public int UserId { get; set; }
+    public int UserId { get; set; } // TODO UserNumber
 
     public int Likes { get; set; }
 

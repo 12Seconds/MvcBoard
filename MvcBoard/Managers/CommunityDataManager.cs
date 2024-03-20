@@ -162,7 +162,9 @@ namespace MvcBoard.Managers
                         if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
 
                         // Join 테이블 데이터
+                        post.LoginId = reader["Id"]?.ToString() ?? "";
                         post.UserName = reader["Name"]?.ToString() ?? "";
+                        post.UserImage = int.Parse(reader["Image"]?.ToString() ?? "0");
 
                         posts.Add(post);
                     }
