@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using MvcBoard.Controllers.Models;
 using MvcBoard.Managers.JWT;
+using MvcBoard.Models;
 using MvcBoard.Models.Community;
 using MvcBoard.Services;
+using System.Diagnostics;
 using System.Security.Claims;
 
 namespace MvcBoard.Controllers
@@ -165,6 +167,7 @@ namespace MvcBoard.Controllers
         {
             // 게시물 데이터 조회 (by postId)
             PostWithUser? postData = _service.GetPostWithUserById(_params.PostId);
+            int UserNumber = 0;
 
             if (postData == null)
             {
@@ -179,7 +182,7 @@ namespace MvcBoard.Controllers
                 // 인증 성공 - TODO 단순히 게시물을 읽는 건데 매번 내 게시물임을 알기 위해서 인증을 해야하는게 맞을까
                 if (IsAuthenticated && Principal != null)
                 {
-                    int UserNumber = GetUserNumber(Principal);
+                    UserNumber = GetUserNumber(Principal);
 
                     if (postData.UserId == UserNumber)
                     {
@@ -193,8 +196,15 @@ namespace MvcBoard.Controllers
                 }
 
                 // 댓글 데이터 조회
-                CommentsViewModel commentListData = _service.GetCommentByPostId(new CommentsViewParams { PostId = _params.PostId, Page = _params.Page, CommentPage = _params.CommentPage, Category = _params.Category});
-                
+                CommentsViewModel commentListData = _service.GetCommentByPostId(
+                    new CommentsViewParams { 
+                        PostId = _params.PostId, 
+                        Page = _params.Page, 
+                        CommentPage = _params.CommentPage, 
+                        Category = _params.Category, 
+                        CurrentLoginUserNumber = UserNumber
+                    });
+
                 // 게시물 하단 게시판 데이터 조회
                 BoardViewModel boardViewModel = _service.GetBoardViewData(_params); // TODO 업캐스팅 되나?
                 PostViewModel viewModel = new PostViewModel(postData, boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PageSize, boardViewModel.PostListData);
@@ -221,8 +231,6 @@ namespace MvcBoard.Controllers
             }
         }
 
-        // TODO   댓글 수정, 삭제 개발 필요
-
         // 댓글 작성
         [HttpPost]
         public IActionResult WriteComment(WriteCommentParams commentParams) 
@@ -240,6 +248,7 @@ namespace MvcBoard.Controllers
 
                     // 댓글 작성자 매핑
                     commentParams.UserId = UserNumber;
+                    commentParams.ViewParams.CurrentLoginUserNumber = UserNumber;
 
                     _service.CreateComment(commentParams); // TODO 업캐스팅
                     return PartialView("_Comments", _service.GetCommentByPostId(commentParams.ViewParams));
@@ -263,6 +272,34 @@ namespace MvcBoard.Controllers
                 return PartialView("_Comments", _service.GetCommentByPostId(commentParams.ViewParams));
             }
         }
+
+        // 댓글 삭제
+        [HttpPost]
+        public IActionResult DeleteComment(DeleteCommentParams _params) // TODO DeleteCommentParams (CommentId, CurrentLoginUserNumber, PostId, CommentPage)
+        {
+            int UserNumber = 0;
+
+            (bool IsAuthenticated, ClaimsPrincipal? Principal) = Authentication();
+            if (IsAuthenticated && Principal != null)
+            {
+                _service.DeleteComment(_params.CommentId);
+
+                _params.CurrentLoginUserNumber = UserNumber;
+                _params.CommentPage = 1; // TODO CommentPage 검토 필요, 일단 1로 고정 (삭제한 후에 해당 페이지가 삭제된 경우, 앞 페이지로 로드 처리 필요하기 때문)
+
+                // TODO 지정한 UpdateTargetId 에 그려지지 않고, 전체 페이지에 그려지는 문제 있음
+                return PartialView("_Comments", _service.GetCommentByPostId(_params));
+            }
+            else
+            {
+                _params.CurrentLoginUserNumber = UserNumber;
+                _params.CommentPage = 1;
+                // TODO 삭제 실패 처리
+                return PartialView("_Comments", _service.GetCommentByPostId(_params));
+            }
+        }
+
+        // TODO 댓글 수정 개발 필요
 
         /// <summary>
         /// 쿠키에서 JWT 토큰을 읽어 인증

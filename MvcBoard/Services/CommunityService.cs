@@ -117,12 +117,38 @@ namespace MvcBoard.Services
                 @params.Category = _params.Category;
                 @params.CommentPage = _params.CommentPage < 0 ? 1 : _params.CommentPage;
 
-                return _dataManagers.ReadCommentByPostId(@params);
+                CommentsViewModel ViewModel = _dataManagers.ReadCommentByPostId(@params);
+
+                // 댓글 데이터 가공
+                if (_params.CurrentLoginUserNumber > 0)
+                {
+                    foreach (var comment in ViewModel.CommentListData)
+                    {
+                        // 로그인 사용자의 댓글 여부 설정
+                        if (comment.UserId == _params.CurrentLoginUserNumber)
+                        {
+                            comment.IsCurrunLoginUser = true;
+                        }
+                    }
+                }
+
+                return ViewModel;
             }
             else
             {
                 return new CommentsViewModel();
             }
+        }
+
+        // 댓글 삭제
+        public bool DeleteComment(int commentId)
+        {
+            // 유효성 검증
+            // if (commentId)
+            _dataManagers.DeleteComment(commentId);
+
+            // todo 처리 필요
+            return true;
         }
 
     }

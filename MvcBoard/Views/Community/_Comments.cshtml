@@ -5,23 +5,45 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    /*
-        TODO
+         /*
+         TODO
          - 대댓글 있으므로 추가 가공 (정렬?) 필요 - 이건 좀 알아볼 것
          - 댓글 아이템에서 답글 쓰기 버튼 누르면 댓글창 달리도록 처리 필요
          - 페이지 인디케이터 (게시글, 댓글) PartialView 로 빼기
     */
 }
-<div class="comments_area"> 
+<div class="comments_area">
     <div class="comments_list">
         @* todo 댓글 UI*@
 
         @foreach (var item in Model.CommentListData)
         {
-            <div class="comment_item">@item.UserName : @item.Contents (parent: @item.ParentId)</div>
+            <div class="comment_item">
+                @item.UserName : @item.Contents (parent: @item.ParentId)
+                @if (item.IsCurrunLoginUser)
+                {
+                    <span>- 작성자</span>
+                    <span onclick='DeleteComment(@item.CommentId, @Model.CommentPage)' style="cursor: pointer">삭제</span>
+                    @* 아래는 data 속성을 이용하는 방법 *@
+                    @* <span class="delete-comment" data-comment-id="@item.CommentId" data-comment-page="@Model.CommentPage" style="cursor: pointer">삭제</span> *@
+                }
+            </div>
+        }
+
+        @* TODO 왜 UpdateTargetId 에 PartialView 가 그려지지 않고 전체 페이지로 로드 되는지 모르겠다.. *@
+        
+        @using (Html.AjaxBeginForm("DeleteComment", "Community", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "commentList2" }, new { @id = "delete_comment_form" }))
+        {
+            @Html.Hidden("CommentId", new { @value = 0 }, new { @id="delete_target_commentId" }) // javascript 에서 설정
+            @Html.Hidden("PostId", new { @value = Model.PostId })
+            @Html.Hidden("Page", new { @value = Model.PostId })
+            @Html.Hidden("CommentPage", new { @value = 1 }) /* Model.PostId */ 
+            @Html.Hidden("Category", new { @value = Model.Category })
         }
 
     </div>
+
+    @* <div id="commentList2">테스트</div> *@
 
     @* 페이지 인디케이터 영역 *@
     @{
@@ -40,22 +62,22 @@
 
         if (Model.CommentListData.Count > 0)
         {
-                <div class="page_indicator">
-                    <a asp-area="" asp-controller="Community" asp-action="View" asp-route-postId=@Model.PostId asp-route-category=@Model.Category asp-route-page=@Model.Page asp-route-CommentPage="1">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
-                        처음
-                    </a>
+            <div class="page_indicator">
+                <a asp-area="" asp-controller="Community" asp-action="View" asp-route-postId=@Model.PostId asp-route-category=@Model.Category asp-route-page=@Model.Page asp-route-CommentPage="1">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
+                    처음
+                </a>
 
-                    @for (var i = start; i <= end; i++)
+                @for (var i = start; i <= end; i++)
                 {
-                        <a class=@(i == Model.CommentPage ? "selected" : "") asp-area="" asp-controller="Community" asp-action="View" asp-route-postId=@Model.PostId asp-route-category=@Model.Category asp-route-page=@Model.Page asp-route-CommentPage=@i>@i</a>
+                    <a class=@(i == Model.CommentPage ? "selected" : "") asp-area="" asp-controller="Community" asp-action="View" asp-route-postId=@Model.PostId asp-route-category=@Model.Category asp-route-page=@Model.Page asp-route-CommentPage=@i>@i</a>
                 }
 
-                    <a asp-area="" asp-controller="Community" asp-action="View" asp-route-postId=@Model.PostId asp-route-category=@Model.Category asp-route-page=@Model.Page asp-route-CommentPage=@Model.CommentPageCount>
-                        마지막
-                        <svg style="transform: rotate(180deg)" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
-                    </a>
-                </div>
+                <a asp-area="" asp-controller="Community" asp-action="View" asp-route-postId=@Model.PostId asp-route-category=@Model.Category asp-route-page=@Model.Page asp-route-CommentPage=@Model.CommentPageCount>
+                    마지막
+                    <svg style="transform: rotate(180deg)" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
+                </a>
+            </div>
         }
     }
 </div>
@@ -66,6 +88,30 @@
     document.addEventListener('DOMContentLoaded', function () {
         var input = document.getElementById('_WriteComment_input');
         input.value = "";
-    })
-    
+    });
+
+    /*
+    // 댓글 삭제 버튼에 이벤트 리스너 추가
+    // data 속성을 이용하는 방법
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('delete-comment')) {
+            var commentId = event.target.dataset.commentId; // data-comment-id 속성 값 가져오기
+            var commentPage = event.target.dataset.commentPage; // data-comment-page 속성 값 가져오기
+            DeleteComment(commentId, commentPage);
+        }
+    });
+    */
+
+    function DeleteComment(commentId, commentPage) { // TODO commentPage 검토 필요 (삭제한 후에 해당 페이지가 삭제된 경우, 앞 페이지로 로드 처리 필요하기 때문)
+        var postId = @Model.PostId
+        var category = @Model.Category
+
+        // hidden dom element 값 설정해서 submit
+        var target = document.getElementById('delete_target_commentId');
+
+        target.value = commentId;
+
+        document.getElementById('delete_comment_form').submit();
+    }
+
 </script>
