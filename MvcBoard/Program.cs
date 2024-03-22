@@ -25,7 +25,7 @@ builder.Services.AddSingleton<JWTManager>();
 builder.Services.AddSingleton<Utillity>();
 
 builder.Services.AddTransient<CommunityDataManagers>(); 
-builder.Services.AddTransient<CommunityService>();
+builder.Services.AddSingleton<CommunityService>();
 
 builder.Services.AddTransient<UserDataManager>();
 builder.Services.AddTransient<UserService>();

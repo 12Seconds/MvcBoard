@@ -14,6 +14,12 @@ namespace MvcBoard.Services
     {
         private readonly CommunityDataManagers _dataManagers;
 
+        private DateTime _cachedTime;
+
+        private TimeSpan cacheDuration = TimeSpan.FromMinutes(1); // 캐시 유효 시간: 1분 (개발용으로 1분 -> 비즈니스 로직에 따라 적절하게 설정할 것)
+
+        private List<BoardType>? _cachedBoardTypeData = null;
+
         public CommunityService(CommunityDataManagers dataManager)
         {
             _dataManagers = dataManager;
@@ -21,7 +27,15 @@ namespace MvcBoard.Services
         // 게시판 카테고리(메뉴) 조회
         public List<BoardType> GetBoardTypeData()
         {
-            return _dataManagers.GetBoardTypeData();
+            // 최초 조회거나, 캐시가 만료된 경우 재조회
+            if (_cachedBoardTypeData == null || DateTime.Now - _cachedTime > cacheDuration )
+            {
+                Console.WriteLine("### CommunityService >> GetBoardTypeData() --- Get New BoardTypeData (cache expired!)");
+                _cachedBoardTypeData = _dataManagers.GetBoardTypeData();
+                _cachedTime = DateTime.Now;
+            }
+
+            return _cachedBoardTypeData;
         }
 
         // 게시판 조회
