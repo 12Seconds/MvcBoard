@@ -1,4 +1,5 @@
-﻿using MvcBoard.Managers;
+﻿using Azure.Identity;
+using MvcBoard.Managers;
 using MvcBoard.Managers.Models;
 using MvcBoard.Models.Community;
 
@@ -16,6 +17,11 @@ namespace MvcBoard.Services
         public CommunityService(CommunityDataManagers dataManager)
         {
             _dataManagers = dataManager;
+        }
+        // 게시판 카테고리(메뉴) 조회
+        public List<BoardType> GetBoardTypeData()
+        {
+            return _dataManagers.GetBoardTypeData();
         }
 
         // 게시판 조회

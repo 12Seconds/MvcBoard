@@ -19,6 +19,17 @@ namespace MvcBoard.Controllers
             _jwtManager = jwtManager;
         }
 
+        // 게시판 네이게이션 메뉴 Partial View
+        public IActionResult BoardNavigationMenu(int selectedCategory = 0)
+        {
+            BoardNavigationViewModel Model = new BoardNavigationViewModel
+            {
+                BoardTypes = _service.GetBoardTypeData(),
+                SelectedCategory = selectedCategory,
+            };
+            return PartialView("_BoardNavigation", Model);
+        }
+
         // 전체 게시판
         public IActionResult Index(BoardViewParams? _params)
         {

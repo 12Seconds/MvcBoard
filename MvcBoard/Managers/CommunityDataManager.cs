@@ -18,6 +18,48 @@ namespace MvcBoard.Managers
             Console.WriteLine("## CommunityDataManagers() initialized...");
         }
 
+        // 게시판 카테고리(메뉴) 조회
+        public List<BoardType> GetBoardTypeData()
+        {
+            // TODO 로그 모듈(매니저) 만들기
+            Console.WriteLine($"## CommunityDataManager >> GetBoardTypeData()");
+
+            List<BoardType> BoardTypes = new List<BoardType>();
+
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("ReadBoardTypes", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    BoardType? board = null;
+
+                    /* 게시판 카테고리 데이터 */
+                    while (reader.Read())
+                    {
+                        board = new BoardType();
+
+                        board.BoardId = int.Parse(reader["BoardId"]?.ToString() ?? "0");
+                        board.BoardName = reader["BoardName"]?.ToString() ?? "";
+                        board.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
+                        board.ParentCategory = int.Parse(reader["ParentCategory"]?.ToString() ?? "0");
+                        board.IsParent = int.Parse(reader["IsParent"]?.ToString() ?? "0");
+                        board.IconType = int.Parse(reader["IconType"]?.ToString() ?? "0");
+
+                        BoardTypes.Add(board);
+                    }
+
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return BoardTypes;
+        }
+
         // 게시판 조회 --TODO ReadPost함수 분리...필요한가?
         public BoardViewModel GetBoardViewData(GetBoardParams _params)
         {
@@ -31,7 +73,7 @@ namespace MvcBoard.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("ReadPost", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.READPOST 이런 식
+                using (SqlCommand command = new SqlCommand("ReadPost", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@Category", _params.Category);
@@ -91,7 +133,7 @@ namespace MvcBoard.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("CreatePost", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.CreatePost 이런 식
+                using (SqlCommand command = new SqlCommand("CreatePost", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@Title", post.Title);
@@ -189,7 +231,7 @@ namespace MvcBoard.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("UpdatePost", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.CreatePost 이런 식
+                using (SqlCommand command = new SqlCommand("UpdatePost", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@PostId", post.PostId);
@@ -228,7 +270,7 @@ namespace MvcBoard.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("DeletePost", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.CreatePost 이런 식
+                using (SqlCommand command = new SqlCommand("DeletePost", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@PostId", postId);
@@ -280,7 +322,7 @@ namespace MvcBoard.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("ReadComment", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.ReadComment 이런 식
+                using (SqlCommand command = new SqlCommand("ReadComment", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@PostId", _params.PostId);
@@ -349,7 +391,7 @@ namespace MvcBoard.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("CreateComment", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.CreateComment 이런 식
+                using (SqlCommand command = new SqlCommand("CreateComment", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@PostId", comment.PostId);
@@ -389,7 +431,7 @@ namespace MvcBoard.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("UpdateComment", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.UpdateComment 이런 식
+                using (SqlCommand command = new SqlCommand("UpdateComment", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@CommentId", comment.CommentId);
@@ -427,7 +469,7 @@ namespace MvcBoard.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("DeleteComment", connection)) // TODO SP List 상수 정의 필요. BOARD.SP.DeleteComment 이런 식
+                using (SqlCommand command = new SqlCommand("DeleteComment", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@CommentId", commentId);
