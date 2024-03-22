@@ -1,4 +1,4 @@
-﻿namespace MvcBoard.Models.Community
+﻿namespace MvcBoard.Controllers.Models
 {
     public class WriteCommentParams : Comment
     {

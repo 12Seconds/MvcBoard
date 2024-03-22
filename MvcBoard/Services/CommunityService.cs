@@ -1,4 +1,5 @@
 ﻿using Azure.Identity;
+using MvcBoard.Controllers.Models;
 using MvcBoard.Managers;
 using MvcBoard.Managers.Models;
 using MvcBoard.Models.Community;

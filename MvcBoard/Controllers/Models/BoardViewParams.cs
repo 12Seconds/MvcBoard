@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace MvcBoard.Models.Community
+namespace MvcBoard.Controllers.Models
 {
     public class BoardViewParams
     {

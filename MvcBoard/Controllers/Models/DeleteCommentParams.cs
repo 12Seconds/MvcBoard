@@ -1,4 +1,4 @@
-﻿namespace MvcBoard.Models.Community
+﻿namespace MvcBoard.Controllers.Models
 {
     public class DeleteCommentParams : CommentsViewParams// TODO PostViewParams, CommentsViewParams 와 사실상 동일
     {
