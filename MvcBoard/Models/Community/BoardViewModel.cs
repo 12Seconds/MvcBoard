@@ -34,5 +34,6 @@
         public int PageSize { get; set; } // 한 페이지에 노출되는 게시물 수 (TODO nullable?)
         public List<PostWithUser> PostListData { get; set; } // Q. nullable 로 해야 할까? nullable로 하면 생성자 안쓸 수 있음 (프론트 쪽에서 null check 필요성)
         public string jwtToken { get; set; } = ""; // TODO 검토 후 지울 것
+        public bool IsLoggedIn { get; set; } = false;
     }
 }

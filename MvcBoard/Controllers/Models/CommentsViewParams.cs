@@ -14,5 +14,6 @@
         public int Category { get; set; } = 0;
         */
         public int CurrentLoginUserNumber { get; set; } = 0;
+        public bool IsLoggedIn { get; set; } = false;
     }
 }

@@ -219,6 +219,8 @@ namespace MvcBoard.Controllers
                 BoardViewModel boardViewModel = _service.GetBoardViewData(_params); // TODO 업캐스팅 되나?
                 PostViewModel viewModel = new PostViewModel(postData, boardViewModel.PageCount, boardViewModel.Page, boardViewModel.Category, boardViewModel.PageSize, boardViewModel.PostListData);
 
+                viewModel.IsLoggedIn = IsAuthenticated;
+
                 viewModel.CommentListModel = commentListData; // TODO 위에 (....) 생성자 방식 수정할 것
                 return View(viewModel);
             }
@@ -293,6 +295,8 @@ namespace MvcBoard.Controllers
             if (IsAuthenticated && Principal != null)
             {
                 _service.DeleteComment(_params.CommentId);
+
+                UserNumber = _jwtManager.GetUserNumber(Principal);
 
                 _params.CurrentLoginUserNumber = UserNumber;
                 _params.CommentPage = 1; // TODO CommentPage 검토 필요, 일단 1로 고정 (삭제한 후에 해당 페이지가 삭제된 경우, 앞 페이지로 로드 처리 필요하기 때문)

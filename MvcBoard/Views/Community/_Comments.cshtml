@@ -19,14 +19,37 @@
         @foreach (var item in Model.CommentListData)
         {
             <div class="comment_item">
-                @item.UserName : @item.Contents (parent: @item.ParentId)
-                @if (item.IsCurrunLoginUser)
-                {
-                    <span>- 작성자</span>
-                    <span onclick='DeleteComment(@item.CommentId, @Model.CommentPage)' style="cursor: pointer">삭제</span>
-                    @* 아래는 data 속성을 이용하는 방법 *@
-                    @* <span class="delete-comment" data-comment-id="@item.CommentId" data-comment-page="@Model.CommentPage" style="cursor: pointer">삭제</span> *@
-                }
+                <div class="comment_item_head">
+                    <div class="left">
+                        <div class="icon_img"></div>
+                        <span class="user_name">@item.UserName</span>
+                        @if (item.IsCurrunLoginUser) {
+                            <span class="post_writer">글쓴이</span> 
+                        }
+                        <svg width="3" height="4" viewBox="0 0 3 4" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="1.5" cy="2" r="1.5" fill="#D8D8D8"></circle></svg>
+                        <span class="date">@item.CreateDate.ToString("yyyy.MM.dd")</span>
+                    </div>
+                    <div class="right">
+                        @if (item.IsCurrunLoginUser) {
+                            <span class="delete_btn" onclick='' style="cursor: pointer">수정</span> @*TODO *@
+                            <span class="delete_btn" onclick='DeleteComment(@item.CommentId, @Model.CommentPage)' style="cursor: pointer">삭제</span>
+                            @* 아래는 data 속성을 이용하는 방법 *@
+                            @* <span class="delete-comment" data-comment-id="@item.CommentId" data-comment-page="@Model.CommentPage" style="cursor: pointer">삭제</span> *@
+                        }
+                        <div class="options_btn">
+                            @* <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2240_14916)"><path d="M3.75 8.75C3.0625 8.75 2.5 9.3125 2.5 10C2.5 10.6875 3.0625 11.25 3.75 11.25C4.4375 11.25 5 10.6875 5 10C5 9.3125 4.4375 8.75 3.75 8.75ZM16.25 8.75C15.5625 8.75 15 9.3125 15 10C15 10.6875 15.5625 11.25 16.25 11.25C16.9375 11.25 17.5 10.6875 17.5 10C17.5 9.3125 16.9375 8.75 16.25 8.75ZM10 8.75C9.3125 8.75 8.75 9.3125 8.75 10C8.75 10.6875 9.3125 11.25 10 11.25C10.6875 11.25 11.25 10.6875 11.25 10C11.25 9.3125 10.6875 8.75 10 8.75Z" fill="black"></path></g><defs><clipPath id="clip0_2240_14916"><rect width="20" height="20" fill="white"></rect></clipPath></defs></svg> *@
+                        </div>
+                    </div>
+                </div>
+                <div class="comment_item_body">
+                    @item.Contents
+                </div>
+                <div class="comment_item_footer">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.9987 2C13.024 2 14.6654 3.66667 14.6654 6C14.6654 10.6667 9.66537 13.3333 7.9987 14.3333C6.33203 13.3333 1.33203 10.6667 1.33203 6C1.33203 3.66667 2.9987 2 4.9987 2C6.2387 2 7.33203 2.66667 7.9987 3.33333C8.66536 2.66667 9.7587 2 10.9987 2ZM8.62136 12.4027C9.17949 12.0545 9.71808 11.6759 10.2347 11.2687C12.222 9.68867 13.332 7.962 13.332 6C13.332 4.42667 12.3074 3.33333 10.9987 3.33333C10.2814 3.33333 9.50536 3.71333 8.94136 4.276L7.9987 5.21867L7.05603 4.276C6.49203 3.71333 5.71603 3.33333 4.9987 3.33333C3.70536 3.33333 2.66536 4.43733 2.66536 6C2.66536 7.96267 3.77603 9.68867 5.76203 11.2687C6.2587 11.6633 6.7887 12.032 7.37603 12.402C7.57536 12.528 7.7727 12.6487 7.9987 12.7833C8.2247 12.6487 8.42203 12.528 8.62136 12.4027Z" fill="#D8D8D8"></path></svg>
+                    <span>좋아요</span>
+                    <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.36305 9.91667H11.668V2.91667H2.33464V10.7246L3.36305 9.91667ZM3.76672 11.0833L1.16797 13.125V2.33333C1.16797 2.17862 1.22943 2.03025 1.33882 1.92085C1.44822 1.81146 1.59659 1.75 1.7513 1.75H12.2513C12.406 1.75 12.5544 1.81146 12.6638 1.92085C12.7732 2.03025 12.8346 2.17862 12.8346 2.33333V10.5C12.8346 10.6547 12.7732 10.8031 12.6638 10.9125C12.5544 11.0219 12.406 11.0833 12.2513 11.0833H3.76672Z" fill="#D8D8D8"></path></svg>
+                    <span>답글 쓰기</span>
+                </div>
             </div>
         }
 

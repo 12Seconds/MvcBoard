@@ -130,25 +130,26 @@
 
         @* 댓글 영역 *@
         <div class="comments">
-            <div class="label">댓글 @Model.CommentListModel.CommentListData.Count</div>
+            <div class="label">댓글 @Model.CommentListModel.CommentTotalCount</div>
 
             @await Html.PartialAsync("_WriteComment", new WriteCommentParams // TODO
-       {
-                    @* Comment 객체 파라미터 *@
-            PostId = Model.PostData.PostId,
-           UserId = 1, // 사용하지 않는 값, Controller 에서 현재 토큰 정보로 매핑함
-           ParentId = null,
-           Contents = "",
-           IsAnonymous = false,
-
-           ViewParams = new CommentsViewParams
-           {
-               PostId = Model.CommentListModel.PostId, // Model.PostData.PostId, 와 동일
-               Page = Model.CommentListModel.Page,
-               CommentPage = Model.CommentListModel.CommentPage ?? 1,
-               Category = Model.Category ?? 0,
-           }
-       })
+            {
+            @* Comment 객체 파라미터 *@
+                PostId = Model.PostData.PostId,
+                UserId = 1, // 사용하지 않는 값, Controller 에서 현재 토큰 정보로 매핑함
+                ParentId = null,
+                Contents = "",
+                IsAnonymous = false,
+                IsLoggedIn = Model.IsLoggedIn,
+                ViewParams = new CommentsViewParams
+                {
+                    PostId = Model.CommentListModel.PostId, // Model.PostData.PostId, 와 동일
+                    Page = Model.CommentListModel.Page,
+                    CommentPage = Model.CommentListModel.CommentPage ?? 1,
+                    Category = Model.Category ?? 0,
+                    // CurrentLoginUserNumber = Model.CommentListModel.CurrentLoginUserNumber, 필요 시 PostViewModel 에도 필드 추가하여 받아올 것
+                }
+            })
 
             <div id="commentList">
                 @await Html.PartialAsync("_Comments", Model.CommentListModel)

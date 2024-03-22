@@ -380,6 +380,7 @@ namespace MvcBoard.Managers
             Console.WriteLine($"## CommunityDataManager >> ReadCommentByPostId(postId = {_params.PostId})");
 
             int pageCount = 0;
+            int commentCount = 0;
 
             List<CommentWithUser> Comments = new List<CommentWithUser>();
 
@@ -428,6 +429,13 @@ namespace MvcBoard.Managers
                         Console.WriteLine($"@@@@@@@ ## pageCount: {pageCount}"); // TODO 삭제
                     }
 
+                    /* 총 댓글 수 */
+                    reader.NextResult();
+                    if (reader.Read())
+                    {
+                        commentCount = Convert.ToInt32(reader["TotalCommentCount"]);
+                    }
+
                     reader.Close();
                 }
                 connection.Close();
@@ -439,6 +447,7 @@ namespace MvcBoard.Managers
                 CommentPage = _params.CommentPage,
                 CommentPageSize = _params.CommentPageSize,
                 CommentPageCount = pageCount, // todo Page
+                CommentTotalCount = commentCount,
                 // TODO 진짜 이게 맞나
                 PostId = _params.PostId,
                 Category = _params.Category,
