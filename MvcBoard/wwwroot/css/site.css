@@ -50,12 +50,55 @@ body {
     border: 1px solid rgb(230,230,230);
     text-align: center;
 }
+.community .user_info .box {
+    width: 220px;
+    height: 180px;
+    margin-top: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    /*background-color: aqua;*/
+}
+
+.community .user_info .box .login_image {
+    width: 150px;
+    height: 100px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    background-image: url("https://ground.buv.co.kr/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogin_logo.60684d02.png&w=256&q=75");
+    background-size: cover;
+}
+
+.community .user_info .box .description {
+    color: #999999;
+    margin-bottom: -1px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.community .user_info .box .user_name {
+    color: #999999;
+    margin-bottom: -1px;
+    font-size: 16px;
+    font-weight: bold;
+
+    padding-top: 100px;
+
+    width: 150px;
+    height: 100px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
 
  .community .user_info .login {
     width: 220px;
     height: 40px;
     border-radius: 10px;
-    margin-top: 200px;
+    margin-top: 10px;
     margin-bottom: 20px;
 }
 

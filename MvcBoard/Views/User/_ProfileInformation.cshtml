@@ -10,15 +10,23 @@
 
 <div class="user_info">
 
+    
     @if (Model.UserNumber == 0)
     {
+        <div class="box">
+            <div class="login_image"></div>
+            <p class="description">로그인 후 더 편하게</p>
+            <p class="description">Music Ground를 이용해 보세요.</p>
+        </div>
         <a asp-area="" asp-controller="User" asp-action="Index">
             <button class="login">로그인/회원가입</button>
         </a>
     }
     else
     {
-        <div>@Model.Name</div>
+        <div class="box">
+            <div class="user_name">@Model.Name 님 안녕하세요.</div>
+        </div>
         <a asp-area="" asp-controller="User" asp-action="Logout">
             <button class="login">로그아웃</button>
         </a>
