@@ -124,6 +124,70 @@ namespace MvcBoard.Managers
             return new BoardViewModel(pageCount, _params.Page, _params.Category, _params.Size, Posts); 
         }
 
+        // 인기 게시판 조회 (현재는 게시판 조회와 SP 이름만 다르고 모든게 같지만, 실시간/주간/월간 필터링 기능 추가되면 달라질 것이므로 따로 작성)
+        public BoardViewModel GetHotBoardViewData(GetBoardParams _params)
+        {
+            // TODO 로그 모듈(매니저) 만들기
+            Console.WriteLine($"## CommunityDataManager >> GetBoardViewData(category = {_params.Category}, page = {_params.Page}), size = {_params.Size})");
+
+            int pageCount = 0;
+
+            List<PostWithUser> Posts = new List<PostWithUser>();
+
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("ReadHotPost", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Category", _params.Category);
+                    command.Parameters.AddWithValue("@Page", _params.Page);
+                    command.Parameters.AddWithValue("@Size", _params.Size);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    PostWithUser? post = null;
+
+                    /* 게시판 데이터 */
+                    while (reader.Read())
+                    {
+                        post = new PostWithUser();
+
+                        post.PostId = int.Parse(reader["PostId"]?.ToString() ?? "0");
+                        post.Title = reader["Title"]?.ToString() ?? "";
+                        post.Contents = reader["Contents"].ToString();
+                        post.UserId = int.Parse(reader["UserId"]?.ToString() ?? "0");
+                        post.Likes = int.Parse(reader["Likes"]?.ToString() ?? "0");
+                        post.Views = int.Parse(reader["Views"]?.ToString() ?? "0");
+                        post.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
+
+                        post.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
+                        if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
+                        if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
+
+                        // Join 테이블 데이터
+                        post.UserName = reader["Name"]?.ToString() ?? "";
+
+                        Posts.Add(post);
+                    }
+
+                    /* 총 페이지 수 */
+                    reader.NextResult();
+                    if (reader.Read())
+                    {
+                        pageCount = Convert.ToInt32(reader["TotalPageCount"]);
+                        Console.WriteLine($"@@@@@@@ ## pageCount: {pageCount}"); // TODO 삭제
+                    }
+
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            // TODO 여기도.. 뭔가 간소화 필요
+            return new BoardViewModel(pageCount, _params.Page, _params.Category, _params.Size, Posts);
+        }
+
         // 게시물 작성 (todo return 타입 수정 필요)
         public void CreatePost(Post post)
         {

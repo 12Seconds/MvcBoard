@@ -39,7 +39,7 @@ namespace MvcBoard.Services
         }
 
         // 게시판 조회
-        public BoardViewModel GetBoardViewData(BoardViewParams _params) // TODO category type 상수 정의 및 참조 (1: 자유게시판 ~ 99: 공지)
+        public BoardViewModel GetBoardViewData(BoardViewParams _params)
         {
             Console.WriteLine($"### CommunityService >> GetBoardViewData() _params.Category: {_params.Category}, _params.Page: {_params.Page}");
 
@@ -49,6 +49,19 @@ namespace MvcBoard.Services
             @params.Page = _params.Page < 0 ? 1 : _params.Page;
 
             return _dataManagers.GetBoardViewData(@params);
+        }
+
+        // 인기 게시판 조회 (현재는 게시판 조회와 SP 이름만 다르고 모든게 같지만, 실시간/주간/월간 필터링 기능 추가되면 달라질 것이므로 따로 작성)
+        public BoardViewModel GetHotBoardViewData(BoardViewParams _params)
+        {
+            Console.WriteLine($"### CommunityService >> GetBoardViewData() _params.Category: {_params.Category}, _params.Page: {_params.Page}");
+
+            GetBoardParams @params = new GetBoardParams();
+
+            @params.Category = _params.Category;
+            @params.Page = _params.Page < 0 ? 1 : _params.Page;
+
+            return _dataManagers.GetHotBoardViewData(@params);
         }
 
         // 게시물 작성

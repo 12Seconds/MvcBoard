@@ -41,8 +41,9 @@ namespace MvcBoard.Controllers
         // 인기 게시판
         public IActionResult Hot(BoardViewParams? _params)
         {
-            // TODO 별도 SP 및 함수 만들어서 호출 필요, 지금은 임시로 Category 값이 2이면 인기
-            BoardViewModel viewModel = _service.GetBoardViewData(new BoardViewParams { Category = 2 });
+            BoardViewModel viewModel = _service.GetHotBoardViewData(_params ?? new BoardViewParams());
+
+            viewModel.Category = 1; // 임시 (게시판 네이게이션 메뉴 포커스 안되는 문제로 임시 설정
 
             return View(viewModel);
         }
