@@ -91,6 +91,54 @@ namespace MvcBoard.Managers.JWT
             // bool IsAuthenticated = principal.Identity.IsAuthenticated;
         }
 
+        /// <summary>
+        /// 쿠키에서 JWT 토큰을 읽어 인증
+        /// </summary>
+        /// <returns>
+        /// bool: 인증 성공 여부
+        /// ClaimsPrincipal?: Principal 객체
+        /// </returns>
+        public (bool, ClaimsPrincipal?) Authentication(string? cookie)
+        {
+            bool IsAuthenticated = false;
+
+            if (cookie == null)
+            {
+                return (false, null);
+            }
+
+            ClaimsPrincipal Principal = ValidateJwtToken(cookie);
+
+            if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
+            {
+                IsAuthenticated = true;
+                return (IsAuthenticated, Principal);
+            }
+            else
+            {
+                return (IsAuthenticated, null);
+            }
+        }
+
+        /// <summary>
+        /// 현재 인증된 토큰의 Principal 객체에서 유저 고유 번호 클레임을 읽어 반환
+        /// </summary>
+        /// <param name="Principal"></param>
+        /// <returns>int: 유저 고유 번호 (UserId -> UserNumber 바꿀 것)</returns>
+        public int GetUserNumber(ClaimsPrincipal Principal)
+        {
+            int userNumber = 0;
+            try
+            {
+                userNumber = Convert.ToInt32(Principal.FindFirst(MvcBoardClaimTypes.UserNumber)?.Value);
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return userNumber;
+        }
+
     }
 
     // 서비스(앱) 인증 및 비즈니스 로직에 사용할 클레임 타임 정의

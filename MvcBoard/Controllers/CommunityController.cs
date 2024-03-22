@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MvcBoard.Controllers.Models;
 using MvcBoard.Managers.JWT;
-using MvcBoard.Models;
 using MvcBoard.Models.Community;
 using MvcBoard.Services;
-using System.Diagnostics;
 using System.Security.Claims;
 
 namespace MvcBoard.Controllers
@@ -84,7 +82,7 @@ namespace MvcBoard.Controllers
         {
             Post? viewModel = null;
 
-            (bool IsAuthenticated, ClaimsPrincipal? Principal) = Authentication();
+            (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
             // 인증 성공
             if (IsAuthenticated && Principal != null)
             {
@@ -113,13 +111,13 @@ namespace MvcBoard.Controllers
 
             int UserNumber;
 
-            (bool IsAuthenticated, ClaimsPrincipal? Principal) = Authentication();
+            (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
             // 인증 성공
             if (IsAuthenticated && Principal != null)
             {
                 // string Id = Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // TODO UserNumber
 
-                UserNumber = GetUserNumber(Principal);
+                UserNumber = _jwtManager.GetUserNumber(Principal);
                 // string LoginId = Principal.FindFirst(MvcBoardClaimTypes.Id)?.Value;
 
             }
@@ -178,11 +176,11 @@ namespace MvcBoard.Controllers
             {
                 // TODO CommentsViewParams 과 PostViewParams 사실상 같음
 
-                (bool IsAuthenticated, ClaimsPrincipal? Principal) = Authentication();
+                (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
                 // 인증 성공 - TODO 단순히 게시물을 읽는 건데 매번 내 게시물임을 알기 위해서 인증을 해야하는게 맞을까
                 if (IsAuthenticated && Principal != null)
                 {
-                    UserNumber = GetUserNumber(Principal);
+                    UserNumber = _jwtManager.GetUserNumber(Principal);
 
                     if (postData.UserId == UserNumber)
                     {
@@ -218,7 +216,7 @@ namespace MvcBoard.Controllers
         [HttpPost]
         public IActionResult DeletePost(int postId)
         {
-            (bool IsAuthenticated, ClaimsPrincipal? Principal) = Authentication();
+            (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
             if (IsAuthenticated && Principal != null)
             {
                 _service.DeletePost(postId);
@@ -241,10 +239,10 @@ namespace MvcBoard.Controllers
             if (ModelState.IsValid)
             {
                 // 인증
-                (bool IsAuthenticated, ClaimsPrincipal? Principal) = Authentication();
+                (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
                 if (IsAuthenticated && Principal != null)
                 {
-                    int UserNumber = GetUserNumber(Principal);
+                    int UserNumber = _jwtManager.GetUserNumber(Principal);
 
                     // 댓글 작성자 매핑
                     commentParams.UserId = UserNumber;
@@ -279,7 +277,7 @@ namespace MvcBoard.Controllers
         {
             int UserNumber = 0;
 
-            (bool IsAuthenticated, ClaimsPrincipal? Principal) = Authentication();
+            (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
             if (IsAuthenticated && Principal != null)
             {
                 _service.DeleteComment(_params.CommentId);
@@ -300,51 +298,6 @@ namespace MvcBoard.Controllers
         }
 
         // TODO 댓글 수정 개발 필요
-
-        /// <summary>
-        /// 쿠키에서 JWT 토큰을 읽어 인증
-        /// </summary>
-        /// <returns>
-        /// bool: 인증 성공 여부
-        /// ClaimsPrincipal?: Principal 객체
-        /// </returns>
-        public (bool, ClaimsPrincipal?) Authentication()
-        {
-            bool IsAuthenticated = false;
-
-            // ControllerBase 의 Requst 에서 쿠키 획득 (Httpcontext 도 있음)
-            string cookie = Request.Cookies["jwtToken"] ?? ""; 
-            ClaimsPrincipal Principal = _jwtManager.ValidateJwtToken(cookie);
-
-            if (Principal != null && Principal.Identity != null && Principal.Identity.IsAuthenticated)
-            {
-                IsAuthenticated = true;
-                return (IsAuthenticated, Principal);
-            }
-            else
-            {
-                return (IsAuthenticated, null);
-            }
-        }
-
-        /// <summary>
-        /// 현재 인증된 토큰의 Principal 객체에서 유저 고유 번호 클레임을 읽어 반환
-        /// </summary>
-        /// <param name="Principal"></param>
-        /// <returns>int: 유저 고유 번호 (UserId -> UserNumber 바꿀 것)</returns>
-        public int GetUserNumber(ClaimsPrincipal Principal)
-        {
-            int userNumber = 0;
-            try
-            {
-                userNumber = Convert.ToInt32(Principal.FindFirst(MvcBoardClaimTypes.UserNumber)?.Value);
-            }
-            catch (Exception ex)
-            {
-            }
-
-            return userNumber;
-        }
 
     }
 }
