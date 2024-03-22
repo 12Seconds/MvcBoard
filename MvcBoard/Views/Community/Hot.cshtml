@@ -13,13 +13,12 @@
 
     <aside class="community_aside_left">
 
-        <div class="user_info">
-            <button class="login">로그인/회원가입</button>
-        </div>
+        @* 로그인 정보 Partial View *@
+        <div id="user_info_container"></div>
+        @using (Html.AjaxBeginForm("UserInformation", "User", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "user_info_container" }, new { id = "UserInformationForm" })) { }
 
         <a asp-area="" asp-controller="Community" asp-action="Index">
             <div class="category_list_item">
-                @* 그냥 긁어와도 되나 *@
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="18" rx="9" fill="#333333"></rect><path d="M5.25 5.66602H12.75V6.49935H5.25V5.66602ZM5.25 8.58268H12.75V9.41602H5.25V8.58268ZM5.25 11.4993H12.75V12.3327H5.25V11.4993Z" fill="white"></path></svg>
                 &nbsp;전체 게시판
             </div>
@@ -119,3 +118,13 @@
     </aside>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 유저 정보 영역
+        $('#UserInformationForm').submit();
+
+        // 게시판 네비게이션 메뉴
+        // $('#BoardNavigationForm').submit();
+    });
+</script>

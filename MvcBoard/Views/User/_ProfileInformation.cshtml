@@ -1,0 +1,50 @@
+﻿@model MvcBoard.Models.Proifle.ProfileInfo
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@* TODO Shared 나 Community 하위에 들어가야 할까 *@
+
+<div class="user_info">
+
+    @if (Model.UserNumber == 0)
+    {
+        <a asp-area="" asp-controller="User" asp-action="Index">
+            <button class="login">로그인/회원가입</button>
+        </a>
+    }
+    else
+    {
+        <div>@Model.Name</div>
+        <a asp-area="" asp-controller="User" asp-action="Logout">
+            <button class="login">로그아웃</button>
+        </a>
+        @* 방법2. <button id="logout_btn" class="login" onclick="logout()"> 로그아웃 </button> *@
+    }
+
+</div>
+
+<script>
+
+    // 방법2. 클라이언트에서 토큰 쿠키 삭제
+    /*
+    function logout() {
+        $.ajax({
+            type: "GET",
+            url: "/User/Logout2",
+            // data: {},
+            // dataType: "json"
+            success: function (result) {
+                // 토큰의 유효 기간을 과거로 돌려서 삭제하는 방법
+                document.cookie = `jwtToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+                window.location.href = '/Community/index'
+            },
+            error: function () {}
+        })
+    }
+    */
+
+</script>

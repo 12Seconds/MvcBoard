@@ -2,7 +2,9 @@
 using MvcBoard.Controllers.Models;
 using MvcBoard.Managers.JWT;
 using MvcBoard.Managers.Models;
+using MvcBoard.Models.Proifle;
 using MvcBoard.Services;
+using System.Security.Claims;
 
 namespace MvcBoard.Controllers
 {
@@ -70,6 +72,27 @@ namespace MvcBoard.Controllers
             return View("Index", _params);
         }
 
+        // 로그아웃
+        /* 방법1. 서버측에서 토큰 쿠키 삭제 */
+        [HttpGet]
+        public IActionResult Logout() 
+        {
+            Response.Cookies.Delete("jwtToken");
+            return RedirectToAction("Index", "Community");
+        }
+
+        /* 방법2. 클라이언트에서 응답을 받고 토큰 쿠키 삭제 */
+        /*
+        [HttpGet]
+        public IActionResult Logout2()
+        {
+            Console.WriteLine("### Logout 2 ");
+            // 토큰 삭제 (서버측에서 현재 클라이언트의 토큰을 삭제하는 방법)
+            return Ok();
+            // return RedirectToAction("Notice", "Community"); // Ajax 로 요청하면 동작 안함
+        }
+        */
+
 
         // 회원가입 화면
         public IActionResult SignUp()
@@ -90,5 +113,34 @@ namespace MvcBoard.Controllers
             }
             return View(_params);
         }
+        
+        [HttpPost]
+        public IActionResult UserInformation()
+        {
+            ProfileInfo Model;
+            int UserNumber;
+            string UserId; // 임시, 프로필 SP 작성 후 삭제할 것
+
+            (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
+            if (IsAuthenticated && Principal != null)
+            {
+                UserNumber = _jwtManager.GetUserNumber(Principal);
+                UserId = _jwtManager.GetUserId(Principal); // 임시, 프로필 SP 작성 후 삭제할 것
+
+                /* TODO UserNumber 으로 로그인 유저 정보를 SP로 읽을지, 토큰 클레임으로 저장해놓고 사용할 지 정해야 함 */
+                Model = new ProfileInfo
+                {
+                    UserNumber = UserNumber,
+                    Name = UserId
+                };
+            }
+            else
+            {
+                Model = new ProfileInfo();
+            }
+
+            return PartialView("_ProfileInformation", Model);
+        }
+
     }
 }

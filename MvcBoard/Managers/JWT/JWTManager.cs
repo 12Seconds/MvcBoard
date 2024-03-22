@@ -139,6 +139,21 @@ namespace MvcBoard.Managers.JWT
             return userNumber;
         }
 
+        // 임시, 프로필 SP 작성 후 삭제할 것
+        public string GetUserId(ClaimsPrincipal Principal)
+        {
+            string loginId = "";
+            try
+            {
+                loginId = (Principal.FindFirst(MvcBoardClaimTypes.Id)?.Value)?.ToString() ?? "";
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return loginId;
+        }
+
     }
 
     // 서비스(앱) 인증 및 비즈니스 로직에 사용할 클레임 타임 정의
