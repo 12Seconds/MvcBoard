@@ -12,6 +12,7 @@
 
         // TODO 이게 맞나...? 게시물 id 와 게시판 정보 (카테고리, 페이지)를 유지한 채 댓글페이지만 변경할 수가 없나..결국 거의 모든 정보가 다 필요하네
         public int PostId { get; set; } // 현재 게시물 아이디
+        public int PostUserId { get; set; } // 현재 게시물 작성자 아이디
         public int Category { get; set; } // 현재 카테고리
         public int Page { get; set; } // 현재 게시판 페이지 인덱스
     }

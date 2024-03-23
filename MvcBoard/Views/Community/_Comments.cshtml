@@ -23,7 +23,8 @@
                     <div class="left">
                         <div class="icon_img"></div>
                         <span class="user_name">@item.UserName</span>
-                        @if (item.IsCurrunLoginUser) {
+                        @if (item.IsPostWriter)
+                        {
                             <span class="post_writer">글쓴이</span> 
                         }
                         <svg width="3" height="4" viewBox="0 0 3 4" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="1.5" cy="2" r="1.5" fill="#D8D8D8"></circle></svg>
@@ -62,6 +63,7 @@
             @Html.Hidden("Page", new { @value = Model.PostId })
             @Html.Hidden("CommentPage", new { @value = 1 }) /* Model.PostId */ 
             @Html.Hidden("Category", new { @value = Model.Category })
+            @Html.Hidden("PostUserId", new { @value = Model.PostUserId})
         }
 
     </div>

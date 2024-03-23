@@ -150,19 +150,23 @@ namespace MvcBoard.Services
                 // TODO 이게 맞나
                 @params.Category = _params.Category;
                 @params.CommentPage = _params.CommentPage < 0 ? 1 : _params.CommentPage;
+                @params.PostUserId = _params.PostUserId;
 
                 CommentsViewModel ViewModel = _dataManagers.ReadCommentByPostId(@params);
 
                 // 댓글 데이터 가공
-                if (_params.CurrentLoginUserNumber > 0)
+                foreach (var comment in ViewModel.CommentListData)
                 {
-                    foreach (var comment in ViewModel.CommentListData)
+                    // 로그인 사용자의 댓글 여부 설정
+                    if (comment.UserId > 0 && comment.UserId == _params.CurrentLoginUserNumber)
                     {
-                        // 로그인 사용자의 댓글 여부 설정
-                        if (comment.UserId == _params.CurrentLoginUserNumber)
-                        {
-                            comment.IsCurrunLoginUser = true;
-                        }
+                        comment.IsCurrunLoginUser = true;
+                    }
+
+                    // 글 작성자의 댓글 여부 설정
+                    if (comment.UserId == _params.PostUserId)
+                    {
+                        comment.IsPostWriter = true;
                     }
                 }
 

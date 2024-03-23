@@ -21,11 +21,12 @@
             @Html.HiddenFor(model => model.PostId, new { @value = Model.PostId })
             @Html.HiddenFor(model => model.UserId, new { @value = Model.UserId })
             @Html.HiddenFor(model => model.ParentId, new { @value = Model.ParentId })
-
+           
             @Html.HiddenFor(model => model.ViewParams.PostId, new { @value = Model.ViewParams.PostId})
             @Html.HiddenFor(model => model.ViewParams.Page, new { @value = Model.ViewParams.Page })
             @Html.HiddenFor(model => model.ViewParams.CommentPage, new { @value = Model.ViewParams.CommentPage })
             @Html.HiddenFor(model => model.ViewParams.Category, new { @value = Model.ViewParams.Category })
+            @Html.HiddenFor(model => model.ViewParams.PostUserId, new { @value = Model.ViewParams.PostUserId })
 
             @if (Model.IsLoggedIn)
             {

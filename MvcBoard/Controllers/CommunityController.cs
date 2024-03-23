@@ -212,7 +212,8 @@ namespace MvcBoard.Controllers
                         Page = _params.Page, 
                         CommentPage = _params.CommentPage, 
                         Category = _params.Category, 
-                        CurrentLoginUserNumber = UserNumber
+                        CurrentLoginUserNumber = UserNumber,
+                        PostUserId = postData.UserId,
                     });
 
                 // 게시물 하단 게시판 데이터 조회

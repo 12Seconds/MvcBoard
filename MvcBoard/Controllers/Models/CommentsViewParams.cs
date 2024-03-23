@@ -15,5 +15,6 @@
         */
         public int CurrentLoginUserNumber { get; set; } = 0;
         public bool IsLoggedIn { get; set; } = false;
+        public int PostUserId { get; set; }
     }
 }

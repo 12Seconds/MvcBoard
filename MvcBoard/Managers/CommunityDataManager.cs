@@ -452,6 +452,7 @@ namespace MvcBoard.Managers
                 PostId = _params.PostId,
                 Category = _params.Category,
                 Page = _params.Page,
+                PostUserId = _params.PostUserId
             };
         }
 
