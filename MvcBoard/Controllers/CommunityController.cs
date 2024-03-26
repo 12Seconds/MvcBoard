@@ -94,7 +94,7 @@ namespace MvcBoard.Controllers
         {
             WriteViewModel viewModel = new WriteViewModel();
 
-            viewModel.BoardTypes = _service.GetBoardTypeData(true);
+            viewModel.BoardTypes = _service.GetBoardTypeData();
             (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
             // 인증 성공
             if (IsAuthenticated && Principal != null)
