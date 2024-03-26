@@ -125,8 +125,11 @@ body {
     width: 184px;
     min-width: 184px;
     margin-left: 30px; /* 사실 magin 대신 padding */
-    background-color: #ff00ff;
-    text-align: center
+    background-color: #ffbbff;
+    text-align: center;
+    border: 1px solid #ff00ff;
+    border-radius: 10px;
+    color: #ff00ff;
 }
 
 .community_main {
@@ -138,13 +141,18 @@ body {
 
 .community_main .rating_filter {
     height: 30px;
-    background-color: cadetblue;
+    /*background-color: cadetblue;*/
     margin-bottom: 20px;
 }
 
 .community_main .rated_scroll_board {
     height: 190px;
-    background-color: cadetblue;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    background-color: #f6f6f6;
+    color: #a6a6a6;
+    text-align: center;
+    line-height: 190px;
 }
 
 .community_main .write_button {
@@ -173,12 +181,18 @@ body {
 }
 
 .community_main .board .labels {
-    border-top: 2px solid red;
-    border-bottom: 2px solid red;
+    border-top: 2px solid #e6e6e6;
+    border-bottom: 2px solid #e6e6e6;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 .community_main .board .post {
     border-bottom: 1px solid rgb(225 225 225);
+}
+
+.community_main .board .post.notice {
+    background-color: rgb(255,232,232);
 }
 
 .community_main .board .item .category { /* TODO ellipsis 처리 */

@@ -30,9 +30,9 @@
         <h3>@BoardTitle</h3>
         <hr/>
 
-        <div class="rating_filter">실시간 주간 월간</div>
+        <div class="rating_filter">실시간 주간 월간 버튼 영역 (미구현)</div>
 
-        <div class="rated_scroll_board"></div>
+        <div class="rated_scroll_board">(실시간/주간/월간) 별 인기 게시물 스크롤 보드 영역 (미구현)</div>
 
         <a asp-area="" asp-controller="Community" asp-action="write" asp-route-Category=@Model.Category>
             <div id="new_post_button" class="write_button"> 새 글을 작성해보세요 </div> 
@@ -55,7 +55,7 @@
 
             @foreach (var item in Model.PostListData)
             {
-                <div class="item post">
+                <div class="item post @(item.Category == 99 ? "notice" : "")"> @* TODO item.IsNotice *@
                     <div class="category">자유 게시판</div> @*TODO Category 에 따라 *@
                     <div class="title">
                         <a asp-area="" asp-controller="Community" asp-action="View"

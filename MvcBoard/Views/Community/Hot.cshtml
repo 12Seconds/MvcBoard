@@ -32,7 +32,7 @@
 
         <div class="category_dropbox">게시판 선택 (드롭 박스) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 태그 없음 (드롭 박스)</div>
 
-        <div class="rating_filter">실시간 주간 월간</div>
+        <div class="rating_filter">실시간 주간 월간 버튼 영역 (미구현)</div>
 
         @* 게시판 영역 *@
         <div class="board">
@@ -47,7 +47,7 @@
 
             @foreach (var item in Model.PostListData)
             {
-                <div class="item post">
+                <div class="item post @(item.Category == 99 ? "notice" : "")"> @* TODO item.IsNotice *@
                     <div class="category">자유 게시판</div> @*TODO Category 에 따라 *@
                     <div class="title">
                         <a asp-area="" asp-controller="Community" asp-action="View"

@@ -45,7 +45,7 @@
 
             @foreach (var item in Model.PostListData)
             {
-                <div class="item post">
+                <div class="item post @(item.Category == 99 ? "notice" : "")"> @* TODO item.IsNotice *@
                     <div class="category">자유 게시판</div> @*TODO Category 에 따라 *@
                     <div class="title">
                         <a asp-area="" asp-controller="Community" asp-action="View"
