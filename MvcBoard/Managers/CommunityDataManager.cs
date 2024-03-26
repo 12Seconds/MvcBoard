@@ -104,6 +104,13 @@ namespace MvcBoard.Managers
 
                         // Join 테이블 데이터
                         post.UserName = reader["Name"]?.ToString() ?? "";
+                        post.BoardName = reader["BoardName"]?.ToString() ?? "";
+
+                        // TODO IsNotice 필드 추가하기 전 임시 처리
+                        if (post.BoardName == "")
+                        {
+                            post.BoardName = "공지 게시판";
+                        }
 
                         Posts.Add(post);
                     }
@@ -168,6 +175,13 @@ namespace MvcBoard.Managers
 
                         // Join 테이블 데이터
                         post.UserName = reader["Name"]?.ToString() ?? "";
+                        post.BoardName = reader["BoardName"]?.ToString() ?? "";
+
+                        // TODO IsNotice 필드 추가하기 전 임시 처리
+                        if (post.BoardName == "")
+                        {
+                            post.BoardName = "공지 게시판";
+                        }
 
                         Posts.Add(post);
                     }
@@ -272,6 +286,13 @@ namespace MvcBoard.Managers
                         post.LoginId = reader["Id"]?.ToString() ?? "";
                         post.UserName = reader["Name"]?.ToString() ?? "";
                         post.UserImage = int.Parse(reader["Image"]?.ToString() ?? "0");
+                        post.BoardName = reader["BoardName"]?.ToString() ?? "";
+
+                        // TODO IsNotice 필드 추가하기 전 임시 처리
+                        if (post.BoardName == "")
+                        {
+                            post.BoardName = "공지 게시판";
+                        }
 
                         posts.Add(post);
                     }

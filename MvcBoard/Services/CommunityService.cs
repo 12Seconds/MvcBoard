@@ -39,6 +39,33 @@ namespace MvcBoard.Services
             return _cachedBoardTypeData;
         }
 
+        // 게시판 이름 조회
+        public string GetBoardName(int category)
+        {
+            string boardName = "";
+
+            if (_cachedBoardTypeData == null)
+            {
+                return boardName;
+            }
+
+            foreach(BoardType boardType in _cachedBoardTypeData)
+            {
+                if (boardType.Category == category)
+                {
+                    boardName = boardType.BoardName;
+                }
+            }
+
+            // 공지 임시 처리
+            if (category == 99)
+            {
+                boardName = "공지 게시판";
+            }
+
+            return boardName;
+        }
+
         // 게시판 조회
         public BoardViewModel GetBoardViewData(BoardViewParams _params)
         {
@@ -49,7 +76,10 @@ namespace MvcBoard.Services
             @params.Category = _params.Category;
             @params.Page = _params.Page < 0 ? 1 : _params.Page;
 
-            return _dataManagers.GetBoardViewData(@params);
+            BoardViewModel viewModel = _dataManagers.GetBoardViewData(@params);
+            viewModel.BoardName = GetBoardName(@params.Category);
+
+            return viewModel;
         }
 
         // 인기 게시판 조회 (현재는 게시판 조회와 SP 이름만 다르고 모든게 같지만, 실시간/주간/월간 필터링 기능 추가되면 달라질 것이므로 따로 작성)
@@ -62,7 +92,10 @@ namespace MvcBoard.Services
             @params.Category = _params.Category;
             @params.Page = _params.Page < 0 ? 1 : _params.Page;
 
-            return _dataManagers.GetHotBoardViewData(@params);
+            BoardViewModel viewModel = _dataManagers.GetHotBoardViewData(@params);
+            viewModel.BoardName = GetBoardName(@params.Category);
+
+            return viewModel;
         }
 
         // 게시물 작성
