@@ -8,5 +8,6 @@
         public int ParentCategory { get; set; }
         public int IsParent { get; set; }
         public int IconType { get; set; }
+        public bool IsWritable { get; set; }
     }
 }

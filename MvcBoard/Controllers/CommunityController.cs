@@ -92,18 +92,22 @@ namespace MvcBoard.Controllers
         
         public IActionResult Write(WritePostParams _params)
         {
-            Post? viewModel = null;
+            WriteViewModel viewModel = new WriteViewModel();
 
+            viewModel.BoardTypes = _service.GetBoardTypeData(true);
             (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
             // 인증 성공
             if (IsAuthenticated && Principal != null)
             {
                 if (_params.PostId != null && _params.PostId > 0)
                 {
-                    viewModel = _service.GetPostWithUserById(_params.PostId); // PostWithUser -> Post 캐스팅 일어남
+                    viewModel.PostData = _service.GetPostWithUserById(_params.PostId) ?? new Post(); // PostWithUser -> Post 캐스팅 일어남
+                    return View("Write", viewModel);
                 }
 
-                return View("Write", viewModel ?? new Post());
+                viewModel.PostData.Category = _params.Category ?? 0;
+
+                return View("Write", viewModel);
             }
             // TODO 인증 실패 처리
             else
@@ -141,7 +145,7 @@ namespace MvcBoard.Controllers
 
             if (ModelState.IsValid)
             {
-                if (postData.Category == 0) postData.Category = 1; // 1: 자유게시판 (default), todo 드롭다운 or 모달 구현하면 필요 없음
+                if (postData.Category == 0) postData.Category = 41; // 41: 자유게시판 (default)
 
                 // 작성자 매핑
                 postData.UserId = UserNumber;
@@ -155,16 +159,7 @@ namespace MvcBoard.Controllers
                     _service.UpdatePost(postData);
                 }
 
-                // todo 정의될 category 에 맞게 수정 필요
-                switch (postData.Category)
-                {
-                    case 0:
-                    case 1: return RedirectToAction("Index");
-                    case 2: return RedirectToAction("Hot");
-                    case 99: return RedirectToAction("Notice");
-
-                    default: return RedirectToAction("Index");
-                }
+                return RedirectToAction("Index", new { Category = postData.Category });
 
                 // ModelState.AddModelError(string.Empty, "게시물을 저장할 수 없습니다."); // TODO
             }

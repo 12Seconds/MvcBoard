@@ -48,6 +48,7 @@ namespace MvcBoard.Managers
                         board.ParentCategory = int.Parse(reader["ParentCategory"]?.ToString() ?? "0");
                         board.IsParent = int.Parse(reader["IsParent"]?.ToString() ?? "0");
                         board.IconType = int.Parse(reader["IconType"]?.ToString() ?? "0");
+                        board.IsWritable = reader.GetBoolean(reader.GetOrdinal("IsWritable"));
 
                         BoardTypes.Add(board);
                     }

@@ -1,4 +1,4 @@
-﻿@model MvcBoard.Models.Post;
+﻿@model MvcBoard.Models.Community.WriteViewModel
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -6,6 +6,18 @@
     var BoardTitle = "게시물 작성";
 
     ViewData["Title"] = BoardTitle;
+
+    List<SelectListItem> categoryList = new List<SelectListItem>();
+
+    // 게시판 데이터
+    foreach(var boardType in Model.BoardTypes)
+    {
+        // 하위 게시판을 갖는 부모 게시판이거나(IsParent), 특수한 게시판인 경우(전체, 인기, 공지) 제외 처리
+        if (boardType.IsWritable)
+        {
+            categoryList.Add(new SelectListItem { Text = boardType.BoardName, Value = boardType.Category.ToString() });
+        }
+    }
 }
 
 <div class="community">
@@ -20,7 +32,7 @@
         <div id="board_nav_container"></div>
         @using (Html.AjaxBeginForm("BoardNavigationMenu", "Community", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "board_nav_container" }, new { id = "BoardNavigationMenuForm" }))
         {
-            @Html.Hidden("selectedCategory", Model.Category)
+            @Html.Hidden("selectedCategory", Model.PostData.Category)
         }
 
     </aside>
@@ -34,24 +46,24 @@
             <span id="categoryModalBtn_text">게시판 선택</span>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.00048 8.78145L11.3005 5.48145L12.2431 6.42411L8.00048 10.6668L3.75781 6.42411L4.70048 5.48145L8.00048 8.78145Z" fill="black"></path></svg>
         </button>
-        <span class="text-danger" asp-validation-for="Category"></span>
+        <span class="text-danger" asp-validation-for="PostData.Category"></span>
 
         @using (Html.BeginForm("Write", "Community", FormMethod.Post))
         {
-            @Html.HiddenFor(m => m.PostId, new { @value = Model.PostId })
-            @Html.HiddenFor(m => m.UserId, new { @value = Model.UserId })
-            @Html.HiddenFor(m => m.CreateDate, new { @value = Model.CreateDate })
+            @Html.HiddenFor(m => m.PostData.PostId, new { @value = Model.PostData.PostId })
+            @Html.HiddenFor(m => m.PostData.UserId, new { @value = Model.PostData.UserId })
+            @Html.HiddenFor(m => m.PostData.CreateDate, new { @value = Model.PostData.CreateDate })
 
-            @Html.HiddenFor(m => m.Category, new { @id = "CategoryValue", @name = "Category", @value = Model.Category })
+            @Html.HiddenFor(m => m.PostData.Category, new { @id = "CategoryValue", @name = "Category", @value = Model.PostData.Category })
 
             <hr />
-            @Html.TextBoxFor(m => m.Title, new { @class = "intput_title", @placeholder = "제목을 입력해주세요.", @value = Model.Title })
-            <span class = "text-danger" asp-validation-for="Title"></span>
+            @Html.TextBoxFor(m => m.PostData.Title, new { @class = "intput_title", @placeholder = "제목을 입력해주세요.", @value = Model.PostData.Title })
+            <span class = "text-danger" asp-validation-for="PostData.Title"></span>
             <hr />
 
-            @Html.TextAreaFor(m => m.Contents, new { @class = "editor", @value = Model.Contents })
+            @Html.TextAreaFor(m => m.PostData.Contents, new { @class = "editor", @value = Model.PostData.Contents })
             // TODO Trumbowyg 에디터에 placeholder 적용하는 방법 알아보기
-            <div><span class="text-danger" asp-validation-for="Contents"></span></div>
+            <div><span class="text-danger" asp-validation-for="PostData.Contents"></span></div>
 
             <input class="input_tag" placeholder="TODO # 태그 입력"/>
 
@@ -65,12 +77,7 @@
          <div id="CategoryModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>             
-                @Html.DropDownListFor(model => model.Category, new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "자유 게시판", Value = "1" },
-                    new SelectListItem { Text = "공지 게시판", Value = "99" }
-                }, "게시판 선택", new { @id = "categoryItemList", @class = "form-control" })
-
+                @Html.DropDownListFor(model => model.PostData.Category, categoryList, "게시판 선택", new { @id = "categoryItemList", @class = "form-control" })
             </div>
         </div>
 
@@ -94,16 +101,32 @@
 
 <script>
 
+    var categoryList;
+
     // 최초 진입 시, 선택된 카테고리 텍스트 세팅
     document.addEventListener('DOMContentLoaded', function () {
 
-        var string = '';
+        var string = "";
+        var category = @Model.PostData.Category;
+        var selectedValue = document.getElementById('CategoryValue');
 
-        switch (@Model.Category) {
-            case 0: string = "게시판 선택"; break; // TODO 카테고리별 게시판 이름 DB테이블 만들고 그걸 받아서 사용할 것, (가능하면 전역에 저장)
-            case 1: string = "자유 게시판"; break;
-            case 99: string = "공지 게시판"; break;
+        categoryList = @Json.Serialize(categoryList);
+       
+        if (category == '0') {
+            string = "게시판 선택";
+            selectedValue.value = '0';
         }
+        else {
+            for (var i = 0; i < categoryList.length; i++) {
+                if (category == categoryList[i].value) {
+                    string = categoryList[i].text;
+                    var dropDownList = document.getElementById('categoryItemList');
+                    dropDownList.value = category + "";
+                    selectedValue.value = category + "";
+                }
+            }
+        }
+
         $('#categoryModalBtn_text').text(string);
     })
 
@@ -130,16 +153,22 @@
         var modal = document.getElementById('CategoryModal');
         var selectedItem = modal.querySelector('select').value;
 
-        if (selectedItem == '') selectedItem = '0'; // TODO
+        if (selectedItem == '') selectedItem = '0';
 
         selectedValue.value = selectedItem;
         modal.style.display = 'none';
 
         var string = "";
-        switch (selectedItem) {
-            case '0': string = "게시판 선택"; break; // TODO 카테고리별 게시판 이름 DB테이블 만들고 그걸 받아서 사용할 것, (가능하면 전역에 저장)
-            case '1': string = "자유 게시판"; break;
-            case '99': string = "공지 게시판"; break;
+
+        if (selectedItem == '0') {
+            string = "게시판 선택";
+        }
+        else {
+            for (var i = 0; i < categoryList.length; i++) {
+                if (selectedItem == categoryList[i].value) {
+                    string = categoryList[i].text;
+                }
+            }
         }
 
         $('#categoryModalBtn_text').text(string);
