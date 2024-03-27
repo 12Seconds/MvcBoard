@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
+using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Models;
 using MvcBoardAdmin.Models.Home;
+using MvcBoardAdmin.Services;
 using System.Diagnostics;
 
 namespace MvcBoardAdmin.Controllers
@@ -9,15 +11,17 @@ namespace MvcBoardAdmin.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger; // TODO 알아보고 사용할 것
+        private readonly HomeService _homeService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, HomeService homeService)
         {
             _logger = logger;
+            _homeService = homeService;
         }
 
         public IActionResult Index()
         {
-            // TODO 인증 해서 modle 가공하여 넘겨줄 것 (IsLogined true/false)
+            // TODO 인증 해서 model 가공하여 넘겨줄 것 (IsLogined true/false)
 
             HomeViewModel model = new HomeViewModel();
             model.IsLogined = true;
@@ -28,26 +32,20 @@ namespace MvcBoardAdmin.Controllers
         [HttpPost]
         public IActionResult Login(LoginParams _params)
         {
-            // TODO _logger 사용
+            // TODO _logger
+            // _logger.LogDebug($"## HomeController >> Login() _params.Id: {_params.Id}, _params.Password: {_params.Password}");
             Console.WriteLine($"## HomeController >> Login() _params.Id: {_params.Id}, _params.Password: {_params.Password}");
 
-            // LoginResult result = _service.Login(_params)
-            
-            // result 에 따른 처리로 response 생성 
-
-            // LoginResponse response = new LoginResponse {};
-
-            var responseData = new
+            LoginServiceParams serviceParams = new LoginServiceParams
             {
-                status = "success 1 ",
-                message = "Data successfully processed 1 ",
-                data = "Your data here  1 "
+                LoginParams = _params,
+                ModelState = ModelState,
+                HttpContext = HttpContext
             };
 
-            return Ok(responseData);
+            LoginResponse response = _homeService.Login(serviceParams);
 
-            // return new JsonResult(responseData);
-            // return Json(new { resultCode = _params });
+            return Ok(response); // return new JsonResult(response); 동일함
         }
 
 

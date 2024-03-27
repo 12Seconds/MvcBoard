@@ -31,7 +31,12 @@
         }
         else
         {
-           <div> @Model.UserName 관리자님 안녕하세요. </div>
+             <div class="login_form">
+                <div> @Model.UserName 관리자님 안녕하세요. </div>
+                <a asp-area="" asp-action="" asp-controller="">
+                    <button type="button" class="btn btn-secondary login_btn"> 로그아웃 </button>
+                </a>
+            </div>
         }
     </div>
 
@@ -42,11 +47,21 @@
 <script>
 
     function OnLoginComplete(xhr, status) {
+        
+        var response = JSON.parse(xhr.responseText); // response = xhr.responseJSON; // 이렇게도 받아올 수 있으나 JSON.parse 로 생성한 복사본 사용
+        console.log("OnLoginComplete() response: ", response);
 
-        console.log("로그인 OnLoginComplete ############# ");
+        // 입력값 오류
+        if (response.resultCode == 201) {
+            alert(response.errorMessage);
+            return;
+        }
 
-        var response = JSON.parse(xhr.responseText);
-        console.log("response: ", response);
+        // 로그인 성공
+        if (response.resultCode == 200) {
+            $('#route_home_index').submit();
+        }
+        
     }
 
    /*
