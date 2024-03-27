@@ -22,6 +22,9 @@ if (!app.Environment.IsDevelopment())
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// Html.AjaxBeginForm 사용을 위한 AspNetCore.Unobtrusive.Ajax 패키지 설치 및 설정 작업 (MVC 5 의 Ajax.BeginForm 대체)
+app.UseUnobtrusiveAjax();
+
 app.UseRouting();
 
 app.UseAuthorization();
