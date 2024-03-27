@@ -1,0 +1,79 @@
+﻿@model MvcBoardAdmin.Models.Home.HomeViewModel;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Music Ground </h1>
+    <p>관리자 페이지</p>
+</div>
+
+<link rel="stylesheet" href="@(Url.Content("~/css/home.css"))" />
+
+<div class="login_page">
+
+    <div class="login_container">
+
+        @if (Model.IsLogined)
+        {
+            <div class="login_form">
+                <div class="logo"></div>
+                @using (Html.AjaxBeginForm("Login", "Home",
+                new AjaxOptions { HttpMethod = "Post", OnComplete = "OnLoginComplete"@* , ContentType = "application/json"  *@},
+                new { @id = "login_form", @class = "id_pw_container" }))
+                {
+                    @Html.TextBox("Id", null, new { @class = "text_box", @placeholder = "아이디", @autoComplete = "off" })
+                    @Html.Password("Password", null, new { @class = "text_box", @placeholder = "비밀번호" })
+
+                    <button type="button" id="login_submit_btn" class="btn btn-secondary login_btn">로그인</button>
+                    @* <a asp-area="" asp-action="" asp-controller=""> 회원가입 </a> *@
+                }
+            </div>
+        }
+        else
+        {
+           <div> @Model.UserName 관리자님 안녕하세요. </div>
+        }
+    </div>
+
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get, new { @id = "route_home_index" })) {}
+
+</div>
+
+<script>
+
+    /*
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.getElementById('login_form').addEventListener('submit', function (event) {
+
+            event.preventDefault();
+    */
+
+   /*
+    $(document).ready(function () {
+        // 로그인 버튼 동작
+        $('#login_submit_btn').on("click", function () {
+            $('#login_form').submit();
+        });
+    });
+   */
+   
+    document.addEventListener('DOMContentLoaded', function () {
+        // 로그인 버튼 동작
+        $('#login_submit_btn').on("click", function () {
+            $('#login_form').submit();
+        });
+    });
+   
+
+    function OnLoginComplete(/* xhr, status */) {
+
+        console.log("로그인 OnLoginComplete ############# ");
+
+        // var response = JSON.parse(xhr.responseText);
+        // console.log("response: ", response);
+    }
+
+</script>
