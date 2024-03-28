@@ -1,7 +1,7 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+
+    ViewData["Title"] = "유저 관리";
+
     List<SelectListItem> SearchOptions = new List<SelectListItem>();
     SearchOptions.Add(new SelectListItem { Text = "사용자 번호", Value = "UserId" }); // UserNumber
     SearchOptions.Add(new SelectListItem { Text = "아이디", Value = "Id" });
@@ -13,28 +13,57 @@
 
 <div class="manage_member_index">
 
-    <h4>유저 관리</h4>
-    <hr/>
+    <div class="index_main">
+        <h4>유저 관리</h4>
+        <hr/>
 
-    <div></div>
-    @* 검색 Partial View *@
-    @* <div id="search_box_partail_container"></div> *@
-    @* @using (Html.AjaxBeginForm("GetSearchBoxPartial", "Member", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "search_box_partail_container" }, new { id = "SearchBoxPartialForm" })) { } *@
+        @* 검색 Partial View *@
+        @* <div id="search_box_partail_container"></div> *@
+        @* @using (Html.AjaxBeginForm("GetSearchBoxPartial", "Member", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "search_box_partail_container" }, new { id = "SearchBoxPartialForm" })) { } *@
     
-    <div class="search_box">
-        @using (Html.AjaxBeginForm("MemberListPartial", "Member", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "member_list_container"@* , OnComplete = ""  *@}))
-        {
-            @* TODO select 태그? (https://getbootstrap.kr/docs/5.3/forms/select/) *@
-            @Html.DropDownList("SearchFilter", SearchOptions, "검색 필터", new { @id = "SearchFilterList", @class = "search_filter_drop"/* "form-control" */ })
+        <div class="search_box">
+            @using (Html.AjaxBeginForm("MemberListPartial", "Member", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "member_list_container"@* , OnComplete = ""  *@}, new { id = "MemberListForm" }))
+            {
+                @* TODO select 태그? (https://getbootstrap.kr/docs/5.3/forms/select/) *@
+                @Html.DropDownList("SearchFilter", SearchOptions, "검색 필터", new { @id = "SearchFilterList", @class = "search_filter_drop"/* "form-control" */ })
+                @Html.TextBox("SearchWord", null, new { @class = "search_word_input", @placeholder = "", @autoComplete = "off" })
+                <button type="submit" class="search_button">검색</button>
+            }
+        </div>
 
-            @Html.TextBox("SearchWord", null, new { @class = "search_word_input", @placeholder = "", @autoComplete = "off" })
+        @* 유저 리스트 *@
+        <div id="member_list_container" class=""></div>
 
-            <button type="submit" class="search_button">검색</button>
-        }
+       
     </div>
-
-    @* 유저 리스트 *@
-    <div id="member_list_container" class=""></div>
-
-
+    @* 
+    <div class="index_right">
+        오른쪽
+    </div>
+    *@
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 최초 진입 시
+        $('#MemberListForm').submit();
+    });
+    /*
+    function updateMemeberList(page) {
+        console.log("테스트 함수 page: ", page);
+    }
+    
+    function updateMemeberList(page) {
+        console.log("테스트 함수 page: ", page);
+
+        // $('#page_index_val').val(page);
+        var target = document.getElementById('page_index_val');
+        target.value = page;
+
+        console.log("target.value: ", target.value);
+
+        $('#MemberListForm_update').submit();
+    }
+    */
+
+</script>

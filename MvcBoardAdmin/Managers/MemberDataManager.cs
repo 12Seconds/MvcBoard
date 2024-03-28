@@ -2,6 +2,7 @@
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Models;
 using MvcBoardAdmin.Models.Member;
+using MvcBoardAdmin.Utills;
 using System.Data;
 
 namespace MvcBoardAdmin.Managers
@@ -38,7 +39,7 @@ namespace MvcBoardAdmin.Managers
                     command.Parameters.AddWithValue("@SearchFilter", _params.SearchFilter);
                     command.Parameters.AddWithValue("@SearchWord", _params.SearchWord);
                     command.Parameters.AddWithValue("@PageIndex", _params.Page);
-                    command.Parameters.AddWithValue("@RowPerPage", 10); // 테스트용 (default: 10)
+                    command.Parameters.AddWithValue("@RowPerPage", 2); // 테스트용 (default: 10)
 
                     SqlDataReader reader = command.ExecuteReader();
 
@@ -76,10 +77,14 @@ namespace MvcBoardAdmin.Managers
             }
 
             Model.MemberList = Users;
-            Model.PageCount = pageCount;
             Model.PageIndex = _params.Page;
-            Model.RowPerPage = 10; // 테스트용 (default: 10)
             Model.TotalRowCount = totalResultCount;
+            Model.TotalPageCount = pageCount;
+            Model.IndicatorRange = Utility.GetIndicatorRange(new Utility.IndicatorRangeParams { Page = _params.Page, PageCount = pageCount });
+
+            // 임시
+            Model.SearchFilter = _params.SearchFilter;
+            Model.SearchWord = _params.SearchWord;
 
             return Model;
         }

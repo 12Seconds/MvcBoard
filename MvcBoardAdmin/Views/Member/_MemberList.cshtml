@@ -1,23 +1,92 @@
 ﻿@*TODO _MemberListViewModel *@
 @model MvcBoardAdmin.Models.Member.MemberListViewModel;
 
-@*
-
-@using MvcBoard.Models.Community;
-@model MvcBoard.Models.Community.BoardViewModel;
-
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @{
 
 }
 
-<div>
+<div class="member_list">
+
+    <div class="total_count">(총 @(Model.TotalRowCount)건)</div>
+    <div class="total_count">페이지 @Model.PageIndex</div>
+    <div class="total_count">필터 @Model.SearchFilter</div>
+    <div class="total_count">검색어 @Model.SearchWord</div>
+
+    <div class="item labels">
+        <div class="user_name">고유 번호</div>
+        <div class="id">아이디</div>
+        <div class="name">닉네임</div>
+        <div class="image">프로필 이미지</div>
+        <div class="authority">권한</div>
+        @* TODO
+        <div class="authority">게시물(</div>
+        <div class="authority">댓글</div> *@
+    </div>
 
     @foreach(User user in Model.MemberList)
     {
-        <div> @user.UserId | @user.Id | @user.Name |@user.Image </div>
+        <div class="item member @(user.Authority)">
+            <div class="user_name">@user.UserId</div>
+            <div class="id">@user.Id</div>
+            <div class="name">@user.Name</div>
+            <div class="image">@user.Image</div>
+            <div class="authority">@user.Authority</div>
+            @* TODO
+            <div class="authority">0</div>
+            <div class="authority">0</div> *@
+        </div>
     }
 
+    @* 페이지 인디케이터 *@
+    @if (Model.MemberList.Count > 0)
+    {
+        <div class="page_indicator">
+            @* TODO Question a 태그 클릭 처리 *@
+            <a href="javascript:updateMemeberList(1);">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
+                처음
+            </a>
+
+            @for (var i = Model.IndicatorRange.start; i <= Model.IndicatorRange.end; i++)
+            {
+                <a href="javascript:updateMemeberList(@i);">
+                    @i
+                </a>
+            }
+
+            <a href="javascript:updateMemeberList(@Model.TotalPageCount);">
+            @* <a href="#" id="anchorId"> *@
+                마지막
+                <svg style="transform: rotate(180deg)" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
+            </a>
+        </div>
+    }
+
+    @* 업데이트용 *@
+    @using (Html.AjaxBeginForm("MemberListPartial", "Member", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "member_list_container"@* , OnComplete = ""  *@}, new { id = "MemberListForm_update" }))
+    {
+        @Html.Hidden("SearchFilter", Model.SearchFilter);
+        @Html.Hidden("SearchWord", Model.SearchWord);
+        @Html.Hidden("PageIndex", Model.PageIndex, new { id = "page_index_val"});
+    }
 
 </div>
+
+<script>
+    
+    /*
+    $('#anchorId').click(function (event) { 
+        // 정상 동작 함
+        event.preventDefault();
+        console.log("테스트");
+    })
+   
+    function updateMemeberList(page) {
+        console.log("테스트 함수 page: ", page);
+        
+        $('#page_index_val').val(page);
+        $('#MemberListForm_update').submit();
+    }
+    */
+
+</script>
