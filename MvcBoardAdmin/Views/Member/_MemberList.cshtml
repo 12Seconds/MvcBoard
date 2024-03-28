@@ -41,7 +41,7 @@
 
             @for (var i = Model.IndicatorRange.start; i <= Model.IndicatorRange.end; i++)
             {
-                <a href="javascript:updateMemeberList('@i');">
+                <a href="javascript:updateMemeberList('@i');" class=@(i == Model.PageIndex ? "selected" : "")>
                     @i
                 </a>
             }
