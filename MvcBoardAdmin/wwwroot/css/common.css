@@ -1,0 +1,24 @@
+﻿.search_box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    background-color: aquamarine;
+}
+
+.search_box .search_option_drop {
+    width: 120px;
+    margin-right: 10px;
+}
+
+.search_box .search_word_input {
+    width: 300px;
+    margin-right: 10px;
+}
+
+.search_box .search_button {
+    width: 120px;
+    margin-right: 10px;
+}
+
+

@@ -14,4 +14,6 @@ public partial class User
     public string Name { get; set; } = null!;
 
     public int? Image { get; set; }
+
+    public string Authority { get; set; } = "";
 }

@@ -1,0 +1,40 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<SelectListItem> SearchOptions = new List<SelectListItem>();
+    SearchOptions.Add(new SelectListItem { Text = "사용자 번호", Value = "UserId" }); // UserNumber
+    SearchOptions.Add(new SelectListItem { Text = "아이디", Value = "Id" });
+    SearchOptions.Add(new SelectListItem { Text = "이름(닉네임)", Value = "Name" });
+    SearchOptions.Add(new SelectListItem { Text = "권한", Value = "Authority" });
+}
+
+<link rel="stylesheet" href="@(Url.Content("~/css/member.css"))" />
+
+<div class="manage_member_index">
+
+    <h4>유저 관리</h4>
+    <hr/>
+
+    <div></div>
+    @* 검색 Partial View *@
+    @* <div id="search_box_partail_container"></div> *@
+    @* @using (Html.AjaxBeginForm("GetSearchBoxPartial", "Member", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "search_box_partail_container" }, new { id = "SearchBoxPartialForm" })) { } *@
+    
+    <div class="search_box">
+        @using (Html.AjaxBeginForm("MemberListPartial", "Member", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "member_list_container"@* , OnComplete = ""  *@}))
+        {
+            @* TODO select 태그? (https://getbootstrap.kr/docs/5.3/forms/select/) *@
+            @Html.DropDownList("SearchFilter", SearchOptions, "검색 필터", new { @id = "SearchFilterList", @class = "search_filter_drop"/* "form-control" */ })
+
+            @Html.TextBox("SearchWord", null, new { @class = "search_word_input", @placeholder = "", @autoComplete = "off" })
+
+            <button type="submit" class="search_button">검색</button>
+        }
+    </div>
+
+    @* 유저 리스트 *@
+    <div id="member_list_container" class=""></div>
+
+
+</div>

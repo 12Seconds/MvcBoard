@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace MvcBoard.Managers
+namespace MvcBoardAdmin.Managers
 {
     public class DBManager
     {
