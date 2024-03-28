@@ -23,7 +23,7 @@ namespace MvcBoardAdmin.Managers
         {
             MemberListViewModel Model = new MemberListViewModel();
 
-            Console.WriteLine($"## MemberDataManager >> ReadMembers(SearchFilter = {_params.SearchFilter}, SearchWord = {_params.SearchWord})");
+            Console.WriteLine($"## MemberDataManager >> ReadMembers(SearchFilter = {_params.SearchFilter}, SearchWord = {_params.SearchWord}, Page = {_params.Page})");
 
             int pageCount = 0;
             int totalResultCount = 0;
@@ -83,8 +83,8 @@ namespace MvcBoardAdmin.Managers
             Model.IndicatorRange = Utility.GetIndicatorRange(new Utility.IndicatorRangeParams { Page = _params.Page, PageCount = pageCount });
 
             // 임시
-            Model.SearchFilter = _params.SearchFilter;
-            Model.SearchWord = _params.SearchWord;
+            Model.ExSearchFilter = _params.SearchFilter;
+            Model.ExSearchWord = _params.SearchWord;
 
             return Model;
         }

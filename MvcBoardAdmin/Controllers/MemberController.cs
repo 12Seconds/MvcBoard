@@ -26,7 +26,7 @@ namespace MvcBoardAdmin.Controllers
         [HttpGet]
         public IActionResult MemberListPartial(ReadMembersParams _params)
         {
-            Console.WriteLine($"## MemberController >> MemberListPartial() SearchFilter: {_params.SearchFilter}, SearchWord: {_params.SearchWord}");
+            Console.WriteLine($"## MemberController >> MemberListPartial(SearchFilter: {_params.SearchFilter}, SearchWord: {_params.SearchWord}, Page: {_params.Page})");
 
             ReadMembersServiceParams serviceParams = new ReadMembersServiceParams
             {

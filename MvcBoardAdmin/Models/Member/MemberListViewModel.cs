@@ -10,9 +10,8 @@ namespace MvcBoardAdmin.Models.Member
         public int TotalRowCount { get; set; } = 0;
         public int TotalPageCount { get; set; } = 0;
 
-        // 임시
-        public string SearchFilter { get; set; } = "";
-        public string SearchWord { get; set; } = "";
-
+        /* 이전 검색 필터 및 검색어 (페이지 이동 처리 시 필요) */
+        public string ExSearchFilter { get; set; } = "";
+        public string ExSearchWord { get; set; } = "";
     }
 }
