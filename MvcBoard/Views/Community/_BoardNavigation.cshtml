@@ -23,7 +23,6 @@
             case 0: return "Index";
             case 1: return "Hot";
             case 2: return "Notice";
-            case 99: return "Notice"; // 임시
             // ..
             default: return "Index";
         }
@@ -32,11 +31,6 @@
 
 @foreach (var board in Model.BoardTypes)
 {
-    // 공지 Category 임시 처리
-    if (board.Category == 2)
-    {
-        board.Category = 99;
-    }
 
     // TODO 자식 게시판은 부모 게시판 하위로 넣는 처리가 필요함, 일단 부모 게시판은 노출 안하도록 조건 설정
     if (board.Category < 4 || board.IsParent == 0)

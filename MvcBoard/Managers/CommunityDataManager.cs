@@ -61,7 +61,7 @@ namespace MvcBoard.Managers
             return BoardTypes;
         }
 
-        // 게시판 조회 --TODO ReadPost함수 분리...필요한가?
+        // 게시판 조회
         public BoardViewModel GetBoardViewData(GetBoardParams _params)
         {
             // TODO 로그 모듈(매니저) 만들기
@@ -102,15 +102,13 @@ namespace MvcBoard.Managers
                         if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
                         if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
 
+                        post.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        post.IsBlinded = reader.GetBoolean(reader.GetOrdinal("IsBlinded"));
+                        post.IsNotice = reader.GetBoolean(reader.GetOrdinal("IsNotice"));
+
                         // Join 테이블 데이터
                         post.UserName = reader["Name"]?.ToString() ?? "";
                         post.BoardName = reader["BoardName"]?.ToString() ?? "";
-
-                        // TODO IsNotice 필드 추가하기 전 임시 처리
-                        if (post.BoardName == "")
-                        {
-                            post.BoardName = "공지 게시판";
-                        }
 
                         Posts.Add(post);
                     }
@@ -172,16 +170,83 @@ namespace MvcBoard.Managers
                         post.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
                         if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
                         if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
+                        
+                        post.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        post.IsBlinded = reader.GetBoolean(reader.GetOrdinal("IsBlinded"));
+                        post.IsNotice = reader.GetBoolean(reader.GetOrdinal("IsNotice"));
 
                         // Join 테이블 데이터
                         post.UserName = reader["Name"]?.ToString() ?? "";
                         post.BoardName = reader["BoardName"]?.ToString() ?? "";
 
-                        // TODO IsNotice 필드 추가하기 전 임시 처리
-                        if (post.BoardName == "")
-                        {
-                            post.BoardName = "공지 게시판";
-                        }
+                        Posts.Add(post);
+                    }
+
+                    /* 총 페이지 수 */
+                    reader.NextResult();
+                    if (reader.Read())
+                    {
+                        pageCount = Convert.ToInt32(reader["TotalPageCount"]);
+                        Console.WriteLine($"@@@@@@@ ## pageCount: {pageCount}"); // TODO 삭제
+                    }
+
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            // TODO 여기도.. 뭔가 간소화 필요
+            return new BoardViewModel(pageCount, _params.Page, _params.Category, _params.Size, Posts);
+        }
+
+        // 공지 게시판 조회
+        public BoardViewModel GetNoticeBoardViewData(GetBoardParams _params)
+        {
+            // TODO 로그 모듈(매니저) 만들기
+            Console.WriteLine($"## CommunityDataManager >> GetNoticeBoardViewData(category = {_params.Category}, page = {_params.Page}), size = {_params.Size})");
+
+            int pageCount = 0;
+
+            List<PostWithUser> Posts = new List<PostWithUser>();
+
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("ReadNoticePost", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Category", _params.Category);
+                    command.Parameters.AddWithValue("@Page", _params.Page);
+                    command.Parameters.AddWithValue("@Size", _params.Size);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    PostWithUser? post = null;
+
+                    /* 게시판 데이터 */
+                    while (reader.Read())
+                    {
+                        post = new PostWithUser();
+
+                        post.PostId = int.Parse(reader["PostId"]?.ToString() ?? "0");
+                        post.Title = reader["Title"]?.ToString() ?? "";
+                        post.Contents = reader["Contents"].ToString();
+                        post.UserId = int.Parse(reader["UserId"]?.ToString() ?? "0");
+                        post.Likes = int.Parse(reader["Likes"]?.ToString() ?? "0");
+                        post.Views = int.Parse(reader["Views"]?.ToString() ?? "0");
+                        post.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
+
+                        post.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
+                        if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
+                        if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
+
+                        post.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        post.IsBlinded = reader.GetBoolean(reader.GetOrdinal("IsBlinded"));
+                        post.IsNotice = reader.GetBoolean(reader.GetOrdinal("IsNotice"));
+
+                        // Join 테이블 데이터
+                        post.UserName = reader["Name"]?.ToString() ?? "";
+                        post.BoardName = reader["BoardName"]?.ToString() ?? "";
 
                         Posts.Add(post);
                     }
@@ -282,6 +347,10 @@ namespace MvcBoard.Managers
                         if (reader["UpdateDate"] != DBNull.Value) post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
                         if (reader["DeleteDate"] != DBNull.Value) post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
 
+                        post.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        post.IsBlinded = reader.GetBoolean(reader.GetOrdinal("IsBlinded"));
+                        post.IsNotice = reader.GetBoolean(reader.GetOrdinal("IsNotice"));
+
                         // Join 테이블 데이터
                         post.LoginId = reader["Id"]?.ToString() ?? "";
                         post.UserName = reader["Name"]?.ToString() ?? "";
@@ -360,7 +429,7 @@ namespace MvcBoard.Managers
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@PostId", postId);
-                    command.Parameters.AddWithValue("@forceDelete", 1); // TODO 아 왜 또 얜 소문자로했지..
+                    command.Parameters.AddWithValue("@forceDelete", 0); // TODO 아 왜 또 얜 소문자로했지..
 
                     // 출력 파라미터
                     // SqlParameter result = new SqlParameter("@???", SqlDbType.VarChar);

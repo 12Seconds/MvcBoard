@@ -29,4 +29,8 @@ public partial class Post
     public DateTime? UpdateDate { get; set; }
 
     public DateTime? DeleteDate { get; set; }
+
+    public bool IsDeleted { get; set; }
+    public bool IsBlinded { get; set; }
+    public bool IsNotice { get; set; }
 }

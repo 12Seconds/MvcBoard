@@ -51,8 +51,13 @@ namespace MvcBoard.Controllers
         // 공지 게시판
         public IActionResult Notice(BoardViewParams? _params)
         {
-            // TODO 별도 함수 만들어서 호출 필요 (isNotice 컬럼 추가하고 GetNoticeBoardViewData(_params) 호출 필요함, 지금은 임시로 Category 값이 99면 공지
-            BoardViewModel viewModel = _service.GetBoardViewData(new BoardViewParams{ Category = 99 }); // 임시
+            BoardViewParams Params = _params ?? new BoardViewParams();
+            // 임시
+            Params.Category = 0;
+
+            BoardViewModel viewModel = _service.GetNoticeBoardViewData(Params);
+
+            viewModel.Category = 2; // 임시 (게시판 네이게이션 메뉴 포커스 안되는 문제로 임시 설정
 
             return View(viewModel);
         }
