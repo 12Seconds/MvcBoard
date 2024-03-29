@@ -5,7 +5,7 @@
     <div class="total_count">(총 @(Model.TotalRowCount)건)</div>
 
     <div class="item labels">
-        <div class="user_name">고유 번호</div>
+        <div class="number">고유 번호</div>
         <div class="id">아이디</div>
         <div class="name">닉네임</div>
         <div class="image">프로필 이미지</div>
@@ -17,16 +17,20 @@
 
     @foreach(User user in Model.MemberList)
     {
-        <div class="item member @(user.Authority)">
-            <div class="user_name">@user.UserId</div>
-            <div class="id">@user.Id</div>
-            <div class="name">@user.Name</div>
-            <div class="image">@user.Image</div>
-            <div class="authority">@user.Authority</div>
-            @* TODO
-            <div class="authority">0</div>
-            <div class="authority">0</div> *@
-        </div>
+        @* <a href="javascript:updateMemberEditor(@user.UserId);"> *@
+            <div class="item member @(user.Authority)">
+                <div class="number">@user.UserId</div>
+                <div class="id">@user.Id</div>
+                <div class="name">@user.Name</div>
+                <div class="image">@user.Image</div>
+                <div class="authority">@user.Authority</div>
+                @* TODO
+                <div class="authority">0</div>
+                <div class="authority">0</div> *@
+                <button type="button" onclick="updateMemberEditor(@user.UserId)" class=" btn btn-outline-primary btn-sm edit_button">수정</button>
+                <button type="button" onclick="" class=" btn btn-outline-danger btn-sm edit_button">삭제</button>
+            </div>
+        @* </a> *@
     }
 
     @* 페이지 인디케이터 *@

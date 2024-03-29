@@ -13,6 +13,7 @@
 
 <div class="manage_member_index">
 
+    @* 왼쪽 메인 영역 *@
     <div class="index_main">
         <h4>유저 관리</h4>
         <hr/>
@@ -27,7 +28,7 @@
                 @* TODO select 태그? (https://getbootstrap.kr/docs/5.3/forms/select/) *@
                 @Html.DropDownList("SearchFilter", SearchOptions, "검색 필터", new { @id = "SearchFilterList", @class = "search_filter_drop"/* "form-control" */ })
                 @Html.TextBox("SearchWord", null, new { @class = "search_word_input", @placeholder = "", @autoComplete = "off" })
-                <button type="submit" class="search_button">검색</button>
+                <button type="submit" class="btn btn-outline-secondary btn-sm search_button">검색</button>
             }
         </div>
 
@@ -36,11 +37,19 @@
 
        
     </div>
-    @* 
+    
+    @* 오른쪽 영역 *@
     <div class="index_right">
-        오른쪽
+        
+        @* 유저 에디터 Partial View  *@
+        <div id="member_editor_container"></div>
+        @using (Html.AjaxBeginForm("MemberEditorPartial", "Member", new AjaxOptions { HttpMethod = "Get",UpdateTargetId = "member_editor_container"}, new { id = "MemberEditorForm" }))
+        {
+            @Html.Hidden("UserId", "", new { id = "editor_userId_val" });
+        }
+
     </div>
-    *@
+    
 </div>
 
 <script>
@@ -51,7 +60,16 @@
     
     /* 유저 리스트 업데이트 함수 */
     function updateMemeberList(page) {
-        $('#page_index_val').val(page);
+        if (page > 0) {
+            $('#page_index_val').val(page);
+        }
         $('#MemberListForm_update').submit();
     }
+
+    /* 유저 에디터 로드 함수 */
+    function updateMemberEditor(userId) {
+        $('#editor_userId_val').val(userId);
+        $('#MemberEditorForm').submit();
+    }
+
 </script>

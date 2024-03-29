@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using MvcBoardAdmin.Controllers.Params;
+using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Models;
 using MvcBoardAdmin.Models.Member;
 using MvcBoardAdmin.Utills;
@@ -33,13 +34,13 @@ namespace MvcBoardAdmin.Managers
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("adm_ReadUser", connection))
+                using (SqlCommand command = new SqlCommand("adm_ReadUsers", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@SearchFilter", _params.SearchFilter);
                     command.Parameters.AddWithValue("@SearchWord", _params.SearchWord);
                     command.Parameters.AddWithValue("@PageIndex", _params.Page);
-                    command.Parameters.AddWithValue("@RowPerPage", 2); // 테스트용 (default: 10)
+                    command.Parameters.AddWithValue("@RowPerPage", 5); // 테스트용 (default: 10)
 
                     SqlDataReader reader = command.ExecuteReader();
 
@@ -81,14 +82,132 @@ namespace MvcBoardAdmin.Managers
             Model.TotalRowCount = totalResultCount;
             Model.TotalPageCount = pageCount;
             Model.IndicatorRange = Utility.GetIndicatorRange(new Utility.IndicatorRangeParams { Page = _params.Page, PageCount = pageCount });
-
-            // 임시
+            
             Model.ExSearchFilter = _params.SearchFilter;
             Model.ExSearchWord = _params.SearchWord;
 
             return Model;
         }
 
+
+        // TODO Question UserDataManager 에 정의? 
+
+        /// <summary>
+        /// 멤버(유저) 상세 조회
+        /// </summary>
+        /// <param name="UserId">유저 고유 번호(UserNumer)</param>
+        /// <returns></returns>
+        public ReadMemberDetailResponse ReadMemberDetail(int UserId)
+        {
+            ReadMemberDetailResponse Response = new ReadMemberDetailResponse();
+            MemberEditorViewModel Model = new MemberEditorViewModel();
+
+            Console.WriteLine($"## MemberDataManager >> ReadMembers(UserId = {UserId})");
+
+            try
+            {
+                using (var connection = GetConnection())
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("adm_UserDetail", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@UserId", UserId);
+
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        /* 멤버(유저) 데이터 */
+                        while (reader.Read())
+                        {
+                            Model.UserId = int.Parse(reader["UserId"]?.ToString() ?? "0");
+                            Model.Id = reader["Id"]?.ToString() ?? "";
+                            Model.Name = reader["Name"].ToString() ?? "";
+                            Model.Image = int.Parse(reader["Image"]?.ToString() ?? "0");
+                            Model.Authority = reader["Authority"]?.ToString() ?? "normal";
+                            Model.PostCount = int.Parse(reader["PostCount"]?.ToString() ?? "0");
+                            Model.CommentCount = int.Parse(reader["CommentCount"]?.ToString() ?? "0");
+
+                            Model.Password = ""; // 필요 시 SP 에서 추가
+                        }
+
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+
+                Response.ResultCode = 200;
+                Response.Message = "DB Success";
+                Response.ViewModel = Model;
+            }
+            catch (Exception ex)
+            {
+                Response.ResultCode = 202;
+                Response.Message = "DB Error";
+                Response.ErrorMessage.Add(ex.Message);
+            }
+
+            return Response;
+        }
+
+        /// <summary>
+        /// 멤버(유저) 정보 수정
+        /// </summary>
+        /// <param name="_params"></param>
+        public CommonResponse UpdateMember(UpdateMemberParams _params)
+        {
+            CommonResponse Response = new CommonResponse();
+            Response.ResultCode = 200;
+            Response.Message = "DB Success";
+
+            Console.WriteLine($"## MemberDataManager >> UpdateMember(UserId = {_params.UserId}, Name = {_params.Name}, Image = {_params.Image}), Authority = {_params.Authority})");
+
+            try
+            {
+                using (var connection = GetConnection())
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("adm_UpdateUser", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@UserId", _params.UserId);
+                        command.Parameters.AddWithValue("@Name", _params.Name);
+                        command.Parameters.AddWithValue("@Image", _params.Image);
+                        command.Parameters.AddWithValue("@Authority", _params.Authority);
+
+                        
+                        // TODO 결과 확인 코드 작성
+
+                        // 방법1) ExecuteNonQuery 함수로 영향 받은 행 수를 구하여 성공 여부 확인
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected < 1)
+                        {
+                            Response.ResultCode = 203;
+                            Response.Message = "DB Fail";
+                        }
+
+                        // 방법2) ExecuteReader HasRow: 영향 받은 행이 있으면 true 없으면 false
+                        /*
+                        SqlDataReader reader = command.ExecuteReader();
+                        if (!reader.HasRows) 
+                        {
+                            Response.ResultCode = 203;
+                            Response.Message = "DB Fail";
+                        }
+                        reader.Close();
+                        */
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.ResultCode = 202;
+                Response.Message = "DB Error";
+                Response.ErrorMessage.Add(ex.Message);
+            }
+         
+            return Response;
+        }
 
     }
 }

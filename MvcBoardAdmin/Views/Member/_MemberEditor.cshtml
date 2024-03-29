@@ -1,0 +1,118 @@
+﻿@model MvcBoardAdmin.Controllers.Response.ReadMemberDetailResponse
+
+@{
+    // TODO DB 권한 테이블 생성 및 연동 필요 
+    List<SelectListItem> AuthOptions = new List<SelectListItem>();
+
+    if (Model.ResultCode == 200)
+    {
+        AuthOptions.Add(new SelectListItem { Text = "일반", Value = "normal", Selected = (Model.ViewModel.Authority == "normal") });
+        AuthOptions.Add(new SelectListItem { Text = "관리자", Value = "master", Selected = (Model.ViewModel.Authority == "master") });
+    }
+}
+
+<div id="member_editor" class="member_editor">
+
+    정보 수정
+
+    @if (Model.ResultCode == 200)
+    {
+        @using (Html.AjaxBeginForm("Update", "Member", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnUpdateResponse" }, new { @id = "UpdateMemberForm", @class = "update_member_form" }))
+        {
+            <div class="detail_row">
+                <label>고유 번호</label>
+                <span>@Model.ViewModel.UserId</span>
+                @Html.Hidden("UserId", Model.ViewModel.UserId)
+            </div>
+               
+            <div class="detail_row">
+                <label>아이디</label>
+                @Html.TextBox("Id", Model.ViewModel.Id, new { @class = "text_input", @autoComplete = "off", @readonly = "readonly" })
+            </div>
+
+            <div class="detail_row">
+                <label>닉네임</label>
+                @Html.TextBox("Name", Model.ViewModel.Name, new { @class = "text_input", @autoComplete = "off" })
+            </div>
+
+            <div class="detail_row">
+                <label>프로필 이미지</label>
+                @Html.TextBox("Image", Model.ViewModel.Image, new { @class = "text_input", @autoComplete = "off" })
+            </div>
+
+            <div class="detail_row">
+                <label>권한</label>
+                @Html.DropDownList("Authority", AuthOptions, "권한", new { @id = "SearchFilterList", @class = "auth_drop"/* "form-control" */ })
+            </div>
+
+            <div class="detail_row">
+                <label>작성한 게시물 수</label>
+                <span>@Model.ViewModel.PostCount</span>
+            </div>
+
+            <div class="detail_row">
+                <label>작성한 댓글 수</label>
+                <span>@Model.ViewModel.CommentCount </span>
+            </div>
+
+            @* 업데이트를 위한 form (post) 결과 받아서 alert 띄우거나 성공 시 exit() 로 닫기 *@
+            <button type="submit" class="btn btn-outline-secondary btn-sm">저장</button>
+            <button type="button" onclick="memberEditorExit()" class="btn btn-outline-secondary btn-sm">닫기</button>
+        }
+    }
+
+</div>
+
+<script>
+
+    /* 최초 생성 시 ResultCode 에 따른 처리 */
+    (function () {
+        var msg = @Html.Raw(Json.Serialize(Model.Message)); // Message 또는 ErrorMessage(Array) 출력
+        if (@Model.ResultCode != 200) {
+            showAlert(msg, true);
+        }
+    })();
+
+    /* PartialView 닫기 */
+    function memberEditorExit() {
+        $("#member_editor").remove();
+    }
+
+    /* 정보 수정 요청 응답 핸들러 */
+    function OnUpdateResponse(xhr, status) {
+        // if (xhr.status === 200) {} 항상 return OK 로 반환
+
+        var response = JSON.parse(xhr.responseText);
+        // console.log("## _MemberEditor >> OnUpdateResponse()");
+        // console.log("response: ", response);
+
+        switch (response.resultCode) {
+            // 성공
+            case 200: {
+                updateMemeberList(0);
+                memberEditorExit();
+                break;
+            }
+            // 입력값 오류 (ModelState 참고하여 처리 필요)
+            case 201: {
+                showAlert(response.message, false);
+                break;
+            }
+            default: {
+                showAlert(response.message, false);
+                break;
+            } 
+        }
+
+        /* 오류 문구 노출 */
+        function showAlert(message, exit) {
+
+            alert(message);
+
+            if (exit) {
+                memberEditorExit();
+            }
+        }
+    }
+
+</script>

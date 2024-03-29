@@ -1,9 +1,14 @@
-﻿using MvcBoardAdmin.Controllers.Params;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Managers;
 
 namespace MvcBoardAdmin.Services
 {
+
+    // TODO 각 액션 메소드에 인증 로직 추가 필요
+
     public class MemberService
     {
         private readonly MemberDataManager _memberDataManager;
@@ -12,20 +17,83 @@ namespace MvcBoardAdmin.Services
             _memberDataManager = memberDataManager;
         }
 
+        /// <summary>
+        /// 유저(멤버) 리스트 조회
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
         public ReadMembersResponse ReadMembers(ReadMembersServiceParams _params)
         {
-            // TODO 인증
             // _params.HttpContext.Request
 
-            ReadMembersResponse response = new ReadMembersResponse();
+            ReadMembersResponse Response = new ReadMembersResponse();
 
-            response.ViewModel = _memberDataManager.ReadMembers(_params.ReadMembersParams);
+            Response.ViewModel = _memberDataManager.ReadMembers(_params.ReadMembersParams);
 
-            response.Message = "검색 결과 조회 성공";
+            Response.Message = "검색 결과 조회 성공";
 
-            return response;
+            return Response;
+        }
+        
+        /// <summary>
+        /// 유저(멤버) 정보 상세 조회
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public ReadMemberDetailResponse ReadMemberDetail(ReadMemberDetailServiceParams _params)
+        {
+            ReadMemberDetailResponse Response = _memberDataManager.ReadMemberDetail(_params.UserId);
+
+            // 뷰모델에 필드 추가 alert 같은거 ?
+
+            return Response;
         }
 
+        /// <summary>
+        /// 유저(멤버) 정보 수정 요청
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public CommonResponse UpdateMember(UpdateMemberServiceParams _params)
+        {
+            CommonResponse Response = new CommonResponse();
+
+            // 입력값 유효성 검증 
+            // TODO Question 직접 각 필드들을 조사해서 response 를 만들어서 넘겨주거나 (1)
+            // ModelState 객체를 통채로 넘겨주어서 클라이언트 측에서 Javascript 로 추출하여 가공 및 Validataion Message 처리 (2) ?
+            if (!_params.ModelState.IsValid)
+            {
+                Response.ResultCode = 201;
+                Response.Message = "입력값 오류";
+                Response.ModelState = _params.ModelState;
+
+                // 하나의 입력 필드에 대해서만 검증 결과 반환
+                List<string> keys = _params.ModelState.Select(e => e.Key).ToList();
+                foreach (string key in keys)
+                {
+                    if (_params.ModelState == null)
+                    {
+                        break;
+                    }
+
+                    Response.ErrorField = key;
+                    var errorMessages = _params.ModelState[key].Errors.Select(e => e.ErrorMessage).ToList();
+                    foreach (var errorMessage in errorMessages)
+                    {
+                        Response.ErrorMessage.Add(errorMessage);
+                    }
+
+                    break;
+                }
+
+                return Response;
+            }
+
+            // 검증 통과시 DB 요청
+            Response = _memberDataManager.UpdateMember(_params.UpdateParams);
+
+            return Response;
+        }
 
     }
 }

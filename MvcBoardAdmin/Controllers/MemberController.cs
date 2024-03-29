@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
-using MvcBoardAdmin.Models;
 using MvcBoardAdmin.Services;
 
 namespace MvcBoardAdmin.Controllers
@@ -28,21 +27,54 @@ namespace MvcBoardAdmin.Controllers
         {
             Console.WriteLine($"## MemberController >> MemberListPartial(SearchFilter: {_params.SearchFilter}, SearchWord: {_params.SearchWord}, Page: {_params.Page})");
 
-            ReadMembersServiceParams serviceParams = new ReadMembersServiceParams
+            ReadMembersServiceParams ServiceParams = new ReadMembersServiceParams
             {
                 ReadMembersParams = _params,
                 ModelState = ModelState,
                 HttpContext = HttpContext
             };
 
-            ReadMembersResponse response = _memberService.ReadMembers(serviceParams);
+            ReadMembersResponse Response = _memberService.ReadMembers(ServiceParams);
 
-            if (response.ResultCode != 200)
+            if (Response.ResultCode != 200)
             {
                 // 필요한 경우 처리
             }
 
-            return PartialView("_MemberList", response.ViewModel);
+            return PartialView("_MemberList", Response.ViewModel);
+        }
+
+        /* 유저 정보 에디터 PartialView */
+        [HttpGet]
+        public IActionResult MemberEditorPartial(int UserId = 0)
+        {
+            ReadMemberDetailServiceParams ServiceParams = new ReadMemberDetailServiceParams
+            {
+                ModelState = ModelState,
+                HttpContext = HttpContext,
+                UserId = UserId
+            };
+
+            // View 모델을 포함한 Response 객체를 뷰에 넘겨서 클라이언트에서 분기 처리 및 에러메세지 출력
+            ReadMemberDetailResponse Response = _memberService.ReadMemberDetail(ServiceParams);
+            
+            return PartialView("_MemberEditor", Response);
+        }
+
+        /* 유저 정보 수정 */
+        [HttpPost]
+        public IActionResult Update(UpdateMemberParams _params)
+        {
+            UpdateMemberServiceParams ServiceParams = new UpdateMemberServiceParams
+            {
+                UpdateParams = _params,
+                ModelState = ModelState,
+                HttpContext = HttpContext
+            };
+
+            CommonResponse Response = _memberService.UpdateMember(ServiceParams);
+            
+            return Ok(Response);
         }
     }
 }
