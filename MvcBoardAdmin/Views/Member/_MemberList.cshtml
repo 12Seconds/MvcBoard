@@ -10,23 +10,17 @@
         <div class="name">닉네임</div>
         <div class="image">프로필 이미지</div>
         <div class="authority">권한</div>
-        @* TODO
-        <div class="authority">게시물(</div>
-        <div class="authority">댓글</div> *@
     </div>
 
     @foreach(User user in Model.MemberList)
     {
         @* <a href="javascript:updateMemberEditor(@user.UserId);"> *@
-            <div class="item member @(user.Authority)">
+            <div class="item member @(user.Authority) @(user.IsDeleted ? "deleted" : "")">
                 <div class="number">@user.UserId</div>
-                <div class="id">@user.Id</div>
-                <div class="name">@user.Name</div>
-                <div class="image">@user.Image</div>
-                <div class="authority">@user.Authority</div>
-                @* TODO
-                <div class="authority">0</div>
-                <div class="authority">0</div> *@
+                <div class="id @(user.IsDeleted ? "deleted" : "")">@user.Id</div>
+                <div class="name @(user.IsDeleted ? "deleted" : "")">@user.Name</div>
+                <div class="image @(user.IsDeleted ? "deleted" : "")">@user.Image</div>
+                <div class="authority @(user.IsDeleted ? "deleted" : "")">@user.Authority</div>
                 <button type="button" onclick="updateMemberEditor(@user.UserId)" class=" btn btn-outline-primary btn-sm edit_button">수정</button>
                 <button type="button" onclick="deleteMember(@user.UserId)" class=" btn btn-outline-danger btn-sm edit_button">삭제</button>
             </div>
@@ -86,8 +80,10 @@
 
    /* 유저 삭제 요청 */
     function deleteMember(userId) {
-        $('#delete_userId_val').val(userId);
-        $('#DeleteMemberForm').submit();
+        if (confirm("해당 유저를 정말 삭제하시겠습니까?")) {
+            $('#delete_userId_val').val(userId);
+            $('#DeleteMemberForm').submit();
+        }
     }
 
     /* 유저 삭제 요청 응답 핸들러 */
@@ -114,8 +110,5 @@
             }
         }
     }
-
-    
-
 
 </script>

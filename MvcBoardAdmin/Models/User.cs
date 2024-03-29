@@ -12,5 +12,9 @@
 
         public int? Image { get; set; }
         public string Authority { get; set; } = "";
+        public bool IsDeleted { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime? DeleteDate { get; set; }
+
     }
 }

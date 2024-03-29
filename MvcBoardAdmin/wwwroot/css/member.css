@@ -1,6 +1,15 @@
 ﻿.manage_member_index {
     /*width: fit-content;*/
     display: flex;
+    margin-top: 100px;
+
+}
+
+.manage_member_index .title_anchor {
+    /*text-decoration: none;*/
+    /*color: #333333;*/
+    display: block;
+    width: fit-content;
 }
 
 /* index_main ----------------------------------------------------------- */
@@ -47,11 +56,27 @@
     background-color: rgb(255,232,232);
 }
 
+.member_list .member.deleted {
+    background-color: #e6e6e6;
+}
+/* 취소선을 일괄 적용하고 버튼에는 적용하지 않으려고 none 설정했으나 
+    버튼에 none 이 적용되어도 계속 취소선이 그려지는 문제가 있어서 항목 각각 적용함... */
+/*.member_list .member.deleted {
+    text-decoration: line-through;
+}
+.member_list .member.deleted button {
+    text-decoration: none !important;
+}
+*/
+
 .member_list .item .number {
     width: 90px;
     min-width: 90px;
     margin-right: 10px;
     padding: 5px 10px;
+}
+.member_list .item .number.deleted {
+    text-decoration: line-through;
 }
 
 .member_list .item .id {
@@ -60,12 +85,18 @@
     margin-right: 10px;
     padding: 5px 1px;
 }
+.member_list .item .id.deleted {
+    text-decoration: line-through;
+}
 
 .member_list .item .name {
     width: 150px;
     min-width: 150px;
     margin-right: 10px;
     padding: 5px 1px;
+}
+.member_list .item .name.deleted {
+    text-decoration: line-through;
 }
 
 .member_list .item .image {
@@ -75,6 +106,9 @@
     padding: 5px 1px;
     text-align: center;
 }
+.member_list .item .image.deleted {
+    text-decoration: line-through;
+}
 
 .member_list .item .authority {
     width: 80px;
@@ -82,6 +116,9 @@
     margin-right: 10px;
     padding: 5px 1px;
     text-align: center;
+}
+.member_list .item .authority.deleted {
+    text-decoration: line-through;
 }
 
 .member_list .item .edit_button {
@@ -101,9 +138,38 @@
 .member_editor {
     width: 400px;
     height: 400px;
-    margin-top: 20px;
+    margin-top: 44px;
     border: 1px solid #e6e6e6;
     border-radius: 10px;
     padding-top: 20px;
-    padding-left: 20px;
+    padding-left: 28px;
+}
+
+.member_editor.master {
+    background-color: rgb(255,232,232);
+}
+
+.member_editor.deleted {
+    background-color: #e6e6e6;
+}
+
+.member_editor .detail_row {
+    margin-bottom: 7px;
+}
+
+.member_editor .detail_row label {
+    width: 130px;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.member_editor .detail_row input {
+    padding-left: 7px;
+}
+
+.member_editor .buttton_list {
+    text-align: center;
+    margin-top: 20px;
+    margin-left: -20px;
 }

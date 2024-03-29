@@ -11,10 +11,8 @@
     }
 }
 
-<div id="member_editor" class="member_editor">
-
-    정보 수정
-
+<div id="member_editor" class="member_editor @(Model.ViewModel.Authority) @(Model.ViewModel.IsDeleted ? "deleted" : "")">
+    
     @if (Model.ResultCode == 200)
     {
         @using (Html.AjaxBeginForm("Update", "Member", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnUpdateResponse" }, new { @id = "UpdateMemberForm", @class = "update_member_form" }))
@@ -27,7 +25,7 @@
                
             <div class="detail_row">
                 <label>아이디</label>
-                @Html.TextBox("Id", Model.ViewModel.Id, new { @class = "text_input", @autoComplete = "off", @readonly = "readonly" })
+                @Html.TextBox("Id", Model.ViewModel.Id, new { @class = "text_input", @autoComplete = "off", @disabled = "disabled" })
             </div>
 
             <div class="detail_row">
@@ -55,11 +53,24 @@
                 <span>@Model.ViewModel.CommentCount </span>
             </div>
 
-            // TODO 변경한 값이 없는 경우 submit 요청 보내지 않는 처리
+            <div class="detail_row">
+                <label>가입 일자</label>
+                <span>@Model.ViewModel.CreateDate.ToString("yyyy년 MM월 dd일")</span>
+            </div>
 
-            @* 업데이트를 위한 form (post) 결과 받아서 alert 띄우거나 성공 시 exit() 로 닫기 *@
-            <button type="submit" class="btn btn-outline-secondary btn-sm">저장</button>
-            <button type="button" onclick="memberEditorExit()" class="btn btn-outline-secondary btn-sm">닫기</button>
+            if (Model.ViewModel.IsDeleted && Model.ViewModel.DeleteDate.HasValue)
+            {
+                <div class="detail_row">
+                    <label>탈퇴 일자</label>
+                    <span>@Model.ViewModel.DeleteDate.Value.ToString("yyyy년 MM월 dd일")</span>
+                </div>
+            }
+
+            // TODO 변경한 값이 없는 경우 submit 요청 보내지 않는 처리
+            <div class="buttton_list">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">저장</button>
+                <button type="button" onclick="memberEditorExit()" class="btn btn-outline-secondary btn-sm">닫기</button>
+            </div>
         }
     }
 
@@ -106,15 +117,6 @@
             } 
         }
     }
-
-    /* 오류 문구 노출 */
-    function showAlert(message, exit) {
-
-        alert(message);
-
-        if (exit) {
-            memberEditorExit();
-        }
-    }
+    
 
 </script>

@@ -55,6 +55,7 @@ namespace MvcBoardAdmin.Managers
                         user.Name = reader["Name"].ToString() ?? "";
                         user.Image = int.Parse(reader["Image"]?.ToString() ?? "0");
                         user.Authority = reader["Authority"]?.ToString() ?? "normal";
+                        user.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
                         Users.Add(user);
                     }
 
@@ -126,6 +127,9 @@ namespace MvcBoardAdmin.Managers
                             Model.Authority = reader["Authority"]?.ToString() ?? "normal";
                             Model.PostCount = int.Parse(reader["PostCount"]?.ToString() ?? "0");
                             Model.CommentCount = int.Parse(reader["CommentCount"]?.ToString() ?? "0");
+                            Model.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                            Model.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
+                            if (reader["DeleteDate"] != DBNull.Value) { Model.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01"); }
 
                             Model.Password = ""; // 필요 시 SP 에서 추가
                         }
@@ -233,7 +237,7 @@ namespace MvcBoardAdmin.Managers
                         if (rowsAffected < 1)
                         {
                             Response.ResultCode = 203;
-                            Response.Message = "DB Fail";
+                            Response.Message = "DB Fail (존재하지 않는 사용자 입니다.)";
                         }
                     }
                     connection.Close();

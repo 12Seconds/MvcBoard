@@ -15,7 +15,9 @@
 
     @* 왼쪽 메인 영역 *@
     <div class="index_main">
-        <h4>유저 관리</h4>
+        <a asp-area="" asp-action="Index" asp-controller="Member" class="title_anchor">
+            <h4>유저 관리</h4>
+        </a>
         <hr/>
 
         @* 검색 Partial View *@
@@ -70,6 +72,16 @@
     function updateMemberEditor(userId) {
         $('#editor_userId_val').val(userId);
         $('#MemberEditorForm').submit();
+    }
+
+    /* 오류 문구 노출 */
+    function showAlert(message, exit) {
+
+        alert(message);
+
+        if (exit) {
+            memberEditorExit();
+        }
     }
 
 </script>
