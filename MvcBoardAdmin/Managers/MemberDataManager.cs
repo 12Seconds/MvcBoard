@@ -174,9 +174,6 @@ namespace MvcBoardAdmin.Managers
                         command.Parameters.AddWithValue("@Image", _params.Image);
                         command.Parameters.AddWithValue("@Authority", _params.Authority);
 
-                        
-                        // TODO 결과 확인 코드 작성
-
                         // 방법1) ExecuteNonQuery 함수로 영향 받은 행 수를 구하여 성공 여부 확인
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected < 1)
@@ -206,6 +203,49 @@ namespace MvcBoardAdmin.Managers
                 Response.ErrorMessage.Add(ex.Message);
             }
          
+            return Response;
+        }
+
+        /// <summary>
+        /// 멤버(유저) 정보 삭제
+        /// </summary>
+        /// <param name="_params"></param>
+        public CommonResponse DeleteMember(int UserId)
+        {
+            CommonResponse Response = new CommonResponse();
+            Response.ResultCode = 200;
+            Response.Message = "DB Success";
+
+            Console.WriteLine($"## MemberDataManager >> DeleteMember(UserId = {UserId})");
+
+            try
+            {
+                using (var connection = GetConnection())
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("adm_DeleteUser", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@UserId", UserId);
+
+                        // 영향 받은 행 수를 구하여 성공 여부 확인
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected < 1)
+                        {
+                            Response.ResultCode = 203;
+                            Response.Message = "DB Fail";
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.ResultCode = 202;
+                Response.Message = "DB Error";
+                Response.ErrorMessage.Add(ex.Message);
+            }
+
             return Response;
         }
 

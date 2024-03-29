@@ -95,5 +95,26 @@ namespace MvcBoardAdmin.Services
             return Response;
         }
 
+        /// <summary>
+        /// 유저(멤버) 정보 삭제 요청
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public CommonResponse DeleteMember(DeleteMemberServiceParams _params)
+        {
+            CommonResponse Response = new CommonResponse();
+
+            if (_params.UserId < 1)
+            {
+                Response.ResultCode = 201;
+                Response.Message = "입력값 오류 (유효하지 않은 Id)";
+                return Response;
+            }
+            
+            Response = _memberDataManager.DeleteMember(_params.UserId);
+
+            return Response;
+        }
+
     }
 }

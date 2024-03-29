@@ -55,6 +55,8 @@
                 <span>@Model.ViewModel.CommentCount </span>
             </div>
 
+            // TODO 변경한 값이 없는 경우 submit 요청 보내지 않는 처리
+
             @* 업데이트를 위한 form (post) 결과 받아서 alert 띄우거나 성공 시 exit() 로 닫기 *@
             <button type="submit" class="btn btn-outline-secondary btn-sm">저장</button>
             <button type="button" onclick="memberEditorExit()" class="btn btn-outline-secondary btn-sm">닫기</button>
@@ -103,15 +105,15 @@
                 break;
             } 
         }
+    }
 
-        /* 오류 문구 노출 */
-        function showAlert(message, exit) {
+    /* 오류 문구 노출 */
+    function showAlert(message, exit) {
 
-            alert(message);
+        alert(message);
 
-            if (exit) {
-                memberEditorExit();
-            }
+        if (exit) {
+            memberEditorExit();
         }
     }
 

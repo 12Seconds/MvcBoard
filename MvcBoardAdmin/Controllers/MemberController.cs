@@ -50,9 +50,9 @@ namespace MvcBoardAdmin.Controllers
         {
             ReadMemberDetailServiceParams ServiceParams = new ReadMemberDetailServiceParams
             {
+                UserId = UserId,
                 ModelState = ModelState,
-                HttpContext = HttpContext,
-                UserId = UserId
+                HttpContext = HttpContext
             };
 
             // View 모델을 포함한 Response 객체를 뷰에 넘겨서 클라이언트에서 분기 처리 및 에러메세지 출력
@@ -74,6 +74,22 @@ namespace MvcBoardAdmin.Controllers
 
             CommonResponse Response = _memberService.UpdateMember(ServiceParams);
             
+            return Ok(Response);
+        }
+
+        /* 유저 삭제 */
+        [HttpPost]
+        public IActionResult Delete(int UserId = 0)
+        {
+            DeleteMemberServiceParams ServiceParams = new DeleteMemberServiceParams
+            {
+                UserId = UserId,
+                ModelState = ModelState,
+                HttpContext = HttpContext
+            };
+
+            CommonResponse Response = _memberService.DeleteMember(ServiceParams);
+
             return Ok(Response);
         }
     }
