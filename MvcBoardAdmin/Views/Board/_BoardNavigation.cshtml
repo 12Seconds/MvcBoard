@@ -30,7 +30,9 @@
 }
 
 <div class="board_navigation">
-    
+
+    @* <button type="button" onclick="ToggleOrderLable()" id="order_label_btn" class="btn btn-outline-secondary btn-sm">순서 보기/숨기기</button> *@
+
     @foreach (var board in Model)
     {
         @* TODO <a asp-area="" asp-controller="Community" asp-action=@GetAction(board.Category) asp-route-category=@(board.Category < 3 ? 0 : board.Category)> *@
@@ -41,6 +43,7 @@
                     <path d="@Html.Raw(GetIconPath(board.IconType))" fill="white"></path>
                 </svg>
                 &nbsp;@board.BoardName
+                <div class="order_label">(Order: @board.ShowOrder)</div>
             </div>
             @if (board.Children.Count > 0)
             {
@@ -49,6 +52,7 @@
                 {
                     <div class="item children">
                         &nbsp;@child.BoardName
+                        <div class="order_label">(Order: @child.ShowOrder)</div>
                     </div>
                 }
                 </div>
@@ -64,6 +68,11 @@
     function ToggleExtend(parentDiv) {
         // TODO Jquery
         console.log("###### Toggle", parentDiv);
+    }
+
+    /* 노출 순서 labe 보이기, 숨기기 */
+    function ToggleOrderLable() {
+        $('.order_label').toggle();
     }
 
 </script>

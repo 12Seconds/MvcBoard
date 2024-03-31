@@ -85,7 +85,7 @@ namespace MvcBoardAdmin.Services
                 if (found == null)
                 {
                     Response.ResultCode = 203;
-                    Response.Message = "DB Fail";
+                    Response.Message = "해당 게시판의 정보를 찾을 수 없습니다.";
                     return Response;
                 }
 
@@ -101,7 +101,7 @@ namespace MvcBoardAdmin.Services
             {
                 Response.ResultCode = 203;
                 Response.Message = "DB Fail";
-                Response.ErrorMessage.Add(ex.Message);
+                Response.ErrorMessages.Add(ex.Message);
                 return Response;
             }
             

@@ -13,8 +13,10 @@ namespace MvcBoardAdmin.Controllers.Response
         /// </summary>
         public int ResultCode { get; set; } = 200;
         public string Message { get; set; } = "";
-        public string ErrorField { get; set; } = "";
-        public List<string> ErrorMessage { get; set; } = new List<string>();
+        public List<string> ErrorFields { get; set; } = new List<string>();
+        public List<string> ErrorMessages { get; set; } = new List<string>();
+
+        public string ErrorSummary = "";
         public ModelStateDictionary ModelState { get; set; }
     }
 }

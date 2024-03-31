@@ -6,6 +6,9 @@
 
     if (Model.ResultCode == 200)
     {
+        // 기본값
+        CategoryOptions.Add(new SelectListItem { Text = "(없음)", Value = "0", Selected = (Model.ViewModel.Board.ParentCategory == 0) });
+
         foreach(var parent in Model.ViewModel.Parents)
         {
             CategoryOptions.Add(new SelectListItem { Text = parent.BoardName, Value = (parent.Category).ToString(), Selected = (parent.Category == Model.ViewModel.Board.ParentCategory) });
@@ -16,7 +19,7 @@
 
     // 아이콘 종류 드롭 박스 옵션 TODO 서버에서 보내줄 것
     List<SelectListItem> IconOptions = new List<SelectListItem>();
-    IconOptions.Add(new SelectListItem { Text = "기본", Value = "1", Selected = (Model.ViewModel.Board.IconType == 1) });
+    IconOptions.Add(new SelectListItem { Text = "기본", Value = "1", Selected = (Model.ViewModel.Board.IconType <= 1) });
     IconOptions.Add(new SelectListItem { Text = "하트 모양", Value = "2", Selected = (Model.ViewModel.Board.IconType == 2) });
     IconOptions.Add(new SelectListItem { Text = "핀 모양", Value = "3", Selected = (Model.ViewModel.Board.IconType == 3) });
     IconOptions.Add(new SelectListItem { Text = "사람 모양", Value = "4", Selected = (Model.ViewModel.Board.IconType == 4) });
@@ -51,6 +54,7 @@
                 <label>부모 카테고리 번호</label>
                 @Html.DropDownList("ParentCategory", CategoryOptions, "부모 카테고리", new { @class = "auth_drop"})
                 @* @Html.TextBox("ParentCategory", Model.ViewModel.Board.ParentCategory, new { @class = "text_input", @autoComplete = "off" }) *@
+                @* TODO Question 드롭다운 리스트를 통해 선택되지 않은 값이 액션메소드로 전달되는 경우 기본값이 들어가도 ModelState 에서 invalid 처리..*@
             </div>
 
             <div class="detail_row">
@@ -105,8 +109,22 @@
         // if (xhr.status === 200) {} 항상 return OK 로 반환
 
         var response = JSON.parse(xhr.responseText);
-        console.log("## _BoardEditor >> OnUpdateResponse()");
-        console.log("response: ", response);
+        console.log("## _BoardEditor >> OnUpdateResponse() response: ", response);
+
+        /*
+            TODO 필요에 따라 가공, 수정하여 사용
+            response.message -> string
+            response.errorFields -> string array
+            response.errorMessages -> string array
+            response.errorSummary -> string
+        */
+        var AllMessages = ""; // 편의상 모두 노출
+
+        AllMessages += response.message + "\n";
+        for (var i = 0; i < response.errorMessages.length; i++)
+        {
+            AllMessages += response.errorMessages[i] + "\n";
+        }
 
         switch (response.resultCode) {
             // 성공
@@ -118,11 +136,11 @@
             }
             // 입력값 오류 (ModelState 참고하여 처리 필요)
             case 201: {
-                showAlert(response.message, false);
+                showAlert(AllMessages, false);
                 break;
             }
             default: {
-                showAlert(response.message, false);
+                showAlert(AllMessages, false);
                 break;
             } 
         }

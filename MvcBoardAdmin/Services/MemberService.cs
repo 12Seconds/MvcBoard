@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Managers;
+using MvcBoardAdmin.Utills;
 
 namespace MvcBoardAdmin.Services
 {
@@ -56,36 +57,14 @@ namespace MvcBoardAdmin.Services
         /// <returns></returns>
         public CommonResponse UpdateMember(UpdateMemberServiceParams _params)
         {
-            CommonResponse Response = new CommonResponse();
-
             // 입력값 유효성 검증 
             // TODO Question 직접 각 필드들을 조사해서 response 를 만들어서 넘겨주거나 (1)
             // ModelState 객체를 통채로 넘겨주어서 클라이언트 측에서 Javascript 로 추출하여 가공 및 Validataion Message 처리 (2) ?
-            if (!_params.ModelState.IsValid)
+
+            CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
+
+            if (Response.ResultCode != 200)
             {
-                Response.ResultCode = 201;
-                Response.Message = "입력값 오류";
-                Response.ModelState = _params.ModelState;
-
-                // 하나의 입력 필드에 대해서만 검증 결과 반환
-                List<string> keys = _params.ModelState.Select(e => e.Key).ToList();
-                foreach (string key in keys)
-                {
-                    if (_params.ModelState == null)
-                    {
-                        break;
-                    }
-
-                    Response.ErrorField = key;
-                    var errorMessages = _params.ModelState[key].Errors.Select(e => e.ErrorMessage).ToList();
-                    foreach (var errorMessage in errorMessages)
-                    {
-                        Response.ErrorMessage.Add(errorMessage);
-                    }
-
-                    break;
-                }
-
                 return Response;
             }
 

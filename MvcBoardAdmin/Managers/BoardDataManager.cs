@@ -57,40 +57,62 @@ namespace MvcBoardAdmin.Managers
         }
 
         /// <summary>
-        /// 게시판 생성 요청
+        /// 게시판 생성 요청 
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
         public CommonResponse CreateBoard(CreateBoardParams _params)
         {
             CommonResponse Response = new CommonResponse();
-            Response.ResultCode = 200;
-            Response.Message = "DB Success";
 
-            Console.WriteLine($"## MemberDataManager >> CreateBoard(BoardId = {_params.BoardId}, BoardName = {_params.BoardName}, Category = {_params.Category}, ParentCategory = {_params.ParentCategory}, ShowOrder = {_params.ShowOrder}, IconType = {_params.IconType})");
+            Console.WriteLine($"## MemberDataManager >> CreateBoard(BoardId = {_params.BoardId}, BoardName = {_params.BoardName}, Category = {_params.Category}, ParentCategory = {_params.ParentCategory}, ShowOrder = {_params.ShowOrder}, IconType = {_params.IconType}, IsParent = {_params.IsParent}, IsWritable = {_params.IsWritable})");
 
             try
             {
                 using (var connection = GetConnection())
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand("CreateBoardType", connection)) // adm_CreateBoard
+                    using (SqlCommand command = new SqlCommand("CreateBoardType", connection)) // adm_CreateBoard 
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@BoardName", _params.BoardName);
                         command.Parameters.AddWithValue("@Category", _params.Category);
                         command.Parameters.AddWithValue("@ParentCategory", _params.ParentCategory);
-                        command.Parameters.AddWithValue("@IsParent", _params.ParentCategory);
+                        command.Parameters.AddWithValue("@IsParent", _params.IsParent);
                         command.Parameters.AddWithValue("@IconType", _params.IconType);
                         command.Parameters.AddWithValue("@IsWritable", _params.IsWritable);
                         command.Parameters.AddWithValue("@ShowOrder", _params.ShowOrder);
 
-                        // 방법1) ExecuteNonQuery 함수로 영향 받은 행 수를 구하여 성공 여부 확인
-                        int rowsAffected = command.ExecuteNonQuery();
-                        if (rowsAffected < 1)
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        if (!reader.Read())
                         {
                             Response.ResultCode = 203;
-                            Response.Message = "DB Fail";
+                            Response.Message = "DB Read Fail";
+                            return Response;
+                        }
+
+                        int result = Convert.ToInt32(reader["Result"]);
+
+                        // TODO 에러 코드 및 메시지 정의
+                        switch (result)
+                        {
+                            case 1:
+                                Response.ResultCode = 200;
+                                Response.Message = "DB Success";
+                                break;
+                            case 0:
+                                Response.ResultCode = 203;
+                                Response.Message = "DB Fail";
+                                break;
+                            case -1:
+                                Response.ResultCode = 203;
+                                Response.Message = "Category 번호는 중복될 수 없습니다."; // 비즈니스 로직에 따라 중복이 필요한 경우 수정
+                                break;
+                            case -2:
+                                Response.ResultCode = 203;
+                                Response.Message = "입력값 오류 (-2)";
+                                break;
                         }
                     }
                     connection.Close();
@@ -100,7 +122,7 @@ namespace MvcBoardAdmin.Managers
             {
                 Response.ResultCode = 202;
                 Response.Message = "DB Error";
-                Response.ErrorMessage.Add(ex.Message);
+                Response.ErrorMessages.Add(ex.Message);
             }
 
             return Response;

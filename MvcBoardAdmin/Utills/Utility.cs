@@ -70,14 +70,14 @@ namespace MvcBoardAdmin.Utills
                 List<string> keys = ModelState.Select(e => e.Key).ToList();
                 foreach (string key in keys)
                 {
-                    Response.ErrorField = key;
                     var errorMessages = ModelState[key].Errors.Select(e => e.ErrorMessage).ToList();
                     foreach (var errorMessage in errorMessages)
                     {
-                        Response.ErrorMessage.Add(errorMessage);
+                        Response.ErrorFields.Add(key);
+                        Response.ErrorMessages.Add($"[{key}]: {errorMessage}");
+                        Response.ErrorSummary += $"[{key}]: {errorMessage}{Environment.NewLine}"; // string + "\n" + string 도 가능
+                        break;
                     }
-
-                    break;
                 }
 
                 return Response;

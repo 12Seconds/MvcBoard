@@ -35,7 +35,7 @@ namespace MvcBoardAdmin.Services
                     */
                     response.ResultCode = 201;
                     response.Message = "입력값 오류";
-                    response.ErrorMessage.Add("입력한 아이디가 올바르지 않습니다.");
+                    response.ErrorMessages.Add("입력한 아이디가 올바르지 않습니다.");
                     return response;
                 }
 
@@ -44,7 +44,7 @@ namespace MvcBoardAdmin.Services
                 {
                     response.ResultCode = 201;
                     response.Message = "입력값 오류";
-                    response.ErrorMessage.Add("입력한 비밀번호가 올바르지 않습니다.");
+                    response.ErrorMessages.Add("입력한 비밀번호가 올바르지 않습니다.");
                     return response;
                 }
 

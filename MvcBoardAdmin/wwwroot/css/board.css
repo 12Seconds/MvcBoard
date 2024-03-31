@@ -271,6 +271,13 @@
     width: 264px;
 }
 
+.board_navigation .board .order_label {
+    font-weight: normal;
+    font-size: 13px;
+    color: #999999;
+    margin-left: 10px;
+}
+
 .board_navigation .board .item {
     display: flex;
     align-items: center;

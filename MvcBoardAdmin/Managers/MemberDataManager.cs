@@ -147,7 +147,7 @@ namespace MvcBoardAdmin.Managers
             {
                 Response.ResultCode = 202;
                 Response.Message = "DB Error";
-                Response.ErrorMessage.Add(ex.Message);
+                Response.ErrorMessages.Add(ex.Message);
             }
 
             return Response;
@@ -204,7 +204,7 @@ namespace MvcBoardAdmin.Managers
             {
                 Response.ResultCode = 202;
                 Response.Message = "DB Error";
-                Response.ErrorMessage.Add(ex.Message);
+                Response.ErrorMessages.Add(ex.Message);
             }
          
             return Response;
@@ -247,7 +247,7 @@ namespace MvcBoardAdmin.Managers
             {
                 Response.ResultCode = 202;
                 Response.Message = "DB Error";
-                Response.ErrorMessage.Add(ex.Message);
+                Response.ErrorMessages.Add(ex.Message);
             }
 
             return Response;
