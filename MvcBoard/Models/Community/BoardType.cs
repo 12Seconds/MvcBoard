@@ -6,8 +6,11 @@
         public string BoardName { get; set; } = "";
         public int Category { get; set; }
         public int ParentCategory { get; set; }
-        public int IsParent { get; set; }
+        public bool IsParent { get; set; }
         public int IconType { get; set; }
         public bool IsWritable { get; set; }
+        public int ShowOrder { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿
 .login_page {
-   background-color: aliceblue;
+   /*background-color: aliceblue;*/
    display: flex;
    justify-content: center;
 }
@@ -13,13 +13,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: antiquewhite;
+    /*background-color: antiquewhite;*/
 }
 
 .login_page .login_container .login_form {
     width: 300px;
     height: 270px;
-    background-color: aquamarine;
+    /*background-color: aquamarine;*/
     border-radius: 10px;
     border: 1px solid green;
     margin-bottom: 10px;
@@ -34,7 +34,7 @@
 .login_page .login_container .login_form .logo {
     width: 100px;
     height: 100px;
-    background-color: cornflowerblue;
+    /*background-color: cornflowerblue;*/
     display: inline-block;
     background-size: cover;
     margin-bottom: 20px;

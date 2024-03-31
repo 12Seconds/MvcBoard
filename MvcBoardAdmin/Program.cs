@@ -16,6 +16,9 @@ builder.Services.AddSingleton<HomeService>();
 builder.Services.AddTransient<MemberDataManager>();
 builder.Services.AddSingleton<MemberService>();
 
+builder.Services.AddTransient<BoardDataManager>();
+builder.Services.AddSingleton<BoardService>();
+
 // Html.AjaxBeginForm 사용을 위한 AspNetCore.Unobtrusive.Ajax 패키지 설치 및 설정 작업 (MVC 5 의 Ajax.BeginForm 대체)
 builder.Services.AddUnobtrusiveAjax();
 

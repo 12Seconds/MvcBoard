@@ -1,0 +1,40 @@
+﻿@model List<BoardType>
+
+@{
+}
+
+<div class="board_list">
+
+    @foreach(var board in Model)
+    {
+        // 고정 게시판 (전체, 인기, 공지) 은 편집 불가하므로 제외
+        if (board.BoardId < 4)
+        {
+            continue;
+        }
+
+        <div class="item">
+            <div class="name" onclick="updateBoardEditor(@board.BoardId)">
+                @board.BoardName (@board.Category)
+            </div>
+            
+            @if (board.Children.Count > 0)
+            {
+                <div class="child">
+                @foreach (var child in board.Children)
+                {
+                    <div class="child_name" onclick="updateBoardEditor(@child.BoardId)">
+                        @child.BoardName  (@child.Category)
+                    </div>
+                }
+                </div>
+            }
+        </div>
+    }
+    
+</div>
+
+<script>
+
+
+</script>

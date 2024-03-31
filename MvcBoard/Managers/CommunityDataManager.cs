@@ -3,6 +3,7 @@ using System.Data;
 using MvcBoard.Models.Community;
 using MvcBoard.Managers.Models;
 using MvcBoard.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace MvcBoard.Managers
 {
@@ -46,9 +47,10 @@ namespace MvcBoard.Managers
                         board.BoardName = reader["BoardName"]?.ToString() ?? "";
                         board.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
                         board.ParentCategory = int.Parse(reader["ParentCategory"]?.ToString() ?? "0");
-                        board.IsParent = int.Parse(reader["IsParent"]?.ToString() ?? "0");
+                        board.IsParent = reader.GetBoolean(reader.GetOrdinal("IsParent"));
                         board.IconType = int.Parse(reader["IconType"]?.ToString() ?? "0");
                         board.IsWritable = reader.GetBoolean(reader.GetOrdinal("IsWritable"));
+                        board.ShowOrder = int.Parse(reader["IconType"]?.ToString() ?? "0");
 
                         BoardTypes.Add(board);
                     }

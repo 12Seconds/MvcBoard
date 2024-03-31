@@ -1,4 +1,8 @@
-﻿namespace MvcBoardAdmin.Utills
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using MvcBoardAdmin.Controllers.Response;
+
+namespace MvcBoardAdmin.Utills
 {
     public class Utility
     {
@@ -36,6 +40,50 @@
         {
             public int start { get; set; }
             public int end { get; set; }
+        }
+
+
+        /// <summary>
+        /// ModelState 검증하여 CommonResponse 반환
+        /// </summary>
+        /// <param name="ModelState"></param>
+        /// <returns></returns>
+        public static CommonResponse ModelStateValidation(ModelStateDictionary ModelState)
+        {
+            CommonResponse Response = new CommonResponse();
+
+            if (ModelState == null)
+            {
+                Response.ResultCode = 201;
+                Response.Message = "입력값 오류";
+                return Response;
+            }
+
+            // 입력값 유효성 검증
+            if (!ModelState.IsValid)
+            {
+                Response.ResultCode = 201;
+                Response.Message = "입력값 오류";
+                Response.ModelState = ModelState;
+
+                // 하나의 입력 필드에 대해서만 검증 결과 반환
+                List<string> keys = ModelState.Select(e => e.Key).ToList();
+                foreach (string key in keys)
+                {
+                    Response.ErrorField = key;
+                    var errorMessages = ModelState[key].Errors.Select(e => e.ErrorMessage).ToList();
+                    foreach (var errorMessage in errorMessages)
+                    {
+                        Response.ErrorMessage.Add(errorMessage);
+                    }
+
+                    break;
+                }
+
+                return Response;
+            }
+
+            return Response;
         }
     }
 

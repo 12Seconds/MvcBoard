@@ -40,7 +40,7 @@
 
             <div class="detail_row">
                 <label>권한</label>
-                @Html.DropDownList("Authority", AuthOptions, "권한", new { @id = "SearchFilterList", @class = "auth_drop"/* "form-control" */ })
+                @Html.DropDownList("Authority", AuthOptions, "권한", new { @class = "auth_drop"})
             </div>
 
             <div class="detail_row">
@@ -84,6 +84,8 @@
         if (@Model.ResultCode != 200) {
             showAlert(msg, true);
         }
+
+        $("#board_nav_container").show();
     })();
 
     /* PartialView 닫기 */

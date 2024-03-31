@@ -1,0 +1,88 @@
+﻿@{
+
+    ViewData["Title"] = "게시판 관리";
+}
+
+<link rel="stylesheet" href="@(Url.Content("~/css/board.css"))" />
+
+<div class="manage_board_index">
+
+    @* 왼쪽 메인 영역 *@
+    <div class="index_main">
+        <div class="label_container ">
+        <a asp-area="" asp-action="Index" asp-controller="Board" class="title_anchor">
+            <h4>게시판 관리</h4>
+        </a>
+            <button type="button" onclick="updateBoardEditor(0)" class="btn btn-outline-secondary btn-sm create_button">새 게시판 생성</button>
+        </div>
+        <hr/>
+        @* 게시판 리스트 *@
+        <div id="board_list_container" class=""></div>
+        @using (Html.AjaxBeginForm("BoardListPartial", "Board", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "board_list_container" },new { id = "BoardListForm" })) {}
+       
+    </div>
+    
+    @* 오른쪽 영역 *@
+    <div class="index_right">
+
+        @* 유저 에디터 Partial View  *@
+        <div id="board_editor_container"></div>
+        @using (Html.AjaxBeginForm("BoardEditorPartial", "Board", new AjaxOptions { HttpMethod = "Get",UpdateTargetId = "board_editor_container"}, new { id = "BoardEditorForm" }))
+        {
+            @Html.Hidden("BoardId", "", new { id = "editor_boardId_val" });
+        }
+
+        @* 게시판 네비게이션 메뉴 Partail View *@
+        <div id="board_nav_container"></div>
+        @using (Html.AjaxBeginForm("BoardNavigationMenu", "Board",new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "board_nav_container" }, new { id = "BoardNavigationMenuForm" })) {}
+
+    </div>
+    
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 게시판 리스트
+        $('#BoardListForm').submit();
+
+        $("#board_nav_container").hide();
+
+        // 게시판 네비게이션 메뉴
+        $('#BoardNavigationMenuForm').submit();
+    });
+    
+    /* 게시판 리스트 업데이트 함수 */
+    /*
+    function updateBoardList(page) {
+        if (page > 0) {
+            $('#page_index_val').val(page);
+        }
+        $('#BoardListForm_update').submit();
+    }
+    */
+
+    /* 게시판 에디터 로드 함수 */
+    function updateBoardEditor(boardId) {
+        $('#editor_boardId_val').val(boardId);
+        $('#BoardEditorForm').submit();
+        $("#board_nav_container").show();
+    }
+
+    /* 오류 문구 노출 */
+    function showAlert(message, exit) {
+
+        alert(message);
+
+        if (exit) {
+            boardEditorExit();
+        }
+    }
+
+    /* 화면 갱신 */
+    function updatePage() {
+        $('#BoardListForm').submit();
+        $("#board_nav_container").hide();
+        $('#BoardNavigationMenuForm').submit();
+    }
+
+</script>

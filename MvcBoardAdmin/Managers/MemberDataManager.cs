@@ -103,7 +103,7 @@ namespace MvcBoardAdmin.Managers
             ReadMemberDetailResponse Response = new ReadMemberDetailResponse();
             MemberEditorViewModel Model = new MemberEditorViewModel();
 
-            Console.WriteLine($"## MemberDataManager >> ReadMembers(UserId = {UserId})");
+            Console.WriteLine($"## MemberDataManager >> ReadMemberDetail(UserId = {UserId})");
 
             try
             {

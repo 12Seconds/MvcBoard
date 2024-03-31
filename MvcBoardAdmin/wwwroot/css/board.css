@@ -1,0 +1,302 @@
+﻿.manage_board_index {
+    /*width: fit-content;*/
+    display: flex;
+    margin-top: 100px;
+
+}
+
+.manage_board_index .title_anchor {
+    /*text-decoration: none;*/
+    /*color: #333333;*/
+    display: block;
+    width: fit-content;
+}
+
+/* index_main ----------------------------------------------------------- */
+.manage_board_index .index_main {
+    width: 730px;
+}
+
+.manage_board_index .index_main .container {
+    display: flex;
+}
+
+.manage_board_index .index_main .label_container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.manage_board_index .index_main .label_container .create_button {
+    width: 120px;
+    height: 30px;
+    margin-top: 10px;
+}
+
+/*
+.board_list_container {
+
+}
+
+.board_list {
+    
+}
+*/
+
+.board_list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.board_list .item {
+    width: 200px;
+    min-height: 40px;
+    
+    height: fit-content;
+    
+    margin-bottom: 30px;
+    
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+
+    /*background-color: aquamarine;*/
+
+    /*flex-direction: column;*/
+    /*text-align: center;*/
+    /*text-overflow: ellipsis;
+    white-space: nowrap; 
+    overflow: hidden;*/
+}
+
+.board_list .item .name {
+    padding-left: 10px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.board_list .item .name:hover {
+    background-color: rgb(255,232,232);
+}
+
+.board_list .item .child {
+    margin-top: 5px;
+    font-size: 14px;
+    /*background-color: aqua;*/
+    max-height: 230px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.board_list .item .child .child_name {
+    margin-bottom: 5px;
+    padding-left: 10px;
+    cursor: pointer;
+}
+
+.board_list .item .child .child_name.deleted {
+    text-decoration: line-through;
+}
+
+.board_list .item .child .child_name:hover {
+    background-color: rgb(230,230,230);
+}
+
+/*
+.board_list .labels {
+    border-top: 2px solid #e6e6e6;
+    border-bottom: 2px solid #e6e6e6;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.board_list .board {
+    border-bottom: 1px solid rgb(225 225 225);
+}
+
+.board_list .board.master {
+    background-color: rgb(255,232,232);
+}
+
+.board_list .board.deleted {
+    background-color: #e6e6e6;
+}
+*/
+/* 취소선을 일괄 적용하고 버튼에는 적용하지 않으려고 none 설정했으나 
+    버튼에 none 이 적용되어도 계속 취소선이 그려지는 문제가 있어서 항목 각각 적용함... */
+/*.board_list .board.deleted {
+    text-decoration: line-through;
+}
+.board_list .board.deleted button {
+    text-decoration: none !important;
+}
+*/
+
+/*
+.board_list .item .number {
+    width: 90px;
+    min-width: 90px;
+    margin-right: 10px;
+    padding: 5px 10px;
+}
+.board_list .item .number.deleted {
+    text-decoration: line-through;
+}
+
+.board_list .item .id {
+    width: 150px;
+    min-width: 150px;
+    margin-right: 10px;
+    padding: 5px 1px;
+}
+.board_list .item .id.deleted {
+    text-decoration: line-through;
+}
+
+.board_list .item .name {
+    width: 150px;
+    min-width: 150px;
+    margin-right: 10px;
+    padding: 5px 1px;
+}
+.board_list .item .name.deleted {
+    text-decoration: line-through;
+}
+
+.board_list .item .image {
+    width: 100px;
+    min-width: 100px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    text-align: center;
+}
+.board_list .item .image.deleted {
+    text-decoration: line-through;
+}
+
+.board_list .item .authority {
+    width: 80px;
+    min-width: 80px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    text-align: center;
+}
+.board_list .item .authority.deleted {
+    text-decoration: line-through;
+}
+
+.board_list .item .edit_button {
+    width: 50px;
+    min-width: 50px;
+    margin-right: 5px;
+    padding: 5px 1px;
+    text-align: center;
+}
+
+*/
+
+/* index_right ----------------------------------------------------------- */
+.manage_board_index .index_right {
+    width: 400px;
+    margin-left: 50px;
+    display: flex;
+}
+
+.board_editor_container {
+    width: 400px;
+}
+
+/* 게시판 정보 에디터 */
+.board_editor {
+    width: 400px;
+    height: 400px;
+    margin-top: 44px;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    padding-top: 40px;
+    padding-left: 28px;
+}
+
+.board_editor.master {
+    background-color: rgb(255,232,232);
+}
+
+.board_editor.deleted {
+    background-color: #e6e6e6;
+}
+
+.board_editor.new {
+    background-color: rgb(255,232,232);
+}
+
+.board_editor .detail_row {
+    margin-bottom: 7px;
+}
+
+.board_editor .detail_row label {
+    width: 140px;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.board_editor .detail_row input {
+    width: 180px;
+    padding-left: 7px;
+}
+
+.board_editor .detail_row .checkbox {
+    /* TODO */
+}
+
+.board_editor .buttton_list {
+    text-align: center;
+    margin-top: 20px;
+    margin-left: -20px;
+}
+
+/* 게시판 네비게이션 */
+#board_nav_container {
+    width: 264px;
+    margin-top: 44px;
+    margin-left: 20px;
+}
+.board_navigation {
+    border-radius: 10px;
+    border: 1px solid rgb(230,230,230);
+}
+
+.board_navigation .board {
+    width: 264px;
+}
+
+.board_navigation .board .item {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.board_navigation .board .item.parent {
+
+}
+
+.board_navigation .board .item.children {
+
+}
+
+.board_navigation .board .item.selected {
+    background-color: rgb(230,230,230);
+}
+
+.board_navigation .board .item:hover {
+    background-color: rgb(230,230,230);
+}
+
+.board_navigation .board .children_list {
+
+}
