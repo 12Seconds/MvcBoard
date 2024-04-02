@@ -29,21 +29,66 @@
     }
 }
 
-@foreach (var board in Model.BoardTypes)
-{
+<div class="board_navigation">
 
-    // TODO 자식 게시판은 부모 게시판 하위로 넣는 처리가 필요함, 일단 부모 게시판은 노출 안하도록 조건 설정
-    if (board.Category < 4 || board.IsParent == false)
+    @if (Model.Response.ResultCode == 200)
     {
-        <a asp-area="" asp-controller="Community" asp-action=@GetAction(board.Category) asp-route-category=@(board.Category < 3 ? 0 : board.Category)>
-            <div class="category_list_item @(board.Category == Model.SelectedCategory? "selected" : "")">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="18" height="18" rx="9" fill="#333333"></rect>
-                    <path d="@Html.Raw(GetIconPath(board.IconType))" fill="white"></path>
-                </svg>
-                &nbsp;@board.BoardName
+        @foreach (var board in Model.BoardTypes)
+        {
+            
+            <div class="board">
+                <a asp-area="" asp-controller="Community" asp-action=@GetAction(board.Category) asp-route-category=@(board.Category < 3 ? 0 : board.Category)>
+                <div class="item parent" onclick="ToggleExtend(this)">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="18" height="18" rx="9" fill="#333333"></rect>
+                        <path d="@Html.Raw(GetIconPath(board.IconType))" fill="white"></path>
+                    </svg>
+                    &nbsp;@board.BoardName
+                    @* <div class="order_label">(Order: @board.ShowOrder)</div> *@
+                </div>
+                </a>
+                @if (board.Children.Count > 0)
+                {
+                    <div class="children_list">
+                        @foreach (var child in board.Children)
+                        {
+                            <a asp-area="" asp-controller="Community" asp-action=@GetAction(board.Category) asp-route-category=@board.Category>
+                            <div class="item children">
+                                &nbsp;@child.BoardName
+                                @* <div class="order_label">(Order: @child.ShowOrder)</div> *@
+                            </div>
+                            </a>
+                        }
+                    </div>
+                }
             </div>
-        </a>
+        }
     }
-    
-}
+
+</div>
+
+<script>
+
+    /* 최초 생성 시 ResultCode 에 따른 처리 */
+    (function () {
+        var msg = @Html.Raw(Json.Serialize(Model.Response.Message));
+        var Errormsg = @Html.Raw(Json.Serialize(Model.Response.ErrorMessages));
+
+        var AllMessages = "";
+        AllMessages += msg + "\n";
+        for (var i = 0; i < Errormsg.length; i++) {
+            AllMessages += Errormsg[i] + "\n";
+        }
+
+        if (@Model.Response.ResultCode != 200) {
+            showAlert(AllMessages, true);
+        }
+    })();
+
+    /* TODO 구현 필요 - 하위 게시판 확장, 숨김 */
+    function ToggleExtend(parentDiv) {
+        // Jquery
+        console.log("###### Toggle", parentDiv);
+    }
+
+</script>

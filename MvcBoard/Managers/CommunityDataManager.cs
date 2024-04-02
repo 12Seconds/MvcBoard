@@ -4,6 +4,7 @@ using MvcBoard.Models.Community;
 using MvcBoard.Managers.Models;
 using MvcBoard.Models;
 using Microsoft.Extensions.Hosting;
+using MvcBoard.Controllers.Response;
 
 namespace MvcBoard.Managers
 {
@@ -19,48 +20,67 @@ namespace MvcBoard.Managers
             Console.WriteLine("## CommunityDataManagers() initialized...");
         }
 
-        // 게시판 카테고리(메뉴) 조회
-        public List<BoardType> GetBoardTypeData()
+        /// <summary>
+        /// 게시판 카테고리(메뉴) 조회 
+        /// </summary>
+        /// <returns></returns>
+        public ReadBoardTypeResponse GetBoardTypeData()
         {
-            // TODO 로그 모듈(매니저) 만들기
-            Console.WriteLine($"## CommunityDataManager >> GetBoardTypeData()");
+            ReadBoardTypeResponse Response = new ReadBoardTypeResponse();
+
+            Console.WriteLine($"## BoardDataManager >> GetBoardTypeData()");
 
             List<BoardType> BoardTypes = new List<BoardType>();
 
-            using (var connection = GetConnection())
+            try
             {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("ReadBoardTypes", connection))
+                using (var connection = GetConnection())
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-                    
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    BoardType? board = null;
-
-                    /* 게시판 카테고리 데이터 */
-                    while (reader.Read())
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("GetSortedBoards", connection))
                     {
-                        board = new BoardType();
+                        command.CommandType = CommandType.StoredProcedure;
 
-                        board.BoardId = int.Parse(reader["BoardId"]?.ToString() ?? "0");
-                        board.BoardName = reader["BoardName"]?.ToString() ?? "";
-                        board.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
-                        board.ParentCategory = int.Parse(reader["ParentCategory"]?.ToString() ?? "0");
-                        board.IsParent = reader.GetBoolean(reader.GetOrdinal("IsParent"));
-                        board.IconType = int.Parse(reader["IconType"]?.ToString() ?? "0");
-                        board.IsWritable = reader.GetBoolean(reader.GetOrdinal("IsWritable"));
-                        board.ShowOrder = int.Parse(reader["IconType"]?.ToString() ?? "0");
+                        SqlDataReader reader = command.ExecuteReader();
 
-                        BoardTypes.Add(board);
+                        BoardType? board = null;
+
+                        /* 게시판 카테고리 데이터 */
+                        while (reader.Read())
+                        {
+                            board = new BoardType();
+
+                            board.BoardId = int.Parse(reader["BoardId"]?.ToString() ?? "0");
+                            board.BoardName = reader["BoardName"]?.ToString() ?? "";
+                            board.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
+                            board.ParentCategory = int.Parse(reader["ParentCategory"]?.ToString() ?? "0");
+                            board.IsParent = reader.GetBoolean(reader.GetOrdinal("IsParent"));
+                            board.IconType = int.Parse(reader["IconType"]?.ToString() ?? "0");
+                            board.IsWritable = reader.GetBoolean(reader.GetOrdinal("IsWritable"));
+                            board.ShowOrder = int.Parse(reader["ShowOrder"]?.ToString() ?? "0");
+
+                            BoardTypes.Add(board);
+                        }
+
+                        Response.ResultCode = 200;
+                        Response.Message = "DB Success";
+
+                        reader.Close();
                     }
-
-                    reader.Close();
+                    connection.Close();
                 }
-                connection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                Response.ResultCode = 202;
+                Response.Message = "DB Error";
+                Response.ErrorMessages.Add(ex.Message);
             }
 
-            return BoardTypes;
+            Response.BoardTypes = BoardTypes;
+
+            return Response;
         }
 
         // 게시판 조회

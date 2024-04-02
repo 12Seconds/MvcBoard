@@ -102,6 +102,7 @@ body {
     margin-bottom: 20px;
 }
 
+ /* 구 게시판 메뉴 네비게이션 -> board_navigation.css
 .category_list_item {
     display: flex;
     align-items: center;
@@ -119,7 +120,7 @@ body {
 .category_list_item:hover {
     background-color: rgb(230,230,230);
 }
-
+*/
 
 .community_aside_right {
     width: 184px;

@@ -1,0 +1,52 @@
+﻿/* 게시판 네비게이션 */
+#board_nav_container {
+    /*width: 264px;
+    margin-top: 44px;
+    margin-left: 20px;*/
+}
+.board_navigation {
+    /*border-radius: 10px;
+    border: 1px solid rgb(230,230,230);*/
+}
+
+.board_navigation .board {
+    width: 264px;
+}
+
+.board_navigation .board .order_label {
+    font-weight: normal;
+    font-size: 13px;
+    color: #999999;
+    margin-left: 10px;
+}
+
+.board_navigation .board .item {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.board_navigation .board .item.parent {
+
+}
+
+.board_navigation .board .item.children {
+    padding-left: 36px;
+    font-size: 15px;
+}
+
+.board_navigation .board .item.selected {
+    background-color: rgb(230,230,230);
+}
+
+.board_navigation .board .item:hover {
+    background-color: rgb(230,230,230);
+}
+
+.board_navigation .board .children_list {
+    color: rgb(102 102 102);
+}

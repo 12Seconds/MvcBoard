@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MvcBoard.Controllers.Models;
+using MvcBoard.Controllers.Response;
 using MvcBoard.Managers.JWT;
 using MvcBoard.Models.Community;
 using MvcBoard.Services;
@@ -22,11 +23,18 @@ namespace MvcBoard.Controllers
         // 게시판 네이게이션 메뉴 Partial View
         public IActionResult BoardNavigationMenu(int selectedCategory = 0)
         {
-            BoardNavigationViewModel Model = new BoardNavigationViewModel
+            BoardNavigationViewModel Model = new BoardNavigationViewModel();
+
+            ReadBoardTypeResponse Response = _service.GetBoardTypeData();
+
+            if (Response.ResultCode == 200)
             {
-                BoardTypes = _service.GetBoardTypeData(),
-                SelectedCategory = selectedCategory,
-            };
+                Model.BoardTypes = Response.BoardTypes;
+                
+            }
+            Model.Response = Response; // 업 캐스팅
+            Model.SelectedCategory = selectedCategory;
+           
             return PartialView("_BoardNavigation", Model);
         }
 
@@ -99,7 +107,14 @@ namespace MvcBoard.Controllers
         {
             WriteViewModel viewModel = new WriteViewModel();
 
-            viewModel.BoardTypes = _service.GetBoardTypeData();
+            ReadBoardTypeResponse Response = _service.GetBoardTypeData(true);
+
+            if (Response.ResultCode == 200)
+            {
+                viewModel.BoardTypes = Response.BoardTypes;
+            }
+            // TODO viewModel.Response = Response; // 업 캐스팅
+
             (bool IsAuthenticated, ClaimsPrincipal? Principal) = _jwtManager.Authentication(Request.Cookies["jwtToken"]);
             // 인증 성공
             if (IsAuthenticated && Principal != null)

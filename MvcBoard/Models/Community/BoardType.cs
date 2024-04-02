@@ -10,7 +10,7 @@
         public int IconType { get; set; }
         public bool IsWritable { get; set; }
         public int ShowOrder { get; set; }
-
         public bool IsDeleted { get; set; }
+        public List<BoardType> Children { get; } = new List<BoardType>();
     }
 }

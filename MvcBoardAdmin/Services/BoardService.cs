@@ -30,8 +30,6 @@ namespace MvcBoardAdmin.Services
             _boardDataManagers = dataManager;
         }
 
-        // TODO 조회도 실패할 수 있기 때문에 Response 를 반환하는 구조로 변경할 것
-
         /// <summary>
         /// 게시판 카테고리(메뉴) 데이터 조회
         /// </summary>

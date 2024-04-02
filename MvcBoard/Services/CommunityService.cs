@@ -1,5 +1,5 @@
-﻿using Azure.Identity;
-using MvcBoard.Controllers.Models;
+﻿using MvcBoard.Controllers.Models;
+using MvcBoard.Controllers.Response;
 using MvcBoard.Managers;
 using MvcBoard.Managers.Models;
 using MvcBoard.Models.Community;
@@ -20,23 +20,116 @@ namespace MvcBoard.Services
         private TimeSpan cacheDuration = TimeSpan.FromMinutes(1); // 캐시 유효 시간: 1분 (개발용으로 1분 -> 비즈니스 로직에 따라 적절하게 설정할 것)
 
         private List<BoardType>? _cachedBoardTypeData = null;
+        private List<BoardType> _cachedSortedBoardTypeData = new List<BoardType>();
+        private List<BoardType> _cachedParentBoardTypeData = new List<BoardType>();
+
+        // private bool NeedUpdate = false; // 게시판 정보가 수정되면 업데이트 필요함을 알리는 flag 세팅
 
         public CommunityService(CommunityDataManagers dataManager)
         {
             _dataManagers = dataManager;
         }
         // 게시판 카테고리(메뉴) 조회
-        public List<BoardType> GetBoardTypeData()
+        /// <summary>
+        /// 게시판 카테고리(메뉴) 데이터 조회
+        /// </summary>
+        /// <param name="GetOrigin">true: 1-2 Detph 계층화된 데이터 / false: Select 원본 </param>
+        /// <returns></returns>
+        public ReadBoardTypeResponse GetBoardTypeData(bool GetOrigin = false)
         {
+            ReadBoardTypeResponse Response = new ReadBoardTypeResponse();
+
             // 최초 조회거나, 캐시가 만료된 경우 재조회
-            if (_cachedBoardTypeData == null || DateTime.Now - _cachedTime > cacheDuration )
+            if (_cachedBoardTypeData == null || DateTime.Now - _cachedTime > cacheDuration/* || NeedUpdate*/)
             {
                 Console.WriteLine("### CommunityService >> GetBoardTypeData() --- Get New BoardTypeData (cache expired!)");
-                _cachedBoardTypeData = _dataManagers.GetBoardTypeData();
+
+                _cachedSortedBoardTypeData.RemoveRange(0, _cachedSortedBoardTypeData.Count);
+                _cachedParentBoardTypeData.RemoveRange(0, _cachedParentBoardTypeData.Count);
+
+                Response = _dataManagers.GetBoardTypeData();
+                _cachedBoardTypeData = Response.BoardTypes;
+
+                // 조회 실패한 경우
+                if (Response.ResultCode != 200)
+                {
+                    // NeedUpdate = true;
+                    Response.BoardTypes = new List<BoardType>();
+                    return Response;
+                }
+
+                _cachedSortedBoardTypeData = SetHierarchy(Response.BoardTypes);
                 _cachedTime = DateTime.Now;
+
+                // NeedUpdate = false;
+                Response.BoardTypes = GetOrigin ? _cachedBoardTypeData : _cachedSortedBoardTypeData;
+                return Response;
             }
 
-            return _cachedBoardTypeData;
+            Response.BoardTypes = GetOrigin ? _cachedBoardTypeData : _cachedSortedBoardTypeData;
+            return Response;
+        }
+
+        /* 게시판 데이터를 부모-자식 계층으로 가공(실제 부모 Board 객체의 Childen 리스트에 자식 Board 넣는 작업, DB에서 순서는 정렬하여 보내줌) */
+        /*
+        Board 1    (부모)
+        Board 1-1  (자식)
+        Board 1-2  (자식)
+        
+        -> 
+        
+        Board 1        (부모)
+            Board 1-1  (자식)
+            Board 1-2  (자식)
+         */
+        public List<BoardType> SetHierarchy(List<BoardType> origin)
+        {
+            List<BoardType> result = new List<BoardType>();
+            List<BoardType> parents = new List<BoardType>();
+
+            bool[] isAdded = new bool[origin.Count];
+            Array.Fill(isAdded, false);
+
+            // 부모 게시판인 항목 찾아서 자식 추가 작업
+            for (int i = 0; i < origin.Count; i++)
+            {
+                BoardType board = origin[i];
+
+                // 0~2 고정 게시판 제외 (전체, 인기, 공지)
+                if (i < 3)
+                {
+                    isAdded[i] = true;
+                    result.Add(board);
+                    continue;
+                }
+
+                // 부모 게시판인 경우
+                if (board.ParentCategory == 0)
+                {
+                    for (int j = i + 1; j < origin.Count; j++)
+                    {
+                        if (board.Category == origin[j].ParentCategory)
+                        {
+                            board.Children.Add(origin[j]);
+                            isAdded[j] = true;
+                        }
+                    }
+                    isAdded[i] = true;
+                    result.Add(board);
+                    parents.Add(board);
+                }
+            }
+
+            // 남은 게시판 추가 (추가되지 못한 자식 게시판)
+            for (int i = 3; i < origin.Count; i++)
+            {
+                if (isAdded[i]) { continue; }
+                result.Add(origin[i]);
+            }
+
+            _cachedParentBoardTypeData = parents;
+
+            return result;
         }
 
         // 게시판 이름 조회
