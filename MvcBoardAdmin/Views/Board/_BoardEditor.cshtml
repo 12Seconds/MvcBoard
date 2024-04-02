@@ -83,7 +83,7 @@
             <div class="buttton_list">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">@(Model.ViewModel.IsNew ? "생성" : "저장")</button>
                 <button type="button" onclick="boardEditorExit()" class="btn btn-outline-secondary btn-sm">닫기</button>
-                <button type="button" onclick="DeleteBoard(@Model.ViewModel.Board.BoardId)" class="btn btn-outline-secondary btn-sm">삭제</button>
+                <button type="button" onclick="DeleteBoard(@Model.ViewModel.Board.BoardId)" class="btn btn-outline-danger btn-sm">삭제</button>
             </div>
         }
 

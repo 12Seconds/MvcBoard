@@ -32,30 +32,30 @@
     margin-top: 10px;
 }
 
-/*
-.board_list_container {
 
+.manage_board_index .index_main .board_list_container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
-.board_list {
-    
+.manage_board_index .index_main .board_list_container .board_list {
+    width: 700px;
 }
-*/
 
 .board_list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    /*justify-content: space-around;*/
 }
 
 .board_list .item {
     width: 200px;
-    min-height: 40px;
-    
     height: fit-content;
-    
+    min-height: 40px;
+    margin-left: 16px;
+    margin-right: 16px;
     margin-bottom: 30px;
-    
     border: 1px solid #e6e6e6;
     border-radius: 10px;
 
