@@ -13,47 +13,67 @@ namespace MvcBoardAdmin.Managers
             Console.WriteLine("## BoardDataManager() initialized...");
         }
 
-        // 게시판 카테고리(메뉴) 조회
-        public List<BoardType> GetBoardTypeData()
+        /// <summary>
+        /// 게시판 카테고리(메뉴) 조회 
+        /// </summary>
+        /// <returns></returns>
+        public ReadBoardTypeResponse GetBoardTypeData()
         {
+            ReadBoardTypeResponse Response = new ReadBoardTypeResponse();
+
             Console.WriteLine($"## BoardDataManager >> GetBoardTypeData()");
 
             List<BoardType> BoardTypes = new List<BoardType>();
 
-            using (var connection = GetConnection())
+            try
             {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("GetSortedBoards", connection))
+                using (var connection = GetConnection())
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    BoardType? board = null;
-
-                    /* 게시판 카테고리 데이터 */
-                    while (reader.Read())
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("GetSortedBoards", connection))
                     {
-                        board = new BoardType();
+                        command.CommandType = CommandType.StoredProcedure;
 
-                        board.BoardId = int.Parse(reader["BoardId"]?.ToString() ?? "0");
-                        board.BoardName = reader["BoardName"]?.ToString() ?? "";
-                        board.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
-                        board.ParentCategory = int.Parse(reader["ParentCategory"]?.ToString() ?? "0");
-                        board.IsParent = reader.GetBoolean(reader.GetOrdinal("IsParent"));
-                        board.IconType = int.Parse(reader["IconType"]?.ToString() ?? "0");
-                        board.IsWritable = reader.GetBoolean(reader.GetOrdinal("IsWritable"));
-                        board.ShowOrder = int.Parse(reader["ShowOrder"]?.ToString() ?? "0");
+                        SqlDataReader reader = command.ExecuteReader();
 
-                        BoardTypes.Add(board);
+                        BoardType? board = null;
+
+                        /* 게시판 카테고리 데이터 */
+                        while (reader.Read())
+                        {
+                            board = new BoardType();
+
+                            board.BoardId = int.Parse(reader["BoardId"]?.ToString() ?? "0");
+                            board.BoardName = reader["BoardName"]?.ToString() ?? "";
+                            board.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
+                            board.ParentCategory = int.Parse(reader["ParentCategory"]?.ToString() ?? "0");
+                            board.IsParent = reader.GetBoolean(reader.GetOrdinal("IsParent"));
+                            board.IconType = int.Parse(reader["IconType"]?.ToString() ?? "0");
+                            board.IsWritable = reader.GetBoolean(reader.GetOrdinal("IsWritable"));
+                            board.ShowOrder = int.Parse(reader["ShowOrder"]?.ToString() ?? "0");
+
+                            BoardTypes.Add(board);
+                        }
+
+                        Response.ResultCode = 200;
+                        Response.Message = "DB Success";
+
+                        reader.Close();
                     }
-
-                    reader.Close();
+                    connection.Close();
                 }
-                connection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                Response.ResultCode = 202;
+                Response.Message = "DB Error";
+                Response.ErrorMessages.Add(ex.Message);
             }
 
-            return BoardTypes;
+            Response.BoardTypes = BoardTypes;
+
+            return Response;
         }
 
         /// <summary>
@@ -140,7 +160,7 @@ namespace MvcBoardAdmin.Managers
             CommonResponse Response = new CommonResponse();
 
             Console.WriteLine($"## MemberDataManager >> UpdateBoard(BoardId = {_params.BoardId}, BoardName = {_params.BoardName}, Category = {_params.Category}, ParentCategory = {_params.ParentCategory}, ShowOrder = {_params.ShowOrder}, IconType = {_params.IconType}, IsParent = {_params.IsParent}, IsWritable = {_params.IsWritable})");
-            //                                          UpdateBoard(BoardId = 0, BoardName = 전공 커뮤니티, Category = 6, ParentCategory = 0, ShowOrder = 7, IconType = 6, IsParent = True, IsWritable = False)
+            
             try
             {
                 using (var connection = GetConnection())

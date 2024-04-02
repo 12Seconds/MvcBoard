@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
-using MvcBoardAdmin.Models;
 using MvcBoardAdmin.Services;
 
 namespace MvcBoardAdmin.Controllers
@@ -26,10 +25,9 @@ namespace MvcBoardAdmin.Controllers
         {
             Console.WriteLine($"## BoardController >> BoardNavigationMenu()");
 
-            // TODO 인증 때문에 Response 로 받아야 될 듯
-            List<BoardType> Model = _boardService.GetBoardTypeData();
+            ReadBoardTypeResponse  Response = _boardService.GetBoardTypeData();
 
-            return PartialView("_BoardNavigation", Model);
+            return PartialView("_BoardNavigation", Response);
         }
 
         /* 게시판 리스트 PartialView */
@@ -38,18 +36,9 @@ namespace MvcBoardAdmin.Controllers
         {
             Console.WriteLine($"## BoardController >> BoardListPartial()");
 
-            /*
-            ReadMembersServiceParams ServiceParams = new ReadMembersServiceParams
-            {
-                ReadMembersParams = _params,
-                ModelState = ModelState,
-                HttpContext = HttpContext
-            };
-            */
+            ReadBoardTypeResponse Response = _boardService.GetBoardTypeData();
 
-            List<BoardType> Model = _boardService.GetBoardTypeData();
-
-            return PartialView("_BoardList", Model);
+            return PartialView("_BoardList", Response);
         }
 
         /* 게시판 에디터 PartailView */

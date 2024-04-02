@@ -1,4 +1,5 @@
-﻿using MvcBoardAdmin.Controllers.Params;
+﻿using Azure;
+using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Managers;
 using MvcBoardAdmin.Models;
@@ -34,20 +35,41 @@ namespace MvcBoardAdmin.Services
         /// <summary>
         /// 게시판 카테고리(메뉴) 데이터 조회
         /// </summary>
+        /// <param name="GetOrigin">true: 1-2 Detph 계층화된 데이터 / false: Select 원본 </param>
         /// <returns></returns>
-        public List<BoardType> GetBoardTypeData()
+        public ReadBoardTypeResponse GetBoardTypeData(bool GetOrigin = false)
         {
+            ReadBoardTypeResponse Response = new ReadBoardTypeResponse();
+
             // 최초 조회거나, 캐시가 만료된 경우 재조회
             if (_cachedBoardTypeData == null || DateTime.Now - _cachedTime > cacheDuration || NeedUpdate)
             {
                 Console.WriteLine("### BoardService >> GetBoardTypeData() --- Get New BoardTypeData (cache expired!)");
+
+                _cachedSortedBoardTypeData.RemoveRange(0, _cachedSortedBoardTypeData.Count);
                 _cachedParentBoardTypeData.RemoveRange(0, _cachedParentBoardTypeData.Count);
-                _cachedBoardTypeData = _boardDataManagers.GetBoardTypeData();
-                _cachedSortedBoardTypeData = SetHierarchy(_cachedBoardTypeData);
+
+                Response = _boardDataManagers.GetBoardTypeData();
+                _cachedBoardTypeData = Response.BoardTypes;
+
+                // 조회 실패한 경우
+                if (Response.ResultCode != 200)
+                {
+                    NeedUpdate = true;
+                    Response.BoardTypes = new List<BoardType>();
+                    return Response;
+                }
+
+                _cachedSortedBoardTypeData = SetHierarchy(Response.BoardTypes);
                 _cachedTime = DateTime.Now;
+
+                NeedUpdate = false;
+                Response.BoardTypes = GetOrigin ? _cachedBoardTypeData : _cachedSortedBoardTypeData;
+                return Response;
             }
 
-            return _cachedSortedBoardTypeData;
+            Response.BoardTypes = GetOrigin ? _cachedBoardTypeData : _cachedSortedBoardTypeData;
+            return Response;
         }
 
         /// <summary>
@@ -70,10 +92,18 @@ namespace MvcBoardAdmin.Services
             // Response = _boardDataManagers.ReadBoardDetail(_parmas.BoardId);
             try
             {
-                GetBoardTypeData();
+                ReadBoardTypeResponse Response2 = GetBoardTypeData(true);
+
+                if (Response2.ResultCode != 200)
+                {
+                    Response.ResultCode = Response2.ResultCode;
+                    Response.Message = Response2.Message;
+                    Response.ErrorMessages = Response2.ErrorMessages;
+                    return Response;
+                }
 
                 // 게시판 데이터에서 찾아서 반환
-                BoardType found = _cachedBoardTypeData.Find(board => board.BoardId == _params.BoardId);
+                BoardType found = Response2.BoardTypes.Find(board => board.BoardId == _params.BoardId);
 
                 // 생성인 경우
                 if (_params.BoardId == 0)

@@ -1,4 +1,4 @@
-﻿@model List<BoardType>
+﻿@model MvcBoardAdmin.Controllers.Response.ReadBoardTypeResponse;
 
 @{
     string GetIconPath(int IconType)
@@ -33,40 +33,58 @@
 
     @* <button type="button" onclick="ToggleOrderLable()" id="order_label_btn" class="btn btn-outline-secondary btn-sm">순서 보기/숨기기</button> *@
 
-    @foreach (var board in Model)
+    @if (Model.ResultCode == 200)
     {
-        @* TODO <a asp-area="" asp-controller="Community" asp-action=@GetAction(board.Category) asp-route-category=@(board.Category < 3 ? 0 : board.Category)> *@
-        <div class="board">
-            <div class="item parent" onclick="ToggleExtend(this)">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="18" height="18" rx="9" fill="#333333"></rect>
-                    <path d="@Html.Raw(GetIconPath(board.IconType))" fill="white"></path>
-                </svg>
-                &nbsp;@board.BoardName
-                <div class="order_label">(Order: @board.ShowOrder)</div>
-            </div>
-            @if (board.Children.Count > 0)
-            {
-                <div class="children_list">
-                @foreach (var child in board.Children)
+        @foreach (var board in Model.BoardTypes)
+        {
+            @* TODO <a asp-area="" asp-controller="Community" asp-action=@GetAction(board.Category) asp-route-category=@(board.Category < 3 ? 0 : board.Category)> *@
+            <div class="board">
+                <div class="item parent" onclick="ToggleExtend(this)">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="18" height="18" rx="9" fill="#333333"></rect>
+                        <path d="@Html.Raw(GetIconPath(board.IconType))" fill="white"></path>
+                    </svg>
+                    &nbsp;@board.BoardName
+                    <div class="order_label">(Order: @board.ShowOrder)</div>
+                </div>
+                @if (board.Children.Count > 0)
                 {
-                    <div class="item children">
-                        &nbsp;@child.BoardName
-                        <div class="order_label">(Order: @child.ShowOrder)</div>
+                    <div class="children_list">
+                    @foreach (var child in board.Children)
+                    {
+                        <div class="item children">
+                            &nbsp;@child.BoardName
+                            <div class="order_label">(Order: @child.ShowOrder)</div>
+                        </div>
+                    }
                     </div>
                 }
-                </div>
-            }
-        </div>
+            </div>
+        }
     }
 
 </div>
 
 <script>
+    /* 최초 생성 시 ResultCode 에 따른 처리 */
+    (function () {
+        var msg = @Html.Raw(Json.Serialize(Model.Message));
+        var Errormsg = @Html.Raw(Json.Serialize(Model.ErrorMessages));
 
-    /* 하위 게시판 확장, 숨김 */
+        var AllMessages = "";
+        AllMessages += msg + "\n";
+        for (var i = 0; i < Errormsg.length; i++) {
+            AllMessages += Errormsg[i] + "\n";
+        }
+
+        if (@Model.ResultCode != 200) {
+            showAlert(AllMessages, true);
+        }
+    })();
+
+    /* TODO 구현 필요 - 하위 게시판 확장, 숨김 */
     function ToggleExtend(parentDiv) {
-        // TODO Jquery
+        // Jquery
         console.log("###### Toggle", parentDiv);
     }
 

@@ -293,7 +293,8 @@
 }
 
 .board_navigation .board .item.children {
-
+    padding-left: 36px;
+    font-size: 15px;
 }
 
 .board_navigation .board .item.selected {
@@ -305,5 +306,5 @@
 }
 
 .board_navigation .board .children_list {
-
+    color: rgb(102 102 102);
 }
