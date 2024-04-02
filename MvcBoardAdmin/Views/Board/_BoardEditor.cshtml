@@ -25,8 +25,6 @@
     IconOptions.Add(new SelectListItem { Text = "사람 모양", Value = "4", Selected = (Model.ViewModel.Board.IconType == 4) });
     IconOptions.Add(new SelectListItem { Text = "말풍선 모양", Value = "5", Selected = (Model.ViewModel.Board.IconType == 5) });
     IconOptions.Add(new SelectListItem { Text = "음표 모양", Value = "6", Selected = (Model.ViewModel.Board.IconType == 6) });
-
-   // TODO Model.ViewModel.Parents 로 옵션 가공
 }
 
 <div id="board_editor" class="board_editor @(Model.ViewModel.IsNew ? "new" : "") @(Model.ViewModel.Board.IsDeleted ? "deleted" : "")">
@@ -37,7 +35,7 @@
         {
             <div class="detail_row">
                 <label>고유 번호</label>
-                @Html.TextBox("BoardId", Model.ViewModel.Board.BoardId, new { @class = "text_input", @autoComplete = "off", @disabled = "disabled" })
+                @Html.TextBox("BoardId", Model.ViewModel.Board.BoardId, new { @class = "text_input", @autoComplete = "off", @readonly = "readonly" }) @* TODO disabled 라서 값이 0으로 넘어가나 보다 *@
             </div>
                
             <div class="detail_row">
@@ -53,19 +51,21 @@
             <div class="detail_row">
                 <label>부모 카테고리 번호</label>
                 @Html.DropDownList("ParentCategory", CategoryOptions, "부모 카테고리", new { @class = "auth_drop"})
-                @* @Html.TextBox("ParentCategory", Model.ViewModel.Board.ParentCategory, new { @class = "text_input", @autoComplete = "off" }) *@
                 @* TODO Question 드롭다운 리스트를 통해 선택되지 않은 값이 액션메소드로 전달되는 경우 기본값이 들어가도 ModelState 에서 invalid 처리..*@
             </div>
 
             <div class="detail_row">
                 <label>카테고리 번호</label>
                 @Html.TextBox("Category", Model.ViewModel.Board.Category, new { @class = "text_input", @autoComplete = "off" })
+                @if (!Model.ViewModel.IsNew)
+                {
+                    @Html.Hidden("PrevCategory", Model.ViewModel.Board.Category, new { @class = "text_input", @autoComplete = "off" })
+                }
             </div>
 
             @* TODO 드롭박스 *@
             <div class="detail_row">
                 <label>아이콘 이미지</label>
-                @* @Html.TextBox("IconType", Model.ViewModel.Board.IconType, new { @class = "text_input", @autoComplete = "off" }) *@
                 @Html.DropDownList("IconType", IconOptions, "아이콘 이미지", new { @class = "auth_drop" })
             </div>
 
@@ -83,7 +83,14 @@
             <div class="buttton_list">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">@(Model.ViewModel.IsNew ? "생성" : "저장")</button>
                 <button type="button" onclick="boardEditorExit()" class="btn btn-outline-secondary btn-sm">닫기</button>
+                <button type="button" onclick="DeleteBoard(@Model.ViewModel.Board.BoardId)" class="btn btn-outline-secondary btn-sm">삭제</button>
             </div>
+        }
+
+        @* 삭제용 *@
+        @using (Html.AjaxBeginForm("Delete", "Board", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnUpdateResponse" }, new { id = "DeleteBoardForm" }))
+        {
+            @Html.Hidden("BoardId", Model.ViewModel.Board.BoardId, new { id = "delete_boardId_val" });
         }
     }
 </div>
@@ -104,7 +111,15 @@
         $("#board_nav_container").hide();
     }
 
-    /* 게시판 생성 or 수정 요청 응답 핸들러 */
+    /* 게시판 삭제 요청 */
+    function DeleteBoard(boardId) {
+        console.log("## _BoardEditor >> DeleteBoard() boardId: ", boardId); // 확인용
+        if (confirm("해당 게시판을 정말 삭제하시겠습니까?")) {
+            $('#DeleteBoardForm').submit();
+        }
+    }
+
+    /* 게시판 생성 or 수정 or 삭제 요청 응답 핸들러 */
     function OnUpdateResponse(xhr, status) {
         // if (xhr.status === 200) {} 항상 return OK 로 반환
 
@@ -129,7 +144,6 @@
         switch (response.resultCode) {
             // 성공
             case 200: {
-                // updateBoardList(0);
                 boardEditorExit();
                 updatePage();
                 break;
@@ -146,5 +160,4 @@
         }
     }
     
-
 </script>

@@ -134,6 +134,59 @@ namespace MvcBoardAdmin.Services
             return Response;
         }
 
+        /// <summary>
+        /// 게시판 정보 수정 요청
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public CommonResponse UpdateBoard(UpdateBoardServiceParams _params)
+        {
+            // 입력값 유효성 검증
+            CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
+
+            if (Response.ResultCode != 200)
+            {
+                return Response;
+            }
+
+            // 검증 통과시 DB 요청
+            Response = _boardDataManagers.UpdateBoard(_params.UpdateParams);
+
+            // 캐시 갱신 플래그 설정
+            if (Response.ResultCode == 200)
+            {
+                NeedUpdate = true;
+            }
+
+            return Response;
+        }
+
+        /// <summary>
+        /// 게시판 삭제 요청
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public CommonResponse DeleteBoard(DeleteBoardServiceParams _params)
+        {
+            // 입력값 유효성 검증
+            CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
+
+            if (Response.ResultCode != 200)
+            {
+                return Response;
+            }
+
+            // 검증 통과시 DB 요청
+            Response = _boardDataManagers.DeleteBoard(_params.BoardId);
+
+            // 캐시 갱신 플래그 설정
+            if (Response.ResultCode == 200)
+            {
+                NeedUpdate = true;
+            }
+
+            return Response;
+        }
 
         /* 게시판 데이터를 부모-자식 계층으로 가공 (실제 부모 Board 객체의 Childen 리스트에 자식 Board 넣는 작업, DB에서 순서는 정렬하여 보내줌) */
         /*
@@ -194,6 +247,7 @@ namespace MvcBoardAdmin.Services
 
             // 테스트용 코드
             // result.Add(result[5]);
+
             _cachedParentBoardTypeData = parents;
 
             return result;

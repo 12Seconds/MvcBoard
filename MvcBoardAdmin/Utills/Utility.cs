@@ -66,7 +66,6 @@ namespace MvcBoardAdmin.Utills
                 Response.Message = "입력값 오류";
                 Response.ModelState = ModelState;
 
-                // 하나의 입력 필드에 대해서만 검증 결과 반환
                 List<string> keys = ModelState.Select(e => e.Key).ToList();
                 foreach (string key in keys)
                 {

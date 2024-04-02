@@ -72,7 +72,7 @@ namespace MvcBoardAdmin.Managers
                 using (var connection = GetConnection())
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand("CreateBoardType", connection)) // adm_CreateBoard 
+                    using (SqlCommand command = new SqlCommand("adm_CreateBoardType", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@BoardName", _params.BoardName);
@@ -108,6 +108,150 @@ namespace MvcBoardAdmin.Managers
                             case -1:
                                 Response.ResultCode = 203;
                                 Response.Message = "Category 번호는 중복될 수 없습니다."; // 비즈니스 로직에 따라 중복이 필요한 경우 수정
+                                break;
+                            case -2:
+                                Response.ResultCode = 203;
+                                Response.Message = "입력값 오류 (-2)";
+                                break;
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.ResultCode = 202;
+                Response.Message = "DB Error";
+                Response.ErrorMessages.Add(ex.Message);
+            }
+
+            return Response;
+        }
+
+        // TODO Category 값이 변경되면 해당 게시판에 속해 있던 자식 게시판이나, 게시물들에 대한 처리를 어떻게 해줄 것인지에 따라 추가 구현 필요할 수 있음 (ex. 임시 게시판으로 이동 처리 or 일괄 삭제 등)
+
+        /// <summary>
+        /// 게시판 수정 요청 
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public CommonResponse UpdateBoard(UpdateBoardParams _params)
+        {
+            CommonResponse Response = new CommonResponse();
+
+            Console.WriteLine($"## MemberDataManager >> UpdateBoard(BoardId = {_params.BoardId}, BoardName = {_params.BoardName}, Category = {_params.Category}, ParentCategory = {_params.ParentCategory}, ShowOrder = {_params.ShowOrder}, IconType = {_params.IconType}, IsParent = {_params.IsParent}, IsWritable = {_params.IsWritable})");
+            //                                          UpdateBoard(BoardId = 0, BoardName = 전공 커뮤니티, Category = 6, ParentCategory = 0, ShowOrder = 7, IconType = 6, IsParent = True, IsWritable = False)
+            try
+            {
+                using (var connection = GetConnection())
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("adm_UpdateBoardType", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@BoardId", _params.BoardId);
+                        command.Parameters.AddWithValue("@BoardName", _params.BoardName);
+                        command.Parameters.AddWithValue("@Category", _params.Category);
+                        command.Parameters.AddWithValue("@PrevCategory", _params.PrevCategory);
+                        command.Parameters.AddWithValue("@ParentCategory", _params.ParentCategory);
+                        command.Parameters.AddWithValue("@IsParent", _params.IsParent);
+                        command.Parameters.AddWithValue("@IconType", _params.IconType);
+                        command.Parameters.AddWithValue("@IsWritable", _params.IsWritable);
+                        command.Parameters.AddWithValue("@ShowOrder", _params.ShowOrder);
+
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        if (!reader.Read())
+                        {
+                            Response.ResultCode = 203;
+                            Response.Message = "DB Read Fail";
+                            return Response;
+                        }
+
+                        int result = Convert.ToInt32(reader["Result"]);
+
+                        // TODO 에러 코드 및 메시지 정의
+                        switch (result)
+                        {
+                            case 1:
+                                Response.ResultCode = 200;
+                                Response.Message = "DB Success";
+                                break;
+                            case 0:
+                                Response.ResultCode = 203;
+                                Response.Message = "DB Fail";
+                                break;
+                            case -1:
+                                Response.ResultCode = 203;
+                                Response.Message = "Category 번호는 중복될 수 없습니다."; // 비즈니스 로직에 따라 중복이 필요한 경우 수정
+                                break;
+                            case -2:
+                                Response.ResultCode = 203;
+                                Response.Message = "입력값 오류 (-2)";
+                                break;
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.ResultCode = 202;
+                Response.Message = "DB Error";
+                Response.ErrorMessages.Add(ex.Message);
+            }
+
+            return Response;
+        }
+
+        // TODO 게시판이 삭제되면 해당 게시판에 속해 있던 자식 게시판이나, 게시물들에 대한 처리를 어떻게 해줄 것인지에 따라 추가 구현 필요할 수 있음 (ex. 임시 게시판으로 이동 처리 or 일괄 삭제 등)
+
+        /// <summary>
+        /// 게시판 삭제 요청
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public CommonResponse DeleteBoard(int BoardId)
+        {
+            CommonResponse Response = new CommonResponse();
+
+            Console.WriteLine($"## MemberDataManager >> DeleteBoard(BoardId = {BoardId})");
+
+            try
+            {
+                using (var connection = GetConnection())
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("adm_DeleteBoardType", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@BoardId", BoardId);
+
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        if (!reader.Read())
+                        {
+                            Response.ResultCode = 203;
+                            Response.Message = "DB Read Fail";
+                            return Response;
+                        }
+
+                        int result = Convert.ToInt32(reader["Result"]);
+
+                        // TODO 에러 코드 및 메시지 정의
+                        switch (result)
+                        {
+                            case 1:
+                                Response.ResultCode = 200;
+                                Response.Message = "DB Success";
+                                break;
+                            case 0:
+                                Response.ResultCode = 203;
+                                Response.Message = "DB Fail";
+                                break;
+                            case -1:
+                                Response.ResultCode = 203;
+                                Response.Message = "존재하지 않는 게시판(BoardId) 입니다.";
                                 break;
                             case -2:
                                 Response.ResultCode = 203;

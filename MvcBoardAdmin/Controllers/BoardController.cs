@@ -14,6 +14,7 @@ namespace MvcBoardAdmin.Controllers
             _boardService = boardService;
         }
 
+        /* 게시판 관리 페이지 진입 */
         public IActionResult Index()
         {
             return View();
@@ -86,25 +87,35 @@ namespace MvcBoardAdmin.Controllers
 
         /* 게시판 정보 수정 */
         [HttpPost]
-        public IActionResult Update(UpdateMemberParams _params)
+        public IActionResult Update(UpdateBoardParams _params)
         {
-            /*
-            UpdateMemberServiceParams ServiceParams = new UpdateMemberServiceParams
+            UpdateBoardServiceParams ServiceParams = new UpdateBoardServiceParams
             {
                 UpdateParams = _params,
                 ModelState = ModelState,
                 HttpContext = HttpContext
             };
 
-            CommonResponse Response = _boardService.UpdateMember(ServiceParams);
-            */
+            CommonResponse Response = _boardService.UpdateBoard(ServiceParams);
 
-            //return Ok(Response);
-
-            Console.Write("테스트 업데이트 ");
-            return Ok();
+            return Ok(Response);
         }
 
+        /* 게시판 삭제 */
+        [HttpPost]
+        public IActionResult Delete(int BoardId)
+        {
+            DeleteBoardServiceParams ServiceParams = new DeleteBoardServiceParams
+            {
+                BoardId  = BoardId,
+                ModelState = ModelState,
+                HttpContext = HttpContext
+            };
+
+            CommonResponse Response = _boardService.DeleteBoard(ServiceParams);
+
+            return Ok(Response);
+        }
 
     }
 }
