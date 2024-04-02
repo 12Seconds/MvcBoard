@@ -3,6 +3,14 @@
     color: #333333;
 }
 
+.nav-item:hover {
+    background-color: #C4C4C4;
+}
+
+.nav-item.selected {
+    background-color: antiquewhite;
+}
+
 .search_box {
     display: flex;
     flex-direction: column;

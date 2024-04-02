@@ -41,7 +41,7 @@ namespace MvcBoardAdmin.Controllers
                 // 필요한 경우 처리
             }
 
-            return PartialView("_MemberList", Response.ViewModel);
+            return PartialView("_MemberList", Response.ViewModel); // TODO Question ViewModel 에 Response 넣기 VS Response 에 ViewModel 넣기
         }
 
         /* 유저 정보 에디터 PartialView */

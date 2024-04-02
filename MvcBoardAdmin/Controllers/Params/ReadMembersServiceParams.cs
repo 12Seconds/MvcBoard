@@ -1,6 +1,4 @@
-﻿using System.Security.Principal;
-
-namespace MvcBoardAdmin.Controllers.Params
+﻿namespace MvcBoardAdmin.Controllers.Params
 {
     public class ReadMembersServiceParams : CommonServiceParams
     {
