@@ -37,8 +37,8 @@
         <div class="search_box">
             @using (Html.AjaxBeginForm("PostListPartial", "Post", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "post_list_container"@* , OnComplete = ""  *@}, new { id = "PostListForm" }))
             {
-                @Html.DropDownList("BoardFilter", BoardFilters, "게시판", new { @id = "BoardFilterList", @class = "search_filter_drop"/* "form-control" */ })
-                @Html.DropDownList("SearchFilter", SearchFilters, "검색 필터", new { @id = "SearchFilterList", @class = "search_filter_drop"/* "form-control" */ })
+                @Html.DropDownList("BoardFilter", BoardFilters, new { @id = "BoardFilterList", @class = "search_filter_drop"/* "form-control" */ })
+                @Html.DropDownList("SearchFilter", SearchFilters, new { @id = "SearchFilterList", @class = "search_filter_drop"/* "form-control" */ })
                 @Html.TextBox("SearchWord", null, new { @class = "search_word_input", @placeholder = "", @autoComplete = "off" })
                 <button type="submit" class="btn btn-outline-secondary btn-sm search_button">검색</button>
             }
