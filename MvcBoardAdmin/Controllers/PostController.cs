@@ -23,7 +23,7 @@ namespace MvcBoardAdmin.Controllers
         [HttpGet]
         public IActionResult PostListPartial(ReadPostsParams _params)
         {
-            Console.WriteLine($"## MemberController >> MemberListPartial(SearchFilter: {_params.SearchFilter}, SearchWord: {_params.SearchWord}, Page: {_params.Page})");
+            Console.WriteLine($"## PostController >> PostListPartial(SearchFilter: {_params.SearchFilter}, SearchWord: {_params.SearchWord}, Page: {_params.Page})");
 
             ReadPostsServiceParams ServiceParams = new ReadPostsServiceParams
             {
@@ -32,7 +32,7 @@ namespace MvcBoardAdmin.Controllers
                 HttpContext = HttpContext
             };
 
-            ReadPostsResponse Response = _postService.ReadMembers(ServiceParams);
+            ReadPostsResponse Response = _postService.ReadPosts(ServiceParams);
 
             return PartialView("_PostList", Response);
         }

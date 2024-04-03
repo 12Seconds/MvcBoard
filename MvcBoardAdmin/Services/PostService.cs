@@ -21,7 +21,7 @@ namespace MvcBoardAdmin.Services
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public ReadPostsResponse ReadMembers(ReadPostsServiceParams _params)
+        public ReadPostsResponse ReadPosts(ReadPostsServiceParams _params)
         {
              ReadPostsResponse Response = new ReadPostsResponse();
 
