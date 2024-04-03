@@ -30,6 +30,8 @@ namespace MvcBoardAdmin.Services
             _boardDataManagers = dataManager;
         }
 
+        // TODO DB 조회 실패 시, 이전 데이터 재사용하도록 로직 수정 검토
+
         /// <summary>
         /// 게시판 카테고리(메뉴) 데이터 조회
         /// </summary>
@@ -136,11 +138,36 @@ namespace MvcBoardAdmin.Services
         }
 
         /// <summary>
+        /// 게시물을 작성 가능한 게시판 정보만 반환
+        /// </summary>
+        /// <returns></returns>
+        public List<BoardType> GetWritableBoards()
+        {
+            List<BoardType> List = new List<BoardType>();
+
+            ReadBoardTypeResponse Response = GetBoardTypeData(true);
+
+            // 프론트엔드 시나리오에 따라 필요 시 처리
+            // if (Response.ResultCode != 200) {}
+
+            if (Response.BoardTypes != null)
+            {
+                foreach(BoardType boardType in Response.BoardTypes)
+                {
+                    if (boardType.IsWritable)
+                        List.Add(boardType);
+                }
+            }
+
+            return List;
+        }
+
+        /// <summary>
         /// 게시판 생성 요청
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public CommonResponse CreateBoard (CreateBoardServiceParams _params)
+        public CommonResponse CreateBoard(CreateBoardServiceParams _params)
         {
             // 입력값 유효성 검증
             CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);

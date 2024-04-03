@@ -1,6 +1,8 @@
 ﻿using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Managers;
+using MvcBoardAdmin.Managers.Results;
+using MvcBoardAdmin.Models.Post;
 using MvcBoardAdmin.Utills;
 
 namespace MvcBoardAdmin.Services
@@ -11,9 +13,11 @@ namespace MvcBoardAdmin.Services
     public class PostService
     {
         private readonly PostDataManager _postDataManager;
-        public PostService(PostDataManager postDataManager)
+        private readonly BoardService _boardService; // TODO Question 한 서비스에서 다른 서비스 이용
+        public PostService(PostDataManager postDataManager, BoardService boardService)
         {
             _postDataManager = postDataManager;
+            _boardService = boardService;
         }
 
         /// <summary>
@@ -46,22 +50,35 @@ namespace MvcBoardAdmin.Services
 
             return Response;
         }
-        
-        /*
+
         /// <summary>
-        /// 유저(멤버) 정보 상세 조회
+        /// 게시물 상세 조회하여 PostEditorPartial 의 ViewModel 반환
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public ReadMemberDetailResponse ReadMemberDetail(ReadMemberDetailServiceParams _params)
+        public PostEditorViewModel GetPostEditorViewModel(ReadPostDetailServiceParams _params)
         {
-            ReadMemberDetailResponse Response = _postDataManager.ReadMemberDetail(_params.UserId);
+            PostEditorViewModel Model = new PostEditorViewModel();
 
-            // 뷰모델에 필드 추가 alert 같은거 ?
+            CommonResponse _response = Utility.ModelStateValidation(_params.ModelState);
 
-            return Response;
+            if (_response.ResultCode != 200)
+            {
+                Model.Response = _response;
+                return Model;
+            }
+
+            // 검증 통과시 DB 요청
+            ReadPostDetailResult Result = _postDataManager.ReadPostDetail(_params.PostId);
+
+            Model.Response = Result.Response;
+            Model.Post = Result.Post;
+            Model.WritableBoards = _boardService.GetWritableBoards();
+
+            return Model;
         }
 
+        /*
         /// <summary>
         /// 유저(멤버) 정보 수정 요청
         /// </summary>
@@ -109,5 +126,5 @@ namespace MvcBoardAdmin.Services
         */
 
     }
-    
+
 }

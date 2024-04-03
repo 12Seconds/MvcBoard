@@ -55,9 +55,9 @@
         
         @* 게시물 에디터 Partial View  *@
         <div id="post_editor_container"></div>
-        @using (Html.AjaxBeginForm("MemberEditorPartial", "Member", new AjaxOptions { HttpMethod = "Get",UpdateTargetId = "post_editor_container"}, new { id = "PostEditorForm" }))
+        @using (Html.AjaxBeginForm("PostEditorPartial", "Post", new AjaxOptions { HttpMethod = "Get",UpdateTargetId = "post_editor_container"}, new { id = "PostEditorForm" }))
         {
-            @Html.Hidden("UserId", "", new { id = "editor_userId_val" });
+            @Html.Hidden("PostId", "", new { id = "editor_postId_val" });
         }
 
     </div>
@@ -81,12 +81,11 @@
     */
 
     /* 유저 에디터 로드 함수 */
-    /*
-    function updateMemberEditor(userId) {
-        $('#editor_userId_val').val(userId);
+    
+    function updatePostEditor(postId) {
+        $('#editor_postId_val').val(postId);
         $('#PostEditorForm').submit();
     }
-    */
 
     /* 오류 문구 노출 */
     function showAlert(message, exit) {

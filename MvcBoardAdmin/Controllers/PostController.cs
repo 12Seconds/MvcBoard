@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
+using MvcBoardAdmin.Models.Post;
 using MvcBoardAdmin.Services;
 
 namespace MvcBoardAdmin.Controllers
@@ -35,6 +36,24 @@ namespace MvcBoardAdmin.Controllers
             ReadPostsResponse Response = _postService.ReadPosts(ServiceParams);
 
             return PartialView("_PostList", Response);
+        }
+
+        /* 게시물 정보 에디터 PartialView (상세 조회) */
+        [HttpGet]
+        public IActionResult PostEditorPartial(int PostId)
+        {
+            Console.WriteLine($"## PostController >> PostEditorPartial(PostId: {PostId}");
+
+            ReadPostDetailServiceParams ServiceParams = new ReadPostDetailServiceParams
+            {
+                PostId = PostId,
+                ModelState = ModelState,
+                HttpContext = HttpContext
+            };
+
+            PostEditorViewModel Model = _postService.GetPostEditorViewModel(ServiceParams);
+
+            return PartialView("_PostEditor", Model);
         }
 
         /* 게시물 정보 수정 */

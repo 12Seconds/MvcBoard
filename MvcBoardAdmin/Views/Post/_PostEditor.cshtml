@@ -1,0 +1,200 @@
+﻿@model MvcBoardAdmin.Models.Post.PostEditorViewModel;
+
+@{
+    bool boardSelected = false;
+
+    // 부모 게시판 드롭 박스 옵션
+    List<SelectListItem> BoardOptions = new List<SelectListItem>();
+
+    if (Model.Response.ResultCode == 200)
+    {
+        foreach(var board in Model.WritableBoards)
+        {
+            BoardOptions.Add(new SelectListItem { Text = board.BoardName, Value = (board.Category).ToString(), Selected = (Model.Post.Category == board.Category) });
+            if (board.Category == Model.Post.Category) 
+                boardSelected = true;
+        }
+
+        // 존재하면 안되는 경우긴 함, 예외처리 (게시판 데이터 DB 실패 -> BoardService 에서 DB 실패 시 이전 데이터 또는 하드코딩 게시판 데이터 사용하는 로직 필요)
+        if (BoardOptions.Count == 0)
+        {
+            BoardOptions.Add(new SelectListItem { Text = "자유 게시판", Value = "41", Selected = true });
+        }
+
+        // 해당 게시물의 부모 게시판을 찾을 수 없는 경우 (게시판이 삭제되거나 Category 값이 변경된 경우)
+        if (!boardSelected)
+        {
+            foreach(var option in BoardOptions)
+            {
+                if (option.Value == "41") option.Selected = true;
+            }
+        }
+    }
+}
+
+<div id="post_editor" class="post_editor">
+    
+    @if (Model.Response.ResultCode == 200)
+    {
+        @using (Html.AjaxBeginForm("Update", "Post", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnUpdateResponse" }, new { @id = "UpdatePostForm", @class = "update_post_form" }))
+        {
+            <div class="detail_row">
+                <label>고유 번호</label>
+                @Html.TextBox("PostId", Model.Post.PostId, new { @class = "text_input", @autoComplete = "off", @readonly = "readonly" })
+            </div>
+               
+            <div class="detail_row">
+                <label>게시판</label>
+                @Html.DropDownList("Category", BoardOptions, new { @class = "board_drop" })
+            </div>
+
+            <div class="detail_row">
+                <label>제목</label>
+                <span>@Model.Post.Title</span>
+            </div>
+
+            <div class="detail_row">
+                <label>작성자</label>
+                <span>@Model.Post.UserName (@Model.Post.LoginId)</span>
+            </div>
+
+            <div class="detail_row">
+                <label>상태</label>
+                @if (true) { <span class="icon blinded">숨김</span> }
+                @if (Model.Post.IsDeleted) { <span class="icon deleted">삭제</span> }
+            </div>
+
+            <div class="detail_row">
+                <label>숨김 처리</label>
+                @Html.CheckBox("SetBlinded", Model.Post.IsBlinded, new { @id = "checkbox_blind", @class = "text_input checkbox" })
+            </div>
+
+            <div class="detail_row">
+                <label>삭제 처리</label>
+                @Html.CheckBox("SetDelete", Model.Post.IsDeleted, new { @id = "checkbox_delete", @class = "text_input checkbox" })
+            </div>
+
+            <div class="detail_row">
+                <label>영구 삭제</label>
+                @Html.CheckBox("SetHardDelete", false, new { @id = "checkbox_forece_delete", @class = "text_input checkbox" })
+            </div>
+
+            // TODO 변경한 값이 없는 경우 submit 요청 보내지 않는 처리
+            <div class="buttton_list">
+                <button type="button" onclick="EditorFormSubmit()" class="btn btn-outline-secondary btn-sm">저장</button>
+                <button type="button" onclick="PostEditorExit()" class="btn btn-outline-secondary btn-sm">닫기</button>
+                @* <button type="button" onclick="HardDeletePost(@Model.Post.PostId)" class="btn btn-outline-danger btn-sm">영구 삭제</button> *@
+            </div>
+        }
+
+        @* 영구 삭제용 
+        @using (Html.AjaxBeginForm("HardDelete", "Post", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnUpdateResponse" }, new { id = "HardDeleteBoardForm" }))
+        {
+            @Html.Hidden("PostId", Model.Post.PostId)
+        }
+        *@
+    }
+</div>
+
+<script>
+
+    /* 최초 생성 시 ResultCode 에 따른 처리 */
+    (function () {
+        var msg = @Html.Raw(Json.Serialize(Model.Response.Message)); // Message 또는 ErrorMessage(Array) 출력
+        if (@Model.Response.ResultCode != 200) {
+            showAlert(msg, true);
+        }
+    })();
+    
+    /* PartialView 닫기 */
+    function PostEditorExit() {
+        $("#post_editor").remove();
+        /* $("#board_nav_container").hide(); */
+    }
+
+    /* 게시판 삭제 요청 */
+    /*
+    function DeletePost(boardId) {
+        console.log("## _BoardEditor >> DeleteBoard() boardId: ", boardId); // 확인용
+        if (confirm("해당 게시판을 정말 삭제하시겠습니까?")) {
+            $('#DeleteBoardForm').submit();
+        }
+    }
+    */
+
+    /* 게시물 수정 요청 */
+    function EditorFormSubmit() {
+
+        var setBlind = $('#checkbox_blind').prop('checked');
+        var setDelete = $('#checkbox_delete').prop('checked');
+        var setHardDelete = $('#checkbox_forece_delete').prop('checked');
+        var message = "해당 게시물을 정말 ";
+        var words = [];
+       
+        if (setBlind) {
+            words.push("블라인드 처리");
+        }
+        if (setDelete) {
+            words.push(setBlind ? " 및 삭제" : "삭제")
+        }
+        for (var i = 0; i < words.length; i++) {
+            message += words[i];
+        }
+        message += "하시겠습니까?";
+
+        if (setHardDelete) {
+            message = "해당 게시물을 정말 영구적으로 삭제하시겠습니까?";
+        }
+
+        if (setBlind || setDelete || setHardDelete) {
+            if (confirm(message)) {
+                $('#UpdatePostForm').submit();
+            }
+        }
+        else {
+            $('#UpdatePostForm').submit();
+        }
+    }
+
+    /* 게시판 생성 or 수정 or 삭제 요청 응답 핸들러 */
+    function OnUpdateResponse(xhr, status) {
+        // if (xhr.status === 200) {} 항상 return OK 로 반환
+
+        var response = JSON.parse(xhr.responseText);
+        console.log("## _BoardEditor >> OnUpdateResponse() response: ", response);
+
+        /*
+            TODO 필요에 따라 가공, 수정하여 사용
+            response.message -> string
+            response.errorFields -> string array
+            response.errorMessages -> string array
+            response.errorSummary -> string
+        */
+        var AllMessages = ""; // 편의상 모두 노출
+
+        AllMessages += response.message + "\n";
+        for (var i = 0; i < response.errorMessages.length; i++)
+        {
+            AllMessages += response.errorMessages[i] + "\n";
+        }
+
+        switch (response.resultCode) {
+            // 성공
+            case 200: {
+                // boardEditorExit();
+                // updatePage();
+                break;
+            }
+            // 입력값 오류 (ModelState 참고하여 처리 필요)
+            case 201: {
+                showAlert(AllMessages, false);
+                break;
+            }
+            default: {
+                showAlert(AllMessages, false);
+                break;
+            } 
+        }
+    }
+    
+</script>

@@ -42,7 +42,7 @@ namespace MvcBoardAdmin.Utills
             public int end { get; set; }
         }
 
-
+        // TODO CommonService 만들어서 이관 고려
         /// <summary>
         /// ModelState 검증하여 CommonResponse 반환
         /// </summary>
