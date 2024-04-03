@@ -10,6 +10,7 @@
         <div class="name">닉네임</div>
         <div class="image">프로필 이미지</div>
         <div class="authority">권한</div>
+        <div class="tags">상태</div>
     </div>
 
     @foreach(User user in Model.MemberList)
@@ -17,10 +18,13 @@
         @* <a href="javascript:updateMemberEditor(@user.UserId);"> *@
             <div class="item member @(user.Authority) @(user.IsDeleted ? "deleted" : "")">
                 <div class="number">@user.UserId</div>
-                <div class="id @(user.IsDeleted ? "deleted" : "")">@user.Id</div>
-                <div class="name @(user.IsDeleted ? "deleted" : "")">@user.Name</div>
-                <div class="image @(user.IsDeleted ? "deleted" : "")">@user.Image</div>
-                <div class="authority @(user.IsDeleted ? "deleted" : "")">@user.Authority</div>
+                <div class="id">@user.Id</div>
+                <div class="name">@user.Name</div>
+                <div class="image">@user.Image</div>
+                <div class="authority">@user.Authority</div>
+                <div class="tags">
+                    @if (user.IsDeleted) { <span class="icon deleted">삭제</span> }
+                </div>
                 <button type="button" onclick="updateMemberEditor(@user.UserId)" class=" btn btn-outline-primary btn-sm edit_button">수정</button>
                 <button type="button" onclick="deleteMember(@user.UserId)" class=" btn btn-outline-danger btn-sm edit_button">삭제</button>
             </div>

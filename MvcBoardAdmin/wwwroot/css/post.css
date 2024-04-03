@@ -2,7 +2,7 @@
     /*width: fit-content;*/
     display: flex;
     margin-top: 100px;
-    width: 1300px;
+    /*width: 1300px;*/
 }
 
 .manage_post_index .title_anchor {
@@ -14,7 +14,7 @@
 
 /* index_main ----------------------------------------------------------- */
 .manage_post_index .index_main {
-    width: 1300px;
+    width: 1023px;
 }
 
 .post_list_container {
@@ -57,27 +57,30 @@
     background-color: rgb(255,232,232);
 }
 
-.post_list .post.deleted {
-    background-color: #e6e6e6;
-}
-/* 취소선을 일괄 적용하고 버튼에는 적용하지 않으려고 none 설정했으나 
-    버튼에 none 이 적용되어도 계속 취소선이 그려지는 문제가 있어서 항목 각각 적용함... */
-/*.post_list .post.deleted {
-    text-decoration: line-through;
-}
-.post_list .post.deleted button {
-    text-decoration: none !important;
-}
+/*
+.post_list .post.blinded .title,
+.post_list .post.blinded .comment,
+.post_list .post.blinded .writer,
+.post_list .post.blinded .date,
+.post_list .post.blinded .views
+
 */
+.post_list .post.blinded {
+    color: #ff9387;
+    /*background-color: rgb(255, 232, 232);*/
+}
+
+.post_list .post.deleted {
+    color: #969696;
+    /*background-color: #e6e6e6;*/
+}
 
 .post_list .item .id {
-    width: 90px;
-    min-width: 90px;
+    width: 77px;
+    min-width: 77px;
     margin-right: 10px;
     padding: 5px 10px;
-}
-.post_list .item .id.deleted {
-    text-decoration: line-through;
+    text-align: center;
 }
 
 .post_list .item .board_name {
@@ -86,9 +89,6 @@
     margin-right: 10px;
     padding: 5px 1px;
 }
-.post_list .item .board_name.deleted {
-    text-decoration: line-through;
-}
 
 .post_list .item .title {
     width: 300px;
@@ -96,28 +96,44 @@
     margin-right: 10px;
     padding: 5px 1px;
 }
-.post_list .item .title.deleted {
-    text-decoration: line-through;
+
+.post_list .post .icon {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 3px;
+    border-radius: 3px;
+}
+
+.post_list .post .icon.notice {
+    background-color: #e6e6e6;
+    color: #666666;
+}
+
+.post_list .post .icon.deleted {
+    background-color: rgb(255, 232, 232);
+    color: #a10000;
+    /*border: 1px solid #a10000;*/
+}
+
+.post_list .post .icon.blinded {
+    background-color: rgb(255, 232, 232);
+    color: #a10000;
+    /*border: 1px solid #a10000;*/
 }
 
 .post_list .item .comment {
-    width: 50px;
-    min-width: 50px;
+    width: 46px;
+    min-width: 46px;
     margin-right: 10px;
     padding: 5px 10px;
-}
-.post_list .item .comment.deleted {
-    text-decoration: line-through;
+    text-align: center;
 }
 
 .post_list .item .writer {
-    width: 90px;
-    min-width: 90px;
+    width: 100px;
+    min-width: 100px;
     margin-right: 10px;
     padding: 5px 10px;
-}
-.post_list .item .writer.deleted {
-    text-decoration: line-through;
 }
 
 .post_list .item .name {
@@ -126,19 +142,13 @@
     margin-right: 10px;
     padding: 5px 1px;
 }
-.post_list .item .name.deleted {
-    text-decoration: line-through;
-}
 
 .post_list .item .date {
-    width: 100px;
-    min-width: 100px;
+    width: 80px;
+    min-width: 80px;
     margin-right: 10px;
     padding: 5px 1px;
     text-align: center;
-}
-.post_list .item .date.deleted {
-    text-decoration: line-through;
 }
 
 .post_list .item .views {
@@ -148,14 +158,20 @@
     padding: 5px 1px;
     text-align: center;
 }
-.post_list .item .views.deleted {
-    text-decoration: line-through;
+
+
+.post_list .item .tags {
+    width: 80px;
+    min-width: 50px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    text-align: center;
 }
 
 .post_list .item .edit_button {
-    width: 60px;
-    min-width: 60px;
-    margin-right: 5px;
+    width: 50px;
+    min-width: 50px;
+    margin-left: 5px;
     padding: 5px 1px;
     text-align: center;
 }
@@ -205,5 +221,12 @@
     text-align: center;
     margin-top: 20px;
     margin-left: -20px;
+}
+*/
+
+/*
+a:hover {
+    text-decoration: auto;
+    color: #333333;
 }
 */

@@ -14,7 +14,7 @@
 
 /* index_main ----------------------------------------------------------- */
 .manage_member_index .index_main {
-    width: 750px;
+    width: 820px;
 }
 
 .member_list_container {
@@ -53,30 +53,20 @@
 }
 
 .member_list .member.master {
-    background-color: rgb(255,232,232);
+    color: #ff6b6b;
+    /*background-color: rgb(255,232,232);*/
 }
 
 .member_list .member.deleted {
-    background-color: #e6e6e6;
+    color: #969696;
+    /*background-color: #e6e6e6;*/
 }
-/* 취소선을 일괄 적용하고 버튼에는 적용하지 않으려고 none 설정했으나 
-    버튼에 none 이 적용되어도 계속 취소선이 그려지는 문제가 있어서 항목 각각 적용함... */
-/*.member_list .member.deleted {
-    text-decoration: line-through;
-}
-.member_list .member.deleted button {
-    text-decoration: none !important;
-}
-*/
 
 .member_list .item .number {
     width: 90px;
     min-width: 90px;
     margin-right: 10px;
     padding: 5px 10px;
-}
-.member_list .item .number.deleted {
-    text-decoration: line-through;
 }
 
 .member_list .item .id {
@@ -85,18 +75,12 @@
     margin-right: 10px;
     padding: 5px 1px;
 }
-.member_list .item .id.deleted {
-    text-decoration: line-through;
-}
 
 .member_list .item .name {
     width: 150px;
     min-width: 150px;
     margin-right: 10px;
     padding: 5px 1px;
-}
-.member_list .item .name.deleted {
-    text-decoration: line-through;
 }
 
 .member_list .item .image {
@@ -106,9 +90,6 @@
     padding: 5px 1px;
     text-align: center;
 }
-.member_list .item .image.deleted {
-    text-decoration: line-through;
-}
 
 .member_list .item .authority {
     width: 80px;
@@ -117,14 +98,37 @@
     padding: 5px 1px;
     text-align: center;
 }
-.member_list .item .authority.deleted {
-    text-decoration: line-through;
+
+.member_list .item .tags {
+    width: 80px;
+    min-width: 50px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    text-align: center;
+}
+
+.member_list .item .icon {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 3px;
+    border-radius: 3px;
+}
+
+.member_list .item .icon.notice {
+    background-color: #e6e6e6;
+    color: #666666;
+}
+
+.member_list .item .icon.deleted {
+    background-color: rgb(255, 232, 232);
+    color: #a10000;
+    /*border: 1px solid #a10000;*/
 }
 
 .member_list .item .edit_button {
     width: 50px;
     min-width: 50px;
-    margin-right: 5px;
+    margin-left: 5px;
     padding: 5px 1px;
     text-align: center;
 }

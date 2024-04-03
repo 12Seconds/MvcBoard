@@ -1,5 +1,31 @@
 ﻿@model MvcBoardAdmin.Controllers.Response.ReadPostsResponse;
 
+
+@{
+
+}
+
+@functions { 
+    // 이런 방법도 있네
+    /*
+    string TitleIcon (PostWithUser post)
+    {
+        string result = "";
+
+        if (post.IsNotice)
+        {
+            result += "<span class=\"icon notice\">공지</span>";
+        }
+        if (post.IsDeleted)
+        {
+            result += "<span class=\"icon deleted\">삭제</span>";
+        }
+        // ...
+        return result;
+    }
+    */
+}
+
 <div class="post_list">
 
     @if (Model.ResultCode == 200)
@@ -14,25 +40,50 @@
             <div class="writer">작성자</div>
             <div class="date">날짜</div>
             <div class="views">조회수</div>
+            <div class="tags">상태</div>
         </div>
 
         @foreach (PostWithUser post in Model.ViewModel.PostList)
         {
-            @* <a href="javascript:updatePostEditor(@user.UserId);"> *@
-            <div class="item post @(post.IsNotice? "notice" : "") @(post.IsDeleted? "deleted" : "") @(post.IsBlinded? "blinded" : "")">
-                @* TODO css *@
+            // 테스트용
+            /*
+            if (post.PostId == 3)
+            {
+                post.IsDeleted = true;
+                post.IsBlinded = true;
+            }
+            if (post.PostId == 8)
+            {
+                // post.IsDeleted = true;
+                post.IsBlinded = true;
+            }
+            */
 
+            @* <a href="javascript:updatePostEditor(@user.UserId);"> *@
+            <div class="item post @(post.IsNotice? "notice" : "") @(post.IsBlinded? "blinded" : "") @(post.IsDeleted? "deleted" : "") ">
                 <div class="id">@post.PostId</div>
-                <div class="board_name">@post.BoardName</div>
-                <div class="title">@post.Title</div>
+                @* TODO 게시판 이동 *@
+                @* <a href=""> *@
+                    <div class="board_name">@post.BoardName</div>
+                @* </a> *@
+                @* TODO 게시물 이동 or 아래 노출 *@
+                @* <a href=""> *@
+                <div class="title">
+                    @* @Html.Raw(TitleIcon(post)) *@
+                    @if (post.IsNotice) { <span class="icon notice">공지</span> }
+                    @post.Title
+                </div>
+                @* </a> *@
                 <div class="comment">@post.CommentCount</div>
                 <div class="writer">@post.UserName</div>
                 <div class="date">@post.CreateDate?.ToString("yyyy.MM.dd")</div>
                 <div class="views">@post.Views</div>
-
-
+                <div class="tags">
+                    @if (post.IsBlinded) { <span class="icon blinded">숨김</span> }
+                    @if (post.IsDeleted) { <span class="icon deleted">삭제</span> }
+                </div>
                 <button type="button" onclick="updatePostEditor(@post.PostId)" class=" btn btn-outline-primary btn-sm edit_button">수정</button>
-                <button type="button" onclick="deletePost(@post.UserId, @true)" class=" btn btn-outline-danger btn-sm edit_button">블라인드</button>
+                @* <button type="button" onclick="deletePost(@post.UserId, @true)" class=" btn btn-outline-danger btn-sm edit_button">숨김</button> *@
                 <button type="button" onclick="deletePost(@post.UserId, @false)" class=" btn btn-outline-danger btn-sm edit_button">삭제</button>
             </div>
             @* </a> *@
