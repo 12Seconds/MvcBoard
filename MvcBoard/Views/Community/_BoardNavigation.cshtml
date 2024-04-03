@@ -52,7 +52,7 @@
                     <div class="children_list">
                         @foreach (var child in board.Children)
                         {
-                            <a asp-area="" asp-controller="Community" asp-action=@GetAction(board.Category) asp-route-category=@board.Category>
+                            <a asp-area="" asp-controller="Community" asp-action=@GetAction(child.Category) asp-route-category=@child.Category>
                             <div class="item children">
                                 &nbsp;@child.BoardName
                                 @* <div class="order_label">(Order: @child.ShowOrder)</div> *@
