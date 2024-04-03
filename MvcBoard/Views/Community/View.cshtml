@@ -168,15 +168,19 @@
 
             @foreach (var item in Model.PostListData)
             {
-                <div class="item post @(item.PostId == Model.PostData.PostId ? "selected" : "")">
+                <div class="item post @(item.IsNotice ? "notice" : "") @(item.PostId == Model.PostData.PostId ? "selected" : "")">
                     <div class="category">@item.BoardName</div>
                     <div class="title">
                         <a asp-area="" asp-controller="Community" asp-action="View"
-                           asp-route-postId=@item.PostId
+                           asp-route-postId="@item.PostId"
                            asp-route-page=@Model.Page
                            asp-route-category=@Model.Category
-                           asp-route-commentPage=@null>@item.Title @item.PostId</a> @* TODO 임시 postId 지울 것 *@
-                    </div> @* 클릭 시 페이지 이동 처리 필요*@
+                           asp-route-commentPage=@null>
+                           @if (item.IsNotice) { <span class="icon notice">공지</span> }
+                           @item.Title
+                           @if (item.CommentCount > 0) { <span class="comment_count">[@item.CommentCount]</span> }
+                        </a>
+                    </div>
                     <div class="writer">@item.UserName</div>
                     <div class="date">@(item.CreateDate?.ToString("yyyy.MM.dd"))</div> @* 7일 전 처리 필요 *@
                     <div class="views">@item.Views</div>

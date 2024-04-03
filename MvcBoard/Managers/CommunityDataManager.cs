@@ -131,6 +131,7 @@ namespace MvcBoard.Managers
                         // Join 테이블 데이터
                         post.UserName = reader["Name"]?.ToString() ?? "";
                         post.BoardName = reader["BoardName"]?.ToString() ?? "";
+                        post.CommentCount = int.Parse(reader["CommentCount"]?.ToString() ?? "0");
 
                         Posts.Add(post);
                     }
@@ -200,6 +201,7 @@ namespace MvcBoard.Managers
                         // Join 테이블 데이터
                         post.UserName = reader["Name"]?.ToString() ?? "";
                         post.BoardName = reader["BoardName"]?.ToString() ?? "";
+                        post.CommentCount = int.Parse(reader["CommentCount"]?.ToString() ?? "0");
 
                         Posts.Add(post);
                     }
@@ -269,6 +271,7 @@ namespace MvcBoard.Managers
                         // Join 테이블 데이터
                         post.UserName = reader["Name"]?.ToString() ?? "";
                         post.BoardName = reader["BoardName"]?.ToString() ?? "";
+                        post.CommentCount = int.Parse(reader["CommentCount"]?.ToString() ?? "0");
 
                         Posts.Add(post);
                     }

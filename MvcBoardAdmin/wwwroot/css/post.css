@@ -57,14 +57,10 @@
     background-color: rgb(255,232,232);
 }
 
-/*
-.post_list .post.blinded .title,
-.post_list .post.blinded .comment,
-.post_list .post.blinded .writer,
-.post_list .post.blinded .date,
-.post_list .post.blinded .views
+.post_list .post.notice {
+    background-color: rgba(249, 53, 76, .07);
+}
 
-*/
 .post_list .post.blinded {
     color: #ff9387;
     /*background-color: rgb(255, 232, 232);*/

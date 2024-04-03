@@ -193,7 +193,7 @@ body {
 }
 
 .community_main .board .post.notice {
-    background-color: rgb(255,232,232);
+    background-color: rgba(249, 53, 76, .07);
 }
 
 .community_main .board .item .category { /* TODO ellipsis 贸府 */
@@ -209,6 +209,14 @@ body {
     margin-right: 10px;
     padding: 5px 1px;
 }
+
+.community_main .board .item .title .comment_count {
+    margin-left: 3px;
+    color: #ec2756;
+    font-weight: bold;
+    font-size: 12px;
+}
+
 .community_main .board .item .writer { /* TODO ellipsis 贸府 */
     width: 100px;
     min-width: 100px;
@@ -229,6 +237,18 @@ body {
     margin-right: 10px;
     padding: 5px 1px;
     text-align: center;
+}
+
+.community_main .board .post .icon {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 3px;
+    border-radius: 3px;
+}
+
+.community_main .board .post .icon.notice {
+    background-color: #e6e6e6;
+    color: #666666;
 }
 
 .community_main .category_dropbox {
