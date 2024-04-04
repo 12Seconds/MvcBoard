@@ -1,17 +1,21 @@
-﻿@{
+﻿@model MvcBoardAdmin.Models.Post.PostManageViewModel
+
+@{
     ViewData["Title"] = "게시물 관리";
     ViewData["NavIndex"] = 3;
-    
+
     // TODO 모델 데이터 받기
     // 게시판 리스트, 선택된 게시판 카테고리, 선택된 필터 인덱스, 검색어 -> GetUrl
 
     List<SelectListItem> BoardFilters = new List<SelectListItem>();
     BoardFilters.Add(new SelectListItem { Text = "전체 게시판", Value = "0", Selected = true });
 
-    // 임시
-    BoardFilters.Add(new SelectListItem { Text = "일반 - 자유", Value = "41" });
-    BoardFilters.Add(new SelectListItem { Text = "전공 - 입시", Value = "61" });
-    // 따로 만들어야 함
+    foreach (BoardType board in Model.WritableBoards)
+    {
+        BoardFilters.Add(new SelectListItem { Text = board.BoardName, Value = board.Category.ToString() });
+    }
+
+    // TODO 인기, 공지는 따로 처리해야 함
     // BoardFilters.Add(new SelectListItem { Text = "인기 게시판", Value = "1" });
     // BoardFilters.Add(new SelectListItem { Text = "공지 게시판", Value = "2" });
 

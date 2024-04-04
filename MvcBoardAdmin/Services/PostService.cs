@@ -20,6 +20,17 @@ namespace MvcBoardAdmin.Services
             _boardService = boardService;
         }
 
+        public PostManageViewModel GetPostManageViewModel(/* _params */)
+        {
+            PostManageViewModel Model = new PostManageViewModel();
+
+            Model.WritableBoards = _boardService.GetWritableBoards();
+
+            // 그 외 필요한 작업들..
+
+            return Model;
+        }
+
         /// <summary>
         /// 게시물 리스트 조회
         /// </summary>

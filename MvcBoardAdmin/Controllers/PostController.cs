@@ -15,9 +15,12 @@ namespace MvcBoardAdmin.Controllers
             _postService = postService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(PostManageViewParams _params)
         {
-            return View();
+            PostManageViewModel Model = _postService.GetPostManageViewModel(/* _params */);
+            Model.ReadPostsParams = _params;
+
+            return View(Model);
         }
 
         /* 게시물 리스트 PartialView (검색) */
