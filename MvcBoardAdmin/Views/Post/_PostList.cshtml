@@ -58,7 +58,7 @@
             }
             */
 
-            @* <a href="javascript:updatePostEditor(@user.UserId);"> *@
+            @* <a href="javascript:UpdatePostEditor(@user.UserId);"> *@
             <div class="item post @(post.IsNotice? "notice" : "") @(post.IsBlinded? "blinded" : "") @(post.IsDeleted? "deleted" : "") ">
                 <div class="id">@post.PostId</div>
                 @* TODO 게시판 이동 *@
@@ -81,9 +81,9 @@
                     @if (post.IsBlinded) { <span class="icon blinded">숨김</span> }
                     @if (post.IsDeleted) { <span class="icon deleted">삭제</span> }
                 </div>
-                <button type="button" onclick="updatePostEditor(@post.PostId)" class=" btn btn-outline-primary btn-sm edit_button">수정</button>
-                @* <button type="button" onclick="deletePost(@post.UserId, @true)" class=" btn btn-outline-danger btn-sm edit_button">숨김</button> *@
-                <button type="button" onclick="deletePost(@post.UserId, @false)" class=" btn btn-outline-danger btn-sm edit_button">삭제</button>
+                <button type="button" onclick="UpdatePostEditor(@post.PostId)" class=" btn btn-outline-primary btn-sm edit_button">수정</button>
+                <button type="button" onclick="DeletePost(@post.PostId, true)" class=" btn btn-outline-danger btn-sm edit_button">숨김</button>
+                <button type="button" onclick="DeletePost(@post.PostId, false)" class=" btn btn-outline-danger btn-sm edit_button">삭제</button>
             </div>
             @* </a> *@
         }
@@ -126,7 +126,8 @@
         @using (Html.AjaxBeginForm("Delete", "Post", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnDeleteResponse" }, new { id = "DeletePostForm" }))
         {
             @Html.Hidden("PostId", 0, new { id = "delete_postId_val" });
-            @Html.Hidden("IsBlind", 1, new { id = "delete_isBlind_val" });
+            @Html.Hidden("IsBlinded", false, new { id = "delete_isBlind_val" });
+            @* @Html.Hidden("IsHardDelete", 1, new { id = "delete_isHardDelete_val" }); *@
         }
     }
 
@@ -145,7 +146,7 @@
         }
 
         if (@Model.ResultCode != 200) {
-            showAlert(AllMessages, true);
+            ShowAlert(AllMessages, true);
         }
     })();
 
@@ -157,12 +158,13 @@
     }
     */
 
-    /* 게시물 삭제 or 블라인드 처리 요청 */
-    function deletePost(postId, isBlind) {
+    /* 게시물 삭제 or 블라인드 or 영구 삭제 처리 요청 */
+    function DeletePost(postId, isBlind/* , isHardDelete */) {
         var msg = isBlind ? "해당 게시물을 블라인드 처리 하시겠습니까?" : "해당 게시물을 정말 삭제하시겠습니까?";
 
         $('#delete_postId_val').val(postId);
         $('#delete_isBlind_val').val(isBlind);
+        // $('#delete_isHardDelete_val').val(isBlind);
 
         if (confirm(msg)) {
             $('#DeletePostForm').submit();
@@ -178,17 +180,17 @@
         switch (response.resultCode) {
             // 성공
             case 200: {
-                UpdatePostList(1);
-                // memberEditorExit();
+                UpdatePostList(0);
+                PostEditorExit();
                 break;
             }
             // 입력값 오류 (ModelState 참고하여 처리 필요)
             case 201: {
-                showAlert(response.message, false);
+                ShowAlert(response.message, false);
                 break;
             }
             default: {
-                showAlert(response.message, false);
+                ShowAlert(response.message, false);
                 break;
             }
         }

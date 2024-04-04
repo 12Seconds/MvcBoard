@@ -74,26 +74,21 @@ namespace MvcBoardAdmin.Controllers
             return Ok(Response);
         }
 
-        /* 게시물 삭제 or 블라인드 */
+        /* 게시물 삭제, 숨김(블라인드) */
         [HttpPost]
-        public IActionResult Delete(int postId, int isBlind) // 임시
+        public IActionResult Delete(DeletePostParams _params)
         {
-            Console.WriteLine($"## PostController >> Update(postId: {postId}, isBlind: {isBlind})");
-            /*
-            DeleteBoardServiceParams ServiceParams = new DeleteBoardServiceParams
+            Console.WriteLine($"## PostController >> Delete(PostId: {_params.PostId}, IsBlinded: {_params.IsBlinded}, IsHardDelete: {_params.IsHardDelete})");
+            
+            DeletePostServiceParams ServiceParams = new DeletePostServiceParams
             {
-                BoardId = BoardId,
+                DeleteParams = _params,
                 ModelState = ModelState,
                 HttpContext = HttpContext
             };
-            */
 
-            // CommonResponse Response = _postService.DeleteBoard(ServiceParams);
-            CommonResponse Response = new CommonResponse
-            {
-                ResultCode = 201,
-                Message = "미구현"
-            };
+            CommonResponse Response = _postService.DeletePost(ServiceParams);
+
 
             return Ok(Response);
         }

@@ -111,7 +111,7 @@
     (function () {
         var msg = @Html.Raw(Json.Serialize(Model.Response.Message)); // Message 또는 ErrorMessage(Array) 출력
         if (@Model.Response.ResultCode != 200) {
-            showAlert(msg, true);
+            ShowAlert(msg, true);
         }
     })();
     
@@ -195,11 +195,11 @@
             }
             // 입력값 오류 (ModelState 참고하여 처리 필요)
             case 201: {
-                showAlert(AllMessages, false);
+                ShowAlert(AllMessages, false);
                 break;
             }
             default: {
-                showAlert(AllMessages, false);
+                ShowAlert(AllMessages, false);
                 break;
             } 
         }

@@ -8,6 +8,10 @@ using System.Data;
 
 namespace MvcBoardAdmin.Managers
 {
+
+    // 1. 데이터를 반환하는 DB 요청인 경우(SELECT, ..) : Result 반환 (CommonResponse 와 데이터를 포함하는 Result Class 정의)
+    // 2. 처리 결과를 반환하는 DB 요청인 경우(UPDATE, DELETE, ..) : CommonResponse 반환
+
     public class PostDataManager : DBManager
     {
         public PostDataManager(IWebHostEnvironment env) : base(env)
@@ -267,6 +271,72 @@ namespace MvcBoardAdmin.Managers
             return Response;
         }
 
+        /// <summary>
+        /// 게시물 삭제, 숨김(블라인드) 요청
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public CommonResponse DeletePost(DeletePostParams _params)
+        {
+            CommonResponse Response = new CommonResponse();
+
+            Console.WriteLine($"## PostDataManager >> DeletePost(PostId = {_params.PostId}), IsBlinded = {_params.IsBlinded}, IsHardDelete = {_params.IsHardDelete}");
+
+            try
+            {
+                using (var connection = GetConnection())
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("adm_DeletePost", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@PostId", _params.PostId);
+                        command.Parameters.AddWithValue("@IsBlinded", _params.IsBlinded);
+                        command.Parameters.AddWithValue("@IsHardDelete", _params.IsHardDelete);
+
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        if (!reader.Read())
+                        {
+                            Response.ResultCode = 203;
+                            Response.Message = "DB Read Fail";
+                            return Response;
+                        }
+
+                        int result = Convert.ToInt32(reader["Result"]);
+
+                        switch (result)
+                        {
+                            case 1:
+                                Response.ResultCode = 200;
+                                Response.Message = "DB Success";
+                                break;
+                            case 0:
+                                Response.ResultCode = 203;
+                                Response.Message = "DB Fail (존재하지 않는 게시물 입니다.)";
+                                break;
+                            case -1:
+                                Response.ResultCode = 203;
+                                Response.Message = "DB Fail (이미 삭제 또는 숨김 처리된 게시물 입니다.)";
+                                break;
+                            case -2:
+                                Response.ResultCode = 203;
+                                Response.Message = "DB Fail (입력값 오류 (-2))";
+                                break;
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.ResultCode = 202;
+                Response.Message = "DB Error";
+                Response.ErrorMessages.Add(ex.Message);
+            }
+
+            return Response;
+        }
 
     }
 }

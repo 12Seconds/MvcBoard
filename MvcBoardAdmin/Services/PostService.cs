@@ -101,28 +101,26 @@ namespace MvcBoardAdmin.Services
             return Response;
         }
 
-        /*
         /// <summary>
-        /// 유저(멤버) 정보 삭제 요청
+        /// 게시물 삭제, 숨김(블라인드) 요청
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public CommonResponse DeleteMember(DeleteMemberServiceParams _params)
+        public CommonResponse DeletePost(DeletePostServiceParams _params)
         {
             CommonResponse Response = new CommonResponse();
 
-            if (_params.UserId < 1)
+            if (_params.DeleteParams.PostId < 1)
             {
                 Response.ResultCode = 201;
-                Response.Message = "입력값 오류 (유효하지 않은 Id)";
+                Response.Message = "입력값 오류 (유효하지 않은 PostId)";
                 return Response;
             }
             
-            Response = _postDataManager.DeleteMember(_params.UserId);
+            Response = _postDataManager.DeletePost(_params.DeleteParams);
 
             return Response;
         }
-        */
 
     }
 
