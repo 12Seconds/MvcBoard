@@ -56,10 +56,11 @@ namespace MvcBoardAdmin.Services
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public PostEditorViewModel GetPostEditorViewModel(ReadPostDetailServiceParams _params)
+        public PostEditorViewModel GetPostEditorViewModel(GetPostEditorServiceParams _params)
         {
             PostEditorViewModel Model = new PostEditorViewModel();
 
+            // 입력값 유효성 검증
             CommonResponse _response = Utility.ModelStateValidation(_params.ModelState);
 
             if (_response.ResultCode != 200)
@@ -78,18 +79,15 @@ namespace MvcBoardAdmin.Services
             return Model;
         }
 
-        /*
+        
         /// <summary>
-        /// 유저(멤버) 정보 수정 요청
+        /// 게시물 정보 수정 요청 - 게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public CommonResponse UpdateMember(UpdateMemberServiceParams _params)
+        public CommonResponse UpdatePost(UpdatePostServiceParams _params)
         {
-            // 입력값 유효성 검증 
-            // TODO Question 직접 각 필드들을 조사해서 response 를 만들어서 넘겨주거나 (1)
-            // ModelState 객체를 통채로 넘겨주어서 클라이언트 측에서 Javascript 로 추출하여 가공 및 Validataion Message 처리 (2) ?
-
+            // 입력값 유효성 검증
             CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
 
             if (Response.ResultCode != 200)
@@ -98,11 +96,12 @@ namespace MvcBoardAdmin.Services
             }
 
             // 검증 통과시 DB 요청
-            Response = _postDataManager.UpdateMember(_params.UpdateParams);
+            Response = _postDataManager.UpdatePost(_params.UpdateParams);
 
             return Response;
         }
 
+        /*
         /// <summary>
         /// 유저(멤버) 정보 삭제 요청
         /// </summary>

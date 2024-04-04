@@ -58,25 +58,29 @@
                 <span>@Model.Post.UserName (@Model.Post.LoginId)</span>
             </div>
 
-            <div class="detail_row">
-                <label>상태</label>
-                @if (true) { <span class="icon blinded">숨김</span> }
-                @if (Model.Post.IsDeleted) { <span class="icon deleted">삭제</span> }
-            </div>
+            @if (Model.Post.IsBlinded || Model.Post.IsDeleted)
+            {
+                <div class="detail_row">
+                    <label>상태</label>
+                    @if (Model.Post.IsBlinded) { <span class="icon blinded">숨김</span> }
+                    @if (Model.Post.IsDeleted) { <span class="icon deleted">삭제</span> }
+                </div>    
+            }
 
             <div class="detail_row">
                 <label>숨김 처리</label>
-                @Html.CheckBox("SetBlinded", Model.Post.IsBlinded, new { @id = "checkbox_blind", @class = "text_input checkbox" })
+                @Html.CheckBox("IsBlinded", Model.Post.IsBlinded, new { @id = "checkbox_blind", @class = "text_input checkbox" })
             </div>
 
             <div class="detail_row">
                 <label>삭제 처리</label>
-                @Html.CheckBox("SetDelete", Model.Post.IsDeleted, new { @id = "checkbox_delete", @class = "text_input checkbox" })
+                @Html.Hidden("ExDeleted", Model.Post.IsDeleted)
+                @Html.CheckBox("IsDeleted", Model.Post.IsDeleted, new { @id = "checkbox_delete", @class = "text_input checkbox" })
             </div>
 
             <div class="detail_row">
                 <label>영구 삭제</label>
-                @Html.CheckBox("SetHardDelete", false, new { @id = "checkbox_forece_delete", @class = "text_input checkbox" })
+                @Html.CheckBox("IsHardDelete", false, new { @id = "checkbox_forece_delete", @class = "text_input checkbox" })
             </div>
 
             // TODO 변경한 값이 없는 경우 submit 요청 보내지 않는 처리
@@ -109,7 +113,6 @@
     /* PartialView 닫기 */
     function PostEditorExit() {
         $("#post_editor").remove();
-        /* $("#board_nav_container").hide(); */
     }
 
     /* 게시판 삭제 요청 */
@@ -181,8 +184,8 @@
         switch (response.resultCode) {
             // 성공
             case 200: {
-                // boardEditorExit();
-                // updatePage();
+                PostEditorExit();
+                UpdatePostList();
                 break;
             }
             // 입력값 오류 (ModelState 참고하여 처리 필요)

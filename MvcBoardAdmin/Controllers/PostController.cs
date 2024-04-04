@@ -44,7 +44,7 @@ namespace MvcBoardAdmin.Controllers
         {
             Console.WriteLine($"## PostController >> PostEditorPartial(PostId: {PostId}");
 
-            ReadPostDetailServiceParams ServiceParams = new ReadPostDetailServiceParams
+            GetPostEditorServiceParams ServiceParams = new GetPostEditorServiceParams
             {
                 PostId = PostId,
                 ModelState = ModelState,
@@ -56,26 +56,20 @@ namespace MvcBoardAdmin.Controllers
             return PartialView("_PostEditor", Model);
         }
 
-        /* 게시물 정보 수정 */
+        /* 게시물 정보 수정 (게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함) */
         [HttpPost]
-        public IActionResult Update(int postId, int isBlind) // 임시
+        public IActionResult Update(UpdatePostParams _params)
         {
-            Console.WriteLine($"## PostController >> Update(postId: {postId}, isBlind: {isBlind})");
-            /*
-            UpdateBoardServiceParams ServiceParams = new UpdateBoardServiceParams
+            Console.WriteLine($"## PostController >> Update(PostId: {_params.PostId}, Category: {_params.Category}, IsBlinded: {_params.IsBlinded}, IsDeleted: {_params.IsDeleted}, IsHardDelete: {_params.IsHardDelete})");
+           
+            UpdatePostServiceParams ServiceParams = new UpdatePostServiceParams
             {
                 UpdateParams = _params,
                 ModelState = ModelState,
                 HttpContext = HttpContext
             };
-            */
 
-            // CommonResponse Response = _postService.UpdateBoard(ServiceParams);
-            CommonResponse Response = new CommonResponse
-            {
-                ResultCode = 201,
-                Message = "미구현"
-            };
+            CommonResponse Response = _postService.UpdatePost(ServiceParams);
 
             return Ok(Response);
         }

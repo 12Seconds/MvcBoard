@@ -1,6 +1,6 @@
 ﻿namespace MvcBoardAdmin.Controllers.Params
 {
-    public class ReadPostDetailServiceParams : CommonServiceParams
+    public class GetPostEditorServiceParams : CommonServiceParams
     {
         public int PostId { get; set; }
     }

@@ -206,6 +206,67 @@ namespace MvcBoardAdmin.Managers
             return Result;
         }
 
+        /// <summary>
+        /// 게시물 정보 수정 - 게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public CommonResponse UpdatePost(UpdatePostParams _params)
+        {
+            CommonResponse Response = new CommonResponse();
+            Response.ResultCode = 200;
+            Response.Message = "DB Success";
+
+            Console.WriteLine($"## PostDataManager >> UpdatePost(PostId = {_params.PostId}, IsBlinded = {_params.IsBlinded}, IsDeleted = {_params.IsDeleted}, IsHardDelete = {_params.IsHardDelete})");
+
+            try
+            {
+                using (var connection = GetConnection())
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("adm_UpdatePost", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@PostId", _params.PostId);
+                        command.Parameters.AddWithValue("@Category", _params.Category);
+                        command.Parameters.AddWithValue("@IsBlinded", _params.IsBlinded);
+                        command.Parameters.AddWithValue("@IsDeleted", _params.IsDeleted);
+                        command.Parameters.AddWithValue("@ExDeleted", _params.ExDeleted);
+                        command.Parameters.AddWithValue("@IsHardDelete", _params.IsHardDelete);
+
+                       SqlDataReader reader = command.ExecuteReader();
+
+                        if (!reader.Read())
+                        {
+                            Response.ResultCode = 203;
+                            Response.Message = "DB Read Fail";
+                            return Response;
+                        }
+
+                        int result = Convert.ToInt32(reader["Result"]);
+
+                        if (result < 1)
+                        {
+                            Response.ResultCode = 203;
+                            Response.Message = "DB Fail (영향을 받은 행이 없음)";
+                            return Response;
+                        }
+
+                        Response.Message = $"DB Success (RowCount: {result}"; // 무조건 1 이어야겠지
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.ResultCode = 202;
+                Response.Message = "DB Error";
+                Response.ErrorMessages.Add(ex.Message);
+            }
+
+            return Response;
+        }
+
 
     }
 }
