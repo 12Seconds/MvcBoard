@@ -36,7 +36,6 @@
             <div class="id">고유 번호</div>
             <div class="board_name">게시판</div>
             <div class="title">제목</div>
-            <div class="comment">댓글</div>
             <div class="writer">작성자</div>
             <div class="date">날짜</div>
             <div class="views">조회수</div>
@@ -72,9 +71,9 @@
                     @* @Html.Raw(TitleIcon(post)) *@
                     @if (post.IsNotice) { <span class="icon notice">공지</span> }
                     @post.Title
+                    @if (post.CommentCount > 0) { <span class="comment_count">[@post.CommentCount]</span> }
                 </div>
                 @* </a> *@
-                <div class="comment">@post.CommentCount</div>
                 <div class="writer">@post.UserName</div>
                 <div class="date">@post.CreateDate?.ToString("yyyy.MM.dd")</div>
                 <div class="views">@post.Views</div>

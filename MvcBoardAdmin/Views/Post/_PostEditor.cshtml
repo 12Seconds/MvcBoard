@@ -49,13 +49,18 @@
             </div>
 
             <div class="detail_row">
-                <label>제목</label>
-                <span>@Model.Post.Title</span>
+                <label class="title">제목</label>
+                <span class="title">@Model.Post.Title</span>
             </div>
 
             <div class="detail_row">
                 <label>작성자</label>
                 <span>@Model.Post.UserName (@Model.Post.LoginId)</span>
+            </div>
+
+            <div class="detail_row">
+                <label>댓글</label>
+                <span>@Model.Post.CommentCount</span>
             </div>
 
             @if (Model.Post.IsBlinded || Model.Post.IsDeleted)
