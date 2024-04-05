@@ -20,6 +20,10 @@ namespace MvcBoardAdmin.Services
             _boardService = boardService;
         }
 
+        /// <summary>
+        /// 게시물 관리페이지 진입
+        /// </summary>
+        /// <returns></returns>
         public PostManageViewModel GetPostManageViewModel(/* _params */)
         {
             PostManageViewModel Model = new PostManageViewModel();

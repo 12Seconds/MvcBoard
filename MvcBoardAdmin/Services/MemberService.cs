@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Managers;
+using MvcBoardAdmin.Models.Member;
 using MvcBoardAdmin.Utills;
 
 namespace MvcBoardAdmin.Services
@@ -16,6 +17,19 @@ namespace MvcBoardAdmin.Services
         public MemberService(MemberDataManager memberDataManager)
         {
             _memberDataManager = memberDataManager;
+        }
+
+        /// <summary>
+        /// 유저 관리페이지 진입
+        /// </summary>
+        /// <returns></returns>
+        public MemberManageViewModel GetMemberManageViewModel(/* _params */)
+        {
+            MemberManageViewModel Model = new MemberManageViewModel();
+
+            // 그 외 필요한 작업들..
+
+            return Model;
         }
 
         /// <summary>

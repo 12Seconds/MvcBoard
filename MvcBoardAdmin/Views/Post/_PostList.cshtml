@@ -69,12 +69,16 @@
                 @* <a href=""> *@
                 <div class="title">
                     @* @Html.Raw(TitleIcon(post)) *@
+                    <a>
                     @if (post.IsNotice) { <span class="icon notice">공지</span> }
                     @post.Title
+                    </a>
                     @if (post.CommentCount > 0) { <span class="comment_count">[@post.CommentCount]</span> }
                 </div>
                 @* </a> *@
-                <div class="writer">@post.UserName</div>
+                <a asp-area="" asp-controller="Member" asp-action="index" asp-route-SearchFilter="UserId" asp-route-SearchWord="@post.UserId">
+                    <div class="writer">@post.UserName</div>
+                </a>
                 <div class="date">@post.CreateDate?.ToString("yyyy.MM.dd")</div>
                 <div class="views">@post.Views</div>
                 <div class="tags">

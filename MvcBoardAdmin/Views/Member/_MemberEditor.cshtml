@@ -45,12 +45,18 @@
 
             <div class="detail_row">
                 <label>작성한 게시물 수</label>
-                <span>@Model.ViewModel.PostCount</span>
+                <a asp-area="" asp-controller="Post" asp-action="index" asp-route-SearchFilter="UserId" asp-route-SearchWord="@Model.ViewModel.UserId">
+                    <span>@Model.ViewModel.PostCount</span>
+                </a>
             </div>
 
             <div class="detail_row">
                 <label>작성한 댓글 수</label>
-                <span>@Model.ViewModel.CommentCount </span>
+                @* TODO 댓글 이동 *@
+                @* <a asp-area="" asp-controller="Comment" asp-action="index" asp-route-SearchFilter="UserId" asp-route-SearchWord="@Model.ViewModel.UserId"> *@
+                <a>
+                    <span>@Model.ViewModel.CommentCount </span>
+                </a>
             </div>
 
             <div class="detail_row">

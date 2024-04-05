@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
+using MvcBoardAdmin.Models.Member;
 using MvcBoardAdmin.Services;
 
 namespace MvcBoardAdmin.Controllers
@@ -14,11 +15,12 @@ namespace MvcBoardAdmin.Controllers
             _memberService = memberService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(MemberManageViewParams _params)
         {
             // TODO 인증
+            MemberManageViewModel Model = _memberService.GetMemberManageViewModel(/* _params */);
 
-            return View();
+            return View(Model);
         }
 
         /* 유저 리스트 PartialView (검색) */

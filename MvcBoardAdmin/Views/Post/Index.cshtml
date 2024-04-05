@@ -4,27 +4,68 @@
     ViewData["Title"] = "게시물 관리";
     ViewData["NavIndex"] = 3;
 
-    // TODO 모델 데이터 받기
-    // 게시판 리스트, 선택된 게시판 카테고리, 선택된 필터 인덱스, 검색어 -> GetUrl
+    // TODO 초기값 로직 지울 수도 있음
 
+    int index = 0;
+    string searchWord = "";
+
+    // 게시판 필터 설정
     List<SelectListItem> BoardFilters = new List<SelectListItem>();
-    BoardFilters.Add(new SelectListItem { Text = "전체 게시판", Value = "0", Selected = true });
+    BoardFilters.Add(new SelectListItem { Text = "전체 게시판", Value = "0"});
 
-    foreach (BoardType board in Model.WritableBoards)
+    for (int i = 0; i < Model.WritableBoards.Count; i ++)
     {
+        BoardType board = Model.WritableBoards[i];
         BoardFilters.Add(new SelectListItem { Text = board.BoardName, Value = board.Category.ToString() });
+
+        if (Model.Params?.BoardFilter == board.Category)
+        {
+            index = i;
+        }
     }
+    // 게시판 필터 초기값
+    BoardFilters[index].Selected = true;
 
     // TODO 인기, 공지는 따로 처리해야 함
     // BoardFilters.Add(new SelectListItem { Text = "인기 게시판", Value = "1" });
     // BoardFilters.Add(new SelectListItem { Text = "공지 게시판", Value = "2" });
 
+    // 검색 필터 설정
     List<SelectListItem> SearchFilters = new List<SelectListItem>();
-    SearchFilters.Add(new SelectListItem { Text = "게시물 번호", Value = "PostId" });
-    SearchFilters.Add(new SelectListItem { Text = "제목", Value = "Title", Selected = true });
+    SearchFilters.Add(new SelectListItem { Text = "게시물 번호", Value = "PostId" }); // TODO 내용 뒤로 옮길 것 
+    SearchFilters.Add(new SelectListItem { Text = "제목", Value = "Title"/* , Selected = true  */});
     SearchFilters.Add(new SelectListItem { Text = "내용", Value = "Contents" });
     SearchFilters.Add(new SelectListItem { Text = "아이디", Value = "Id" });
     SearchFilters.Add(new SelectListItem { Text = "닉네임", Value = "Name" });
+    SearchFilters.Add(new SelectListItem { Text = "사용자 번호", Value = "UserId" });
+
+
+    // TODO Question 왜 주석 처리 해도 url 에 값 넣어주면 정상적으로 매핑이 되지? Html.DropDownList 바인딩 때문?
+
+    if (Model.Params != null)
+    {
+        // 검색 필터 초기값
+        // if (Model.ReadPostsParams.SearchFilter.Length > 0) { }
+        foreach (var filter in SearchFilters)
+        {
+            // if (filter.Value == Model.ReadPostsParams.SearchFilter) 
+            if (filter.Value.ToLower() == Model.Params.SearchFilter2.ToLower()) // 대소문자 때문이었네, 바인딩 된 파라미터는 대소문자 구분 상관없고..
+            {
+                filter.Selected = true;
+                index = -1;
+            }
+        }
+        // 초기값 설정하지 못했으면 Default 제목 선택
+        if (index != -1)
+        {
+            // TODO Question 왜 안되지.. 그냥 바인딩 때문에 아예 안먹히는 것 같은데 -> SearchFilter 에 값이 있는데 못찾으면, 첫 항목 선택 | 값이 없으면 (SearchWord2 로 값 넣으면) 또 잘 설정됨
+            SearchFilters[1].Selected = true; 
+        }
+
+        // 검색어 초기값 -> 그럼 얘도 필요 없는 것 아닌가
+        searchWord = (Model.Params.SearchWord?.Length > 0 ? Model.Params.SearchWord : "");
+    }
+    
 }
 
 <link rel="stylesheet" href="@(Url.Content("~/css/post.css"))" />
@@ -43,7 +84,7 @@
             {
                 @Html.DropDownList("BoardFilter", BoardFilters, new { @id = "BoardFilterList", @class = "search_filter_drop"/* "form-control" */ })
                 @Html.DropDownList("SearchFilter", SearchFilters, new { @id = "SearchFilterList", @class = "search_filter_drop"/* "form-control" */ })
-                @Html.TextBox("SearchWord", null, new { @class = "search_word_input", @placeholder = "", @autoComplete = "off" })
+                @Html.TextBox("SearchWord", searchWord, new { @class = "search_word_input", @placeholder = "", @autoComplete = "off" })
                 <button type="submit" class="btn btn-outline-secondary btn-sm search_button">검색</button>
             }
         </div>
@@ -100,3 +141,4 @@
     }
 
 </script>
+ 

@@ -3,6 +3,13 @@
     color: #333333;
 }
 
+/*
+a:hover {
+    text-decoration: underline;
+    color: #0d6ef;
+}
+*/
+
 .nav-item:hover {
     background-color: #C4C4C4;
 }

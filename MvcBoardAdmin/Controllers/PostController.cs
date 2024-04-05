@@ -18,7 +18,9 @@ namespace MvcBoardAdmin.Controllers
         public IActionResult Index(PostManageViewParams _params)
         {
             PostManageViewModel Model = _postService.GetPostManageViewModel(/* _params */);
-            Model.ReadPostsParams = _params;
+            Model.Params = _params;
+
+            Model.Params.SearchFilter2 = _params.SearchFilter2; // TODO 지울 것 테스트
 
             return View(Model);
         }
