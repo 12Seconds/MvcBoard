@@ -36,34 +36,39 @@ namespace MvcBoardAdmin.Services
         }
 
         /// <summary>
-        /// 게시물 리스트 조회
+        /// 게시물 리스트 조회하여 PostListPartial 의 ViewModel 반환
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public ReadPostsResponse ReadPosts(ReadPostsServiceParams _params)
+        public PostListViewModel GetPostListViewModel(ReadPostsServiceParams _params)
         {
-             ReadPostsResponse Response = new ReadPostsResponse();
+            PostListViewModel Model = new PostListViewModel();
 
             // 입력값 유효성 검증 (TODO)
-            // ReadPostsResponse Response = Utility.ModelStateValidation(_params.ModelState) as ReadPostsResponse;
-            CommonResponse _response = Utility.ModelStateValidation(_params.ModelState);
+            CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
 
-            // TODO ReadPostsResponse 반환 -> PostListViewModel 반환하는 구조로 바꿀 것 (멤버로 CommonResponse 포함)
-
-            // TODO Question CommonResponse 를 ReadPostsResponse 로 다운 캐스팅 하면 Null 값 리턴되어 Null 참조 오류 발생
-            if (_response.ResultCode != 200)
+            if (Response.ResultCode != 200)
             {
-                Response.ResultCode = _response.ResultCode;
-                Response.Message = _response.Message;
-                Response.ErrorMessages = _response.ErrorMessages;
-                Response.ErrorSummary = _response.ErrorSummary;
-                return Response;
+                Model.Response = Response;
+                return Model;
             }
 
             // 검증 통과시 DB 요청
-            Response = _postDataManager.ReadPosts(_params.ReadPostsParams);
+            ReadPostsResult Result = _postDataManager.ReadPosts(_params.ReadPostsParams);
 
-            return Response;
+            Model.Response = Result.Response;
+            Model.PostList = Result.PostList;
+            Model.IndicatorRange = Result.IndicatorRange;
+            Model.TotalRowCount = Result.TotalRowCount;
+            Model.TotalPageCount = Result.TotalPageCount;
+
+            Model.PageIndex = _params.ReadPostsParams.Page;
+            Model.ExBoardFilter = _params.ReadPostsParams.BoardFilter;
+            Model.ExSearchFilter = _params.ReadPostsParams.SearchFilter;
+            Model.ExSearchWord = _params.ReadPostsParams.SearchWord != null ? _params.ReadPostsParams.SearchWord : "";
+            // Model.ExSearchWord = _params.ReadPostsParams.SearchWord ?? ""; // C# 8 이상 문법
+
+            return Model;
         }
 
         /// <summary>
@@ -76,11 +81,11 @@ namespace MvcBoardAdmin.Services
             PostEditorViewModel Model = new PostEditorViewModel();
 
             // 입력값 유효성 검증
-            CommonResponse _response = Utility.ModelStateValidation(_params.ModelState);
+            CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
 
-            if (_response.ResultCode != 200)
+            if (Response.ResultCode != 200)
             {
-                Model.Response = _response;
+                Model.Response = Response;
                 return Model;
             }
 

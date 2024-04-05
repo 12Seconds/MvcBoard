@@ -50,7 +50,7 @@
 
             <div class="detail_row">
                 <label>부모 카테고리 번호</label>
-                @Html.DropDownList("ParentCategory", CategoryOptions, "부모 카테고리", new { @class = "auth_drop"})
+                @Html.DropDownList("ParentCategory", CategoryOptions, new { @class = "auth_drop"})
                 @* TODO Question 드롭다운 리스트를 통해 선택되지 않은 값이 액션메소드로 전달되는 경우 기본값이 들어가도 ModelState 에서 invalid 처리..*@
             </div>
 
@@ -66,7 +66,7 @@
             @* TODO 드롭박스 *@
             <div class="detail_row">
                 <label>아이콘 이미지</label>
-                @Html.DropDownList("IconType", IconOptions, "아이콘 이미지", new { @class = "auth_drop" })
+                @Html.DropDownList("IconType", IconOptions, new { @class = "auth_drop" })
             </div>
 
             <div class="detail_row">

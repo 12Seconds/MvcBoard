@@ -1,4 +1,4 @@
-﻿@model MvcBoardAdmin.Controllers.Response.ReadPostsResponse;
+﻿@model MvcBoardAdmin.Models.Post.PostListViewModel
 
 
 @{
@@ -28,9 +28,9 @@
 
 <div class="post_list">
 
-    @if (Model.ResultCode == 200)
+    @if (Model.Response.ResultCode == 200)
     {
-        <div class="total_count">(총 @(Model.ViewModel.TotalRowCount)건)</div>
+        <div class="total_count">(총 @(Model.TotalRowCount)건)</div>
 
         <div class="item labels">
             <div class="id">고유 번호</div>
@@ -42,7 +42,7 @@
             <div class="tags">상태</div>
         </div>
 
-        @foreach (PostWithUser post in Model.ViewModel.PostList)
+        @foreach (PostWithUser post in Model.PostList)
         {
             // 테스트용
             /*
@@ -93,7 +93,7 @@
         }
 
         @* 페이지 인디케이터 *@
-        @if (Model.ViewModel.PostList.Count > 0)
+        @if (Model.PostList.Count > 0)
         {
             <div class="page_indicator">
                 @* TODO Question a 태그 클릭 처리 *@
@@ -102,14 +102,14 @@
                     처음
                 </a>
 
-                @for (var i = Model.ViewModel.IndicatorRange.start; i <= Model.ViewModel.IndicatorRange.end; i++)
+                @for (var i = Model.IndicatorRange.start; i <= Model.IndicatorRange.end; i++)
                 {
-                    <a href="javascript:UpdatePostList('@i');" class=@(i == Model.ViewModel.PageIndex ? "selected" : "")>
+                    <a href="javascript:UpdatePostList('@i');" class=@(i == Model.PageIndex ? "selected" : "")>
                         @i
                     </a>
                 }
 
-                <a href="javascript:UpdatePostList('@Model.ViewModel.TotalPageCount');">
+                <a href="javascript:UpdatePostList('@Model.TotalPageCount');">
                     @* <a href="#" id="anchorId"> *@
                     마지막
                     <svg style="transform: rotate(180deg)" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
@@ -120,10 +120,10 @@
         @* 업데이트용 *@
         @using (Html.AjaxBeginForm("PostListPartial", "Post", new AjaxOptions {HttpMethod = "Get", UpdateTargetId = "post_list_container"@* , OnComplete = ""  *@}, new { id = "PostListForm_update" }))
         {
-            @Html.Hidden("BoardhFilter", Model.ViewModel.ExBoardFilter);
-            @Html.Hidden("SearchFilter", Model.ViewModel.ExSearchFilter);
-            @Html.Hidden("SearchWord", Model.ViewModel.ExSearchWord);
-            @Html.Hidden("Page", Model.ViewModel.PageIndex, new { id = "page_index_val" });
+            @Html.Hidden("BoardhFilter", Model.ExBoardFilter);
+            @Html.Hidden("SearchFilter", Model.ExSearchFilter);
+            @Html.Hidden("SearchWord", Model.ExSearchWord);
+            @Html.Hidden("Page", Model.PageIndex, new { id = "page_index_val" });
         }
 
         @* 삭제 / 블라인드 처리용 *@
@@ -140,8 +140,8 @@
 <script>
     /* 최초 생성 시 ResultCode 에 따른 처리 */
     (function () {
-        var msg = @Html.Raw(Json.Serialize(Model.Message));
-        var Errormsg = @Html.Raw(Json.Serialize(Model.ErrorMessages));
+        var msg = @Html.Raw(Json.Serialize(Model.Response.Message));
+        var Errormsg = @Html.Raw(Json.Serialize(Model.Response.ErrorMessages));
 
         var AllMessages = "";
         AllMessages += msg + "\n";
@@ -149,7 +149,7 @@
             AllMessages += Errormsg[i] + "\n";
         }
 
-        if (@Model.ResultCode != 200) {
+        if (@Model.Response.ResultCode != 200) {
             ShowAlert(AllMessages, true);
         }
     })();

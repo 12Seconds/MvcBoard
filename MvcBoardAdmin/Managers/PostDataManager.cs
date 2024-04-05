@@ -24,16 +24,16 @@ namespace MvcBoardAdmin.Managers
         /// </summary>
         /// <param name="_params">검색 필터, 검색어, 페이지</param>
         /// <returns></returns>
-        public ReadPostsResponse ReadPosts(ReadPostsParams _params)
+        public ReadPostsResult ReadPosts(ReadPostsParams _params)
         {
-            ReadPostsResponse Response = new ReadPostsResponse();
+            ReadPostsResult Result = new ReadPostsResult();
 
-            Console.WriteLine($"## PostDataManager >> ReadPosts(BoardFilter = {_params.BoardFilter}, SearchFilter = {_params.SearchFilter}, SearchWord = {_params.SearchWord}, Page = {_params.Page})");
+            List<PostWithUser> Posts = new List<PostWithUser>();
 
             int pageCount = 0;
             int totalResultCount = 0;
 
-            List<PostWithUser> Posts = new List<PostWithUser>();
+            Console.WriteLine($"## PostDataManager >> ReadPosts(BoardFilter = {_params.BoardFilter}, SearchFilter = {_params.SearchFilter}, SearchWord = {_params.SearchWord}, Page = {_params.Page})");
 
             try
             {
@@ -96,32 +96,27 @@ namespace MvcBoardAdmin.Managers
                             totalResultCount = Convert.ToInt32(reader["TotalResultCount"]);
                         }
 
-                        Response.ResultCode = 200;
-                        Response.Message = "DB Success";
-
                         reader.Close();
                     }
                     connection.Close();
                 }
 
-                Response.ViewModel.PostList = Posts;
-                Response.ViewModel.PageIndex = _params.Page;
-                Response.ViewModel.TotalRowCount = totalResultCount;
-                Response.ViewModel.TotalPageCount = pageCount;
-                Response.ViewModel.IndicatorRange = Utility.GetIndicatorRange(new Utility.IndicatorRangeParams { Page = _params.Page, PageCount = pageCount });
+                Result.Response.ResultCode = 200;
+                Result.Response.Message = "DB Success";
 
-                Response.ViewModel.ExBoardFilter = _params.BoardFilter;
-                Response.ViewModel.ExSearchFilter = _params.SearchFilter;
-                Response.ViewModel.ExSearchWord = _params.SearchWord;
+                Result.PostList = Posts;
+                Result.TotalRowCount = totalResultCount;
+                Result.TotalPageCount = pageCount;
+                Result.IndicatorRange = Utility.GetIndicatorRange(new Utility.IndicatorRangeParams { Page = _params.Page, PageCount = pageCount });
             }
             catch (Exception ex)
             {
-                Response.ResultCode = 202;
-                Response.Message = "DB Error";
-                Response.ErrorMessages.Add(ex.Message);
+                Result.Response.ResultCode = 202;
+                Result.Response.Message = "DB Error";
+                Result.Response.ErrorMessages.Add(ex.Message);
             }
 
-            return Response;
+            return Result;
         }
 
         /// <summary>

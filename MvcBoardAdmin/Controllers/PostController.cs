@@ -38,9 +38,9 @@ namespace MvcBoardAdmin.Controllers
                 HttpContext = HttpContext
             };
 
-            ReadPostsResponse Response = _postService.ReadPosts(ServiceParams);
+            PostListViewModel Model = _postService.GetPostListViewModel(ServiceParams);
 
-            return PartialView("_PostList", Response);
+            return PartialView("_PostList", Model);
         }
 
         /* 게시물 정보 에디터 PartialView (상세 조회) */
