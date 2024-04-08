@@ -21,15 +21,16 @@
     display: flex;
 }
 
-.manage_board_index .index_main .label_container {
+.manage_board_index .index_main .button_container {
     display: flex;
-    justify-content: space-between;
+    justify-content: right;
+    /*text-align: right;*/
+    margin-bottom: 16px;
 }
 
-.manage_board_index .index_main .label_container .create_button {
+.manage_board_index .index_main .button_container .create_button {
     width: 120px;
     height: 30px;
-    margin-top: 10px;
 }
 
 

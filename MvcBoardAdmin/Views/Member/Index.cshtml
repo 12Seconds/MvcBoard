@@ -46,7 +46,7 @@
         
         @* 유저 에디터 Partial View  *@
         <div id="member_editor_container"></div>
-        @using (Html.AjaxBeginForm("MemberEditorPartial", "Member", new AjaxOptions { HttpMethod = "Get",UpdateTargetId = "member_editor_container"}, new { id = "MemberEditorForm" }))
+        @using (Html.AjaxBeginForm("MemberEditorPartial", "Member", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "member_editor_container"}, new { id = "MemberEditorForm" }))
         {
             @Html.Hidden("UserId", "", new { id = "editor_userId_val" });
         }
