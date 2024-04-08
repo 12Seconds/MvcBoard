@@ -61,6 +61,25 @@ namespace MvcBoardAdmin.Controllers
             return PartialView("_PostEditor", Model);
         }
 
+        /* 게시물 정보 상세 화면 PartialView (상세 조회) */
+        [HttpGet]
+        public IActionResult PostDetailPartial(int PostId)
+        {
+            Console.WriteLine($"## PostController >> PostDetailPartial(PostId: {PostId}");
+
+            GetPostDetailServiceParams ServiceParams = new GetPostDetailServiceParams
+            {
+                PostId = PostId,
+                ModelState = ModelState,
+                HttpContext = HttpContext
+            };
+
+            PostDetailViewModel Model = _postService.GetPostDetailViewModel(ServiceParams);
+
+            return PartialView("_PostDetail", Model);
+        }
+
+
         /* 게시물 정보 수정 (게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함) */
         [HttpPost]
         public IActionResult Update(UpdatePostParams _params)

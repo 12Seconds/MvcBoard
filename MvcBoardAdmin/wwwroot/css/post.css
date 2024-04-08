@@ -56,12 +56,19 @@
     margin-bottom: 10px;
 }
 
+.post_detail_desc {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: right;
+    color: #969696;
+}
+
 .post_list .item {
     display: flex;
     font-size: 13px;
     /*flex-direction: column;*/
     /*text-align: center;*/
-
     /*text-overflow: ellipsis;
     white-space: nowrap; 
     overflow: hidden;*/

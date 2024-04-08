@@ -99,7 +99,34 @@ namespace MvcBoardAdmin.Services
             return Model;
         }
 
-        
+        /// <summary>
+        /// 게시물 상세 조회하여 PostDetailPartial 의 ViewModel 반환
+        /// </summary>
+        /// <param name="_params"></param>
+        /// <returns></returns>
+        public PostDetailViewModel GetPostDetailViewModel(GetPostDetailServiceParams _params)
+        {
+            PostDetailViewModel Model = new PostDetailViewModel();
+
+            // 입력값 유효성 검증
+            CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
+
+            if (Response.ResultCode != 200)
+            {
+                Model.Response = Response;
+                return Model;
+            }
+
+            // 검증 통과시 DB 요청
+            ReadPostDetailResult Result = _postDataManager.ReadPostDetail(_params.PostId);
+
+            Model.Response = Result.Response;
+            Model.Post = Result.Post;
+
+            return Model;
+        }
+
+
         /// <summary>
         /// 게시물 정보 수정 요청 - 게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함
         /// </summary>

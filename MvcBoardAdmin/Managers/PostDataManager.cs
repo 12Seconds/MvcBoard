@@ -122,7 +122,7 @@ namespace MvcBoardAdmin.Managers
         /// <summary>
         /// 게시물 상세 조회
         /// </summary>
-        /// <param name="_params">검색 필터, 검색어, 페이지</param>
+        /// <param name="PostId">게시물 고유 번호</param>
         /// <returns></returns>
         public ReadPostDetailResult ReadPostDetail(int PostId)
         {

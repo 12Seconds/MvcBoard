@@ -31,6 +31,10 @@
     @if (Model.Response.ResultCode == 200)
     {
         <div class="total_count">(총 @(Model.TotalRowCount)건)</div>
+        if (Model.TotalRowCount > 0) 
+        {
+            <div class="post_detail_desc">게시물 제목 클릭 시 내용을 볼 수 있습니다.</div>
+        }
 
         <div class="item labels">
             <div class="id">고유 번호</div>
@@ -66,10 +70,10 @@
                     <div class="board_name">@post.BoardName</div>
                 @* </a> *@
                 @* TODO 게시물 이동 or 아래 노출 *@
-                @* <a href=""> *@
+                @* <a href="javascript:UpdatePostDetail(@post.PostId);"> *@
                 <div class="title">
                     @* @Html.Raw(TitleIcon(post)) *@
-                    <a>
+                    <a href="javascript:UpdatePostDetail(@post.PostId, this)";>
                     @if (post.IsNotice) { <span class="icon notice">공지</span> }
                     @post.Title
                     </a>
@@ -85,6 +89,7 @@
                     @if (post.IsBlinded) { <span class="icon blinded">숨김</span> }
                     @if (post.IsDeleted) { <span class="icon deleted">삭제</span> }
                 </div>
+                @* <button type="button" onclick="UpdatePostDetail(@post.PostId)" class=" btn btn-outline-primary btn-sm edit_button">보기</button> *@
                 <button type="button" onclick="UpdatePostEditor(@post.PostId)" class=" btn btn-outline-primary btn-sm edit_button">수정</button>
                 <button type="button" onclick="DeletePost(@post.PostId, true)" class=" btn btn-outline-danger btn-sm edit_button">숨김</button>
                 <button type="button" onclick="DeletePost(@post.PostId, false)" class=" btn btn-outline-danger btn-sm edit_button">삭제</button>
