@@ -72,7 +72,6 @@
         <div id="comment_detail_container" class=""></div>
         @using (Html.AjaxBeginForm("CommentDetailPartial", "Comment", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "comment_detail_container" }, new { id = "CommentDetailForm" }))
         {
-            @Html.Hidden("PostId", "", new { id = "detail_postId_val" });
             @Html.Hidden("CommentId", "", new { id = "detail_commentId_val" });
         }
        
@@ -114,8 +113,7 @@
     }
 
     /* 댓글 상세 화면 로드 함수 */
-    function UpdateCommentDetail(postId, commentId) {
-        $('#detail_postId_val').val(postId);
+    function UpdateCommentDetail(commentId) {
         $('#detail_commentId_val').val(commentId);
         $('#CommentDetailForm').submit();
     }

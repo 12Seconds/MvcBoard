@@ -1,0 +1,51 @@
+﻿@model MvcBoardAdmin.Models.Comment.CommentDetailViewModel;
+
+@{
+  
+}
+
+<link rel="stylesheet" href="@(Url.Content("~/css/comment_detail.css"))" />
+
+<div id="comment_detail" class="comment_detail">
+
+    @if (Model.Response.ResultCode == 200)
+    {
+        <hr />
+        <div>@Model.CommentDetail.BoardName</div>
+        <div>@Model.CommentDetail.PostTitle</div>
+        <div>@Model.CommentDetail.Contents</div>
+    }
+</div>
+
+<script>
+
+    /* 최초 생성 시 ResultCode 에 따른 처리 */
+    (function () {
+        var msg = @Html.Raw(Json.Serialize(Model.Response.Message)); // Message 또는 ErrorMessage(Array) 출력
+        if (@Model.Response.ResultCode != 200) {
+            ShowAlert(msg, true);
+            CommentDetailExit();
+        }
+
+        ScrollTo("#comment_detail");
+
+        // TODO 댓글 리스트 조회
+
+    })();
+    
+    /* PartialView 닫기 */
+    function CommentDetailExit() {
+        $("#comment_detail").remove();
+    }
+
+    function ScrollTo(TargetDivId) {
+        var offset = $(TargetDivId).offset().top; //해당 위치 반환
+
+        // 방법 1
+        // $("TargetDivId").focus();
+
+        // 방법 2
+        $("html, body").animate({ scrollTop: offset }, 0); // 선택한 위치로 이동 (두번째 인자는 animate 시간)
+    }
+   
+</script>

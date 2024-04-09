@@ -68,7 +68,7 @@ namespace MvcBoardAdmin.Managers
                             comment.IsAnonymous = reader.GetBoolean(reader.GetOrdinal("IsAnonymous"));
                             // comment.IsAnonymous = bool.Parse(reader["IsAnonymous"]?.ToString() ?? "false");
 
-                            comment.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01"); // TODO
+                            comment.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01");
                             if (reader["UpdateDate"] != DBNull.Value) comment.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
                             if (reader["DeleteDate"] != DBNull.Value) comment.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
 
@@ -130,62 +130,64 @@ namespace MvcBoardAdmin.Managers
         public CommentsViewModel ReadCommentByPostId(GetCommentsByPostIdParams _params)
         */
 
-        /*
+
         /// <summary>
-        /// 게시물 상세 조회
+        /// 댓글 상세 조회
         /// </summary>
-        /// <param name="PostId">게시물 고유 번호</param>
+        /// <param name="CommentId">댓글 고유 번호</param>
         /// <returns></returns>
-        public ReadPostDetailResult ReadPostDetail(int PostId)
+        public ReadCommentDetailResult ReadCommentDetail(int CommentId)
         {
-            ReadPostDetailResult Result = new ReadPostDetailResult();
+            ReadCommentDetailResult Result = new ReadCommentDetailResult();
 
-            List<PostWithUser> Posts = new List<PostWithUser>();
+            List<CommentDetail> Comments = new List<CommentDetail>();
 
-            Console.WriteLine($"## CommentDataManager >> ReadPostDetail(PostId = {PostId})");
+            Console.WriteLine($"## CommentDataManager >> ReadCommentDetail(CommentId = {CommentId})");
 
             try
             {
                 using (var connection = GetConnection())
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand("adm_ReadPostDetail", connection))
+                    using (SqlCommand command = new SqlCommand("adm_ReadCommentDetail", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@PostId", PostId);
+                        command.Parameters.AddWithValue("@CommentId", CommentId);
 
                         SqlDataReader reader = command.ExecuteReader();
 
-                        PostWithUser? Post = null; // TODO Question PostDetail ?
+                        CommentDetail? CommentDetail = null;
 
-                         게시물 데이터 
                         while (reader.Read())
                         {
-                            Post = new PostWithUser();
+                            CommentDetail = new CommentDetail();
 
-                            Post.PostId = int.Parse(reader["PostId"]?.ToString() ?? "0");
-                            Post.Title = reader["Title"]?.ToString() ?? "";
-                            Post.Contents = reader["Contents"].ToString();
-                            Post.UserId = int.Parse(reader["UserId"]?.ToString() ?? "0");
-                            Post.Likes = int.Parse(reader["Likes"]?.ToString() ?? "0");
-                            Post.Views = int.Parse(reader["Views"]?.ToString() ?? "0");
-                            Post.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
+                            CommentDetail.CommentId = int.Parse(reader["CommentId"]?.ToString() ?? "0");
+                            CommentDetail.PostId = int.Parse(reader["PostId"].ToString() ?? "0");
+                            CommentDetail.UserId = int.Parse(reader["UserId"].ToString() ?? "0");
+                            CommentDetail.ParentId = (reader["ParentId"] != DBNull.Value) ? int.Parse(reader["ParentId"]?.ToString() ?? "0") : 0;
+                            CommentDetail.Contents = reader["Contents"]?.ToString() ?? "";
+                            CommentDetail.Likes = int.Parse(reader["Likes"].ToString() ?? "0");
 
-                            Post.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01");
-                            if (reader["UpdateDate"] != DBNull.Value) Post.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
-                            if (reader["DeleteDate"] != DBNull.Value) Post.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
+                            CommentDetail.IsAnonymous = reader.GetBoolean(reader.GetOrdinal("IsAnonymous"));
+                            // comment.IsAnonymous = bool.Parse(reader["IsAnonymous"]?.ToString() ?? "false");
 
-                            Post.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
-                            Post.IsBlinded = reader.GetBoolean(reader.GetOrdinal("IsBlinded"));
-                            Post.IsNotice = reader.GetBoolean(reader.GetOrdinal("IsNotice"));
+                            CommentDetail.CreateDate = DateTime.Parse(reader["CreateDate"]?.ToString() ?? "2024/01/01");
+                            if (reader["UpdateDate"] != DBNull.Value) CommentDetail.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
+                            if (reader["DeleteDate"] != DBNull.Value) CommentDetail.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
+
+                            CommentDetail.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                            CommentDetail.IsBlinded = reader.GetBoolean(reader.GetOrdinal("IsBlinded"));
 
                             // Join 테이블 데이터
-                            Post.LoginId = reader["Id"]?.ToString() ?? "";
-                            Post.UserName = reader["Name"]?.ToString() ?? "";
-                            Post.BoardName = reader["BoardName"]?.ToString() ?? "";
-                            Post.CommentCount = int.Parse(reader["CommentCount"]?.ToString() ?? "0");
+                            CommentDetail.UserName = reader["Name"]?.ToString() ?? "";
+                            CommentDetail.Category = int.Parse(reader["Category"]?.ToString() ?? "0");
+                            CommentDetail.PostTitle = reader["PostTitle"]?.ToString() ?? "";
+                            CommentDetail.BoardName = reader["BoardName"]?.ToString() ?? "";
 
-                            Posts.Add(Post);
+                            // TODO IsPostWriter
+
+                            Comments.Add(CommentDetail);
                         }
 
                         reader.Close();
@@ -199,23 +201,25 @@ namespace MvcBoardAdmin.Managers
                 Result.Response.ResultCode = 202;
                 Result.Response.Message = "DB Error";
                 Result.Response.ErrorMessages.Add(ex.Message);
-                Result.Post = new PostWithUser();
+                Result.CommentDetail = new CommentDetail();
                 return Result;
             }
 
-            if (Posts.Count < 1)
+            if (Comments.Count < 1)
             {
                 Result.Response.ResultCode = 203;
                 Result.Response.Message = "DB Fail (게시물 정보를 찾을 수 없습니다.)";
-                Result.Post = new PostWithUser();
+                Result.CommentDetail = new CommentDetail();
                 return Result;
             }
 
             Result.Response.ResultCode = 200;
             Result.Response.Message = "DB Success";
-            Result.Post = Posts[0];
+            Result.CommentDetail = Comments[0];
             return Result;
         }
+
+        /*
 
         /// <summary>
         /// 게시물 정보 수정 - 게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함

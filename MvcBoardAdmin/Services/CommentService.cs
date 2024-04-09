@@ -74,7 +74,7 @@ namespace MvcBoardAdmin.Services
 
         /* 
         /// <summary>
-        /// 게시물 상세 조회하여 PostEditorPartial 의 ViewModel 반환
+        /// 댓글 상세 조회하여 CommentEditorPartial 의 ViewModel 반환
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
@@ -92,23 +92,23 @@ namespace MvcBoardAdmin.Services
             }
 
             // 검증 통과시 DB 요청
-            ReadPostDetailResult Result = _postDataManager.ReadPostDetail(_params.PostId);
+            ReadCommentDetailResult Result = _commentDataManager.ReadCommentDetail(_params.PostId);
 
             Model.Response = Result.Response;
-            Model.Post = Result.Post;
-            Model.WritableBoards = _boardService.GetWritableBoards();
+            Model.CommentDetail = Result.CommentDetail;
 
             return Model;
         }
+        */
 
         /// <summary>
-        /// 게시물 상세 조회하여 PostDetailPartial 의 ViewModel 반환
+        /// 댓글 상세 조회하여 CommentDetailPartial 의 ViewModel 반환
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public PostDetailViewModel GetPostDetailViewModel(GetPostDetailServiceParams _params)
+        public CommentDetailViewModel GetCommentDetailViewModel(GetCommentDetailServiceParams _params)
         {
-            PostDetailViewModel Model = new PostDetailViewModel();
+            CommentDetailViewModel Model = new CommentDetailViewModel();
 
             // 입력값 유효성 검증
             CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
@@ -120,15 +120,15 @@ namespace MvcBoardAdmin.Services
             }
 
             // 검증 통과시 DB 요청
-            ReadPostDetailResult Result = _postDataManager.ReadPostDetail(_params.PostId);
+            ReadCommentDetailResult Result = _commentDataManager.ReadCommentDetail(_params.CommentId);
 
             Model.Response = Result.Response;
-            Model.Post = Result.Post;
+            Model.CommentDetail = Result.CommentDetail;
 
             return Model;
         }
 
-
+        /*
         /// <summary>
         /// 게시물 정보 수정 요청 - 게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함
         /// </summary>
