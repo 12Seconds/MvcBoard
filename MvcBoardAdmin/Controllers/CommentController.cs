@@ -1,49 +1,47 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
-using MvcBoardAdmin.Controllers.Response;
-using MvcBoardAdmin.Models.Post;
+using MvcBoardAdmin.Models.Comment;
 using MvcBoardAdmin.Services;
 
 namespace MvcBoardAdmin.Controllers
 {
-    /* 게시물 관리 컨트롤러 */
-    public class PostController : Controller
+    /* 댓글 관리 컨트롤러 */
+    public class CommentController : Controller
     {
-        private readonly PostService _postService;
-        public PostController(PostService postService) 
+        private readonly CommentService _commentService;
+        public CommentController(CommentService commentService) 
         {
-            _postService = postService;
+            _commentService = commentService;
         }
 
-        public IActionResult Index(PostManageViewParams _params)
+        public IActionResult Index(CommentManageViewParams _params) // CommentManageViewParams
         {
-            PostManageViewModel Model = _postService.GetPostManageViewModel(/* _params */);
+            CommentManageViewModel Model = _commentService.GetCommentManageViewModel(/* _params */);
             Model.Params = _params;
-
-            Model.Params.SearchFilter2 = _params.SearchFilter2; // TODO 지울 것 테스트
 
             return View(Model);
         }
 
-        /* 게시물 리스트 PartialView (검색) */
+        /* 댓글 리스트 PartialView (검색) */
         [HttpGet]
-        public IActionResult PostListPartial(ReadPostsParams _params)
+        public IActionResult CommentListPartial(ReadCommentsParams _params)
         {
-            Console.WriteLine($"## PostController >> PostListPartial(BoardFilter: {_params.BoardFilter}, SearchFilter: {_params.SearchFilter}, SearchWord: {_params.SearchWord}, Page: {_params.Page})");
+            Console.WriteLine($"## CommentController >> CommentListPartial(BoardFilter: {_params.BoardFilter}, SearchFilter: {_params.SearchFilter}, SearchWord: {_params.SearchWord}, Page: {_params.Page})");
 
-            ReadPostsServiceParams ServiceParams = new ReadPostsServiceParams
+            ReadCommentsServiceParams ServiceParams = new ReadCommentsServiceParams
             {
-                ReadPostsParams = _params,
+                ReadCommentsParams = _params,
                 ModelState = ModelState,
                 HttpContext = HttpContext
             };
 
-            PostListViewModel Model = _postService.GetPostListViewModel(ServiceParams);
+            CommentListViewModel Model = _commentService.GetCommentListViewModel(ServiceParams);
 
-            return PartialView("_PostList", Model);
+            return PartialView("_CommentList", Model);
         }
 
-        /* 게시물 정보 에디터 PartialView (상세 조회) */
+        /* 댓글 정보 에디터 PartialView (상세 조회) */
+        /*
         [HttpGet]
         public IActionResult PostEditorPartial(int PostId)
         {
@@ -62,6 +60,7 @@ namespace MvcBoardAdmin.Controllers
         }
 
         /* 게시물 정보 상세 화면 PartialView (상세 조회) */
+        /*
         [HttpGet]
         public IActionResult PostDetailPartial(int PostId)
         {
@@ -81,6 +80,7 @@ namespace MvcBoardAdmin.Controllers
 
 
         /* 게시물 정보 수정 (게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함) */
+        /*
         [HttpPost]
         public IActionResult Update(UpdatePostParams _params)
         {
@@ -99,6 +99,7 @@ namespace MvcBoardAdmin.Controllers
         }
 
         /* 게시물 삭제, 숨김(블라인드) */
+        /*
         [HttpPost]
         public IActionResult Delete(DeletePostParams _params)
         {
@@ -117,6 +118,6 @@ namespace MvcBoardAdmin.Controllers
             return Ok(Response);
         }
 
-
+        */
     }
 }

@@ -11,8 +11,10 @@
         foreach(var board in Model.WritableBoards)
         {
             BoardOptions.Add(new SelectListItem { Text = board.BoardName, Value = (board.Category).ToString(), Selected = (Model.Post.Category == board.Category) });
-            if (board.Category == Model.Post.Category) 
+            if (board.Category == Model.Post.Category)
+            {
                 boardSelected = true;
+            }
         }
 
         // 존재하면 안되는 경우긴 함, 예외처리 (게시판 데이터 DB 실패 -> BoardService 에서 DB 실패 시 이전 데이터 또는 하드코딩 게시판 데이터 사용하는 로직 필요)
@@ -26,7 +28,10 @@
         {
             foreach(var option in BoardOptions)
             {
-                if (option.Value == "41") option.Selected = true;
+                if (option.Value == "41") 
+                {
+                    option.Selected = true;
+                }
             }
         }
     }

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace MvcBoard.Models;
+namespace MvcBoardAdmin.Models;
 
-public partial class Comment
+public partial class CommentModel
 {
     public int CommentId { get; set; }
 
@@ -28,6 +26,8 @@ public partial class Comment
     public DateTime? UpdateDate { get; set; }
 
     public DateTime? DeleteDate { get; set; }
+
     public bool IsDeleted { get; set; }
     public bool IsBlinded { get; set; }
+
 }

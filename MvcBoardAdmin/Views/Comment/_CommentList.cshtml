@@ -1,0 +1,174 @@
+﻿@model MvcBoardAdmin.Models.Comment.CommentListViewModel
+
+
+@{
+
+}
+
+<div class="comment_list">
+
+    @if (Model.Response.ResultCode == 200)
+    {
+        <div class="total_count">(총 @(Model.TotalRowCount)건)</div>
+        if (Model.TotalRowCount > 0) 
+        {
+            <div class="comment_detail_desc">댓글 내용 클릭 시 내용을 볼 수 있습니다.</div>
+        }
+
+        <div class="item labels">
+            <div class="id">고유 번호</div>
+            @* <div class="post_id">게시물 번호</div> *@
+            <div class="board_name">게시판</div>
+            <div class="title">내용</div>
+            <div class="writer">작성자</div>
+            <div class="date">날짜</div>
+            <div class="likes">좋아요</div>
+            <div class="tags">상태</div>
+        </div>
+
+        @foreach (CommentWithUser comment in Model.CommentList)
+        {
+            // 테스트용
+            /*
+            if (comment.CommentId == 3)
+            {
+                comment.IsDeleted = true;
+                comment.IsBlinded = true;
+            }
+            if (comment.CommentId == 8)
+            {
+                // comment.IsDeleted = true;
+                comment.IsBlinded = true;
+            }
+            */
+
+            <div class="item comment @(comment.IsBlinded? "blinded" : "") @(comment.IsDeleted? "deleted" : "") ">
+                <div class="id">@comment.CommentId</div>
+                @* <div class="post_id">@comment.PostId</div> *@
+                @* TODO 게시판 이동 *@
+                @* <a href=""> *@
+                    <div class="board_name">@comment.BoardName</div>
+                @* </a> *@
+                <div class="title">
+                    <a href="javascript:UpdateCommentDetail(@comment.PostId, @comment.CommentId)";>
+                        @comment.Contents
+                    </a>
+                </div>
+                @* </a> *@
+                <a asp-area="" asp-controller="Member" asp-action="index" asp-route-SearchFilter="UserId" asp-route-SearchWord="@comment.UserId">
+                    <div class="writer">@comment.UserName</div>
+                </a>
+                <div class="date">@comment.CreateDate.ToString("yyyy.MM.dd")</div>
+                <div class="likes">@comment.Likes</div>
+                <div class="tags">
+                    @if (comment.IsBlinded) { <span class="icon blinded">숨김</span> }
+                    @if (comment.IsDeleted) { <span class="icon deleted">삭제</span> }
+                </div>
+                <button type="button" onclick="UpdateCommentEditor(@comment.CommentId)" class=" btn btn-outline-primary btn-sm edit_button">수정</button>
+                <button type="button" onclick="DeleteComment(@comment.CommentId, true)" class=" btn btn-outline-danger btn-sm edit_button">숨김</button>
+                <button type="button" onclick="DeleteComment(@comment.CommentId, false)" class=" btn btn-outline-danger btn-sm edit_button">삭제</button>
+            </div>
+            @* </a> *@
+        }
+
+        @* 페이지 인디케이터 *@
+        @if (Model.CommentList.Count > 0)
+        {
+            <div class="page_indicator">
+                @* TODO Question a 태그 클릭 처리 *@
+                <a href="javascript:UpdateCommentList(1);">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
+                    처음
+                </a>
+
+                @for (var i = Model.IndicatorRange.start; i <= Model.IndicatorRange.end; i++)
+                {
+                    <a href="javascript:UpdateCommentList('@i');" class=@(i == Model.PageIndex ? "selected" : "")>
+                        @i
+                    </a>
+                }
+
+                <a href="javascript:UpdateCommentList('@Model.TotalPageCount');">
+                    @* <a href="#" id="anchorId"> *@
+                    마지막
+                    <svg style="transform: rotate(180deg)" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="10" fill="#C4C4C4"></rect><path d="M9.99999 9.33317L14.6115 6.25867C14.6491 6.23362 14.6929 6.21924 14.738 6.21708C14.7832 6.21492 14.8281 6.22505 14.868 6.2464C14.9079 6.26774 14.9412 6.2995 14.9644 6.33829C14.9877 6.37708 15 6.42145 15 6.46667V13.5327C15 13.5779 14.9877 13.6223 14.9644 13.661C14.9412 13.6998 14.9079 13.7316 14.868 13.7529C14.8281 13.7743 14.7832 13.7844 14.738 13.7823C14.6929 13.7801 14.6491 13.7657 14.6115 13.7407L9.99999 10.6662V13.5327C9.99997 13.5779 9.98768 13.6223 9.96443 13.661C9.94119 13.6998 9.90786 13.7316 9.86799 13.7529C9.82812 13.7743 9.78321 13.7844 9.73804 13.7823C9.69287 13.7801 9.64914 13.7657 9.61149 13.7407L4.31199 10.2077C4.27775 10.1848 4.24968 10.1539 4.23026 10.1176C4.21084 10.0813 4.20068 10.0408 4.20068 9.99967C4.20068 9.95851 4.21084 9.918 4.23026 9.88171C4.24968 9.84543 4.27775 9.8145 4.31199 9.79167L9.61149 6.25867C9.64914 6.23362 9.69287 6.21924 9.73804 6.21708C9.78321 6.21492 9.82812 6.22505 9.86799 6.2464C9.90786 6.26774 9.94119 6.2995 9.96443 6.33829C9.98768 6.37708 9.99997 6.42145 9.99999 6.46667V9.33317Z" fill="white"></path></svg>
+                </a>
+            </div>
+        }
+
+        @* 업데이트용 *@
+        @using (Html.AjaxBeginForm("CommentListPartial", "Comment", new AjaxOptions {HttpMethod = "Get", UpdateTargetId = "comment_list_container"@* , OnComplete = ""  *@}, new { id = "CommentListForm_update" }))
+        {
+            @Html.Hidden("BoardhFilter", Model.ExBoardFilter);
+            @Html.Hidden("SearchFilter", Model.ExSearchFilter);
+            @Html.Hidden("SearchWord", Model.ExSearchWord);
+            @Html.Hidden("Page", Model.PageIndex, new { id = "page_index_val" });
+        }
+
+        @* 삭제 / 블라인드 처리용 *@
+        @using (Html.AjaxBeginForm("Delete", "Comment", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnDeleteResponse" }, new { id = "DeleteCommentForm" }))
+        {
+            @Html.Hidden("CommentId", 0, new { id = "delete_commentId_val" });
+            @Html.Hidden("IsBlinded", false, new { id = "delete_isBlind_val" });
+            @* @Html.Hidden("IsHardDelete", 1, new { id = "delete_isHardDelete_val" }); *@
+        }
+    }
+
+</div>
+
+<script>
+    /* 최초 생성 시 ResultCode 에 따른 처리 */
+    (function () {
+        var msg = @Html.Raw(Json.Serialize(Model.Response.Message));
+        var Errormsg = @Html.Raw(Json.Serialize(Model.Response.ErrorMessages));
+
+        var AllMessages = "";
+        AllMessages += msg + "\n";
+        for (var i = 0; i < Errormsg.length; i++) {
+            AllMessages += Errormsg[i] + "\n";
+        }
+
+        if (@Model.Response.ResultCode != 200) {
+            ShowAlert(AllMessages, true);
+        }
+    })();
+
+    /* 댓글 삭제 or 블라인드 or 영구 삭제 처리 요청 */
+    function DeleteComment(commentId, isBlind/* , isHardDelete */) {
+        var msg = isBlind ? "해당 댓글을 블라인드 처리 하시겠습니까?" : "해당 댓글을 정말 삭제하시겠습니까?";
+
+        $('#delete_commentId_val').val(commentId);
+        $('#delete_isBlind_val').val(isBlind);
+        // $('#delete_isHardDelete_val').val(isBlind);
+
+        if (confirm(msg)) {
+            $('#DeleteCommentForm').submit();
+        }
+    }
+
+    /* 유저 삭제 요청 응답 핸들러 */
+    function OnDeleteResponse(xhr, status) {
+        // if (xhr.status === 200) {} 항상 return OK 로 반환
+
+        var response = JSON.parse(xhr.responseText);
+
+        switch (response.resultCode) {
+            // 성공
+            case 200: {
+                UpdateCommentList(0);
+                CommentEditorExit();
+                break;
+            }
+            // 입력값 오류 (ModelState 참고하여 처리 필요)
+            case 201: {
+                ShowAlert(response.message, false);
+                break;
+            }
+            default: {
+                ShowAlert(response.message, false);
+                break;
+            }
+        }
+    }
+
+</script>

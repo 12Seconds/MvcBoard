@@ -1,0 +1,134 @@
+﻿@model MvcBoardAdmin.Models.Comment.CommentManageViewModel
+
+@{
+    ViewData["Title"] = "댓글 관리";
+    ViewData["NavIndex"] = 4;
+
+    // TODO 초기값 로직 지울 수도 있음
+
+    int index = 0;
+    string searchWord = "";
+
+    // 게시판 필터 설정
+    List<SelectListItem> BoardFilters = new List<SelectListItem>();
+    BoardFilters.Add(new SelectListItem { Text = "전체 게시판", Value = "0"});
+
+    for (int i = 0; i < Model.WritableBoards.Count; i ++)
+    {
+        BoardType board = Model.WritableBoards[i];
+        BoardFilters.Add(new SelectListItem { Text = board.BoardName, Value = board.Category.ToString() });
+
+        if (Model.Params?.BoardFilter == board.Category)
+        {
+            index = i;
+        }
+    }
+    // 게시판 필터 초기값
+    BoardFilters[index].Selected = true;
+
+    // TODO 인기, 공지는 따로 처리해야 함
+    // BoardFilters.Add(new SelectListItem { Text = "인기 게시판", Value = "1" });
+    // BoardFilters.Add(new SelectListItem { Text = "공지 게시판", Value = "2" });
+
+    // 검색 필터 설정
+    List<SelectListItem> SearchFilters = new List<SelectListItem>();
+    SearchFilters.Add(new SelectListItem { Text = "내용", Value = "Contents"});
+    SearchFilters.Add(new SelectListItem { Text = "아이디", Value = "Id" });
+    SearchFilters.Add(new SelectListItem { Text = "닉네임", Value = "Name" });
+    SearchFilters.Add(new SelectListItem { Text = "댓글 번호", Value = "CommentId" });
+    SearchFilters.Add(new SelectListItem { Text = "게시물 번호", Value = "PostId" });
+    SearchFilters.Add(new SelectListItem { Text = "사용자 번호", Value = "UserId" });
+
+    // 디폴트 선택 필터 설정 (내용)
+    string defaultFilter = "Contents";
+    SelectList SearchFiltersSelectList = new SelectList(SearchFilters, "Value", "Text", defaultFilter);
+}
+
+<link rel="stylesheet" href="@(Url.Content("~/css/comment.css"))" />
+
+<div class="manage_comment_index">
+
+    @* 왼쪽 메인 영역 *@
+    <div class="index_main">
+        <a asp-area="" asp-action="Index" asp-controller="Comment" class="title_anchor">
+            <h4>댓글 관리</h4>
+        </a>
+        <hr/>
+
+        <div class="search_box">
+            @using (Html.AjaxBeginForm("CommentListPartial", "Comment", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "comment_list_container"@* , OnComplete = ""  *@}, new { id = "CommentListForm" }))
+            {
+                @Html.DropDownList("BoardFilter", BoardFilters, new { @id = "BoardFilterList", @class = "search_filter_drop"/* "form-control" */ })
+                @Html.DropDownList("SearchFilter", SearchFiltersSelectList/* SearchFilters */, new { @id = "SearchFilterList", @class = "search_filter_drop"/* "form-control" */ })
+                @Html.TextBox("SearchWord", searchWord, new { @class = "search_word_input", @placeholder = "", @autoComplete = "off" })
+                <button type="submit" class="btn btn-outline-secondary btn-sm search_button">검색</button>
+            }
+        </div>
+
+        @* 댓글 리스트 *@
+        <div id="comment_list_container" class=""></div>
+
+        @* 댓글 상세 화면 *@
+        <div id="comment_detail_container" class=""></div>
+        @using (Html.AjaxBeginForm("CommentDetailPartial", "Comment", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "comment_detail_container" }, new { id = "CommentDetailForm" }))
+        {
+            @Html.Hidden("PostId", "", new { id = "detail_postId_val" });
+            @Html.Hidden("CommentId", "", new { id = "detail_commentId_val" });
+        }
+       
+    </div>
+    
+    @* 오른쪽 영역 *@
+    <div class="index_right">
+        
+        @* 댓글 에디터 Partial View  *@
+        <div id="post_editor_container"></div>
+        @using (Html.AjaxBeginForm("CommentEditorPartial", "Comment", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "comment_editor_container"}, new { id = "CommentEditorForm" }))
+        {
+            @Html.Hidden("CommentId", "", new { id = "editor_commentId_val" });
+        }
+
+    </div>
+    
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 최초 진입 시
+        $('#CommentListForm').submit();
+    });
+    
+    // TODO 만약 해당 페이지에 항목이 1개 남은 상태에서 삭제한 경우, 이전 페이지로 가도록 처리 필요
+    /* 댓글 리스트 업데이트 함수 */ 
+    function UpdateCommentList(page) {
+        if (page > 0) { // 페이지 이동 없는 경우 유지 (페이지 이동이 아닌 수정 or 삭제로 불린 경우)
+            $('#page_index_val').val(page);
+        }
+        $('#CommentListForm_update').submit();
+    }
+
+    /* 댓글 에디터 로드 함수 */
+    function UpdateCommentEditor(postId) {
+        $('#editor_commentId_val').val(postId);
+        $('#CommentEditorForm').submit();
+    }
+
+    /* 댓글 상세 화면 로드 함수 */
+    function UpdateCommentDetail(postId, commentId) {
+        $('#detail_postId_val').val(postId);
+        $('#detail_commentId_val').val(commentId);
+        $('#CommentDetailForm').submit();
+    }
+
+    /* 오류 문구 노출 */
+    function ShowAlert(message, exit) {
+
+        alert(message);
+
+        if (exit) {
+            // memberEditorExit();
+        }
+    }
+
+</script>
+ 

@@ -531,6 +531,9 @@ namespace MvcBoard.Managers
                         if (reader["UpdateDate"] != DBNull.Value) comment.UpdateDate = DateTime.Parse(reader["UpdateDate"]?.ToString() ?? "2024/01/01");
                         if (reader["DeleteDate"] != DBNull.Value) comment.DeleteDate = DateTime.Parse(reader["DeleteDate"]?.ToString() ?? "2024/01/01");
 
+                        comment.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        comment.IsBlinded = reader.GetBoolean(reader.GetOrdinal("IsBlinded"));
+
                         // Join 테이블 데이터
                         comment.UserName = reader["Name"]?.ToString() ?? "";
 
