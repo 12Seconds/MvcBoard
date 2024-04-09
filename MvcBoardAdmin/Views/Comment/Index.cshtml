@@ -81,7 +81,7 @@
     <div class="index_right">
         
         @* 댓글 에디터 Partial View  *@
-        <div id="post_editor_container"></div>
+        <div id="comment_editor_container"></div>
         @using (Html.AjaxBeginForm("CommentEditorPartial", "Comment", new AjaxOptions { HttpMethod = "Get", UpdateTargetId = "comment_editor_container"}, new { id = "CommentEditorForm" }))
         {
             @Html.Hidden("CommentId", "", new { id = "editor_commentId_val" });

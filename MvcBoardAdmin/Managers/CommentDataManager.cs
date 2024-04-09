@@ -208,7 +208,7 @@ namespace MvcBoardAdmin.Managers
             if (Comments.Count < 1)
             {
                 Result.Response.ResultCode = 203;
-                Result.Response.Message = "DB Fail (게시물 정보를 찾을 수 없습니다.)";
+                Result.Response.Message = "DB Fail (댓글 정보를 찾을 수 없습니다.)";
                 Result.CommentDetail = new CommentDetail();
                 return Result;
             }
@@ -219,31 +219,28 @@ namespace MvcBoardAdmin.Managers
             return Result;
         }
 
-        /*
-
         /// <summary>
-        /// 게시물 정보 수정 - 게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함
+        /// 댓글 정보 수정 - 숨김(블라인드), 삭제, 영구삭제 포함
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public CommonResponse UpdatePost(UpdatePostParams _params)
+        public CommonResponse UpdateComment(UpdateCommentParams _params)
         {
             CommonResponse Response = new CommonResponse();
             Response.ResultCode = 200;
             Response.Message = "DB Success";
 
-            Console.WriteLine($"## CommentDataManager >> UpdatePost(PostId = {_params.PostId}, IsBlinded = {_params.IsBlinded}, IsDeleted = {_params.IsDeleted}, IsHardDelete = {_params.IsHardDelete})");
+            Console.WriteLine($"## CommentDataManager >> UpdateComment(CommentId = {_params.CommentId}, IsBlinded = {_params.IsBlinded}, IsDeleted = {_params.IsDeleted}, ExDeleted = {_params.ExDeleted}, IsHardDelete = {_params.IsHardDelete})");
 
             try
             {
                 using (var connection = GetConnection())
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand("adm_UpdatePost", connection))
+                    using (SqlCommand command = new SqlCommand("adm_UpdateComment", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@PostId", _params.PostId);
-                        command.Parameters.AddWithValue("@Category", _params.Category);
+                        command.Parameters.AddWithValue("@CommentId", _params.CommentId);
                         command.Parameters.AddWithValue("@IsBlinded", _params.IsBlinded);
                         command.Parameters.AddWithValue("@IsDeleted", _params.IsDeleted);
                         command.Parameters.AddWithValue("@ExDeleted", _params.ExDeleted);
@@ -283,25 +280,25 @@ namespace MvcBoardAdmin.Managers
         }
 
         /// <summary>
-        /// 게시물 삭제, 숨김(블라인드) 요청
+        /// 댓글 삭제, 숨김(블라인드) 요청
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public CommonResponse DeletePost(DeletePostParams _params)
+        public CommonResponse DeleteComment(DeleteCommentParams _params)
         {
             CommonResponse Response = new CommonResponse();
 
-            Console.WriteLine($"## CommentDataManager >> DeletePost(PostId = {_params.PostId}), IsBlinded = {_params.IsBlinded}, IsHardDelete = {_params.IsHardDelete}");
+            Console.WriteLine($"## CommentDataManager >> DeleteComment(CommentId = {_params.CommentId}), IsBlinded = {_params.IsBlinded}, IsHardDelete = {_params.IsHardDelete}");
 
             try
             {
                 using (var connection = GetConnection())
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand("adm_DeletePost", connection))
+                    using (SqlCommand command = new SqlCommand("adm_DeleteComment", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@PostId", _params.PostId);
+                        command.Parameters.AddWithValue("@CommentId", _params.CommentId);
                         command.Parameters.AddWithValue("@IsBlinded", _params.IsBlinded);
                         command.Parameters.AddWithValue("@IsHardDelete", _params.IsHardDelete);
 
@@ -324,11 +321,11 @@ namespace MvcBoardAdmin.Managers
                                 break;
                             case 0:
                                 Response.ResultCode = 203;
-                                Response.Message = "DB Fail (존재하지 않는 게시물 입니다.)";
+                                Response.Message = "DB Fail (존재하지 않는 댓글 입니다.)";
                                 break;
                             case -1:
                                 Response.ResultCode = 203;
-                                Response.Message = "DB Fail (이미 삭제 또는 숨김 처리된 게시물 입니다.)";
+                                Response.Message = "DB Fail (이미 삭제 또는 숨김 처리된 댓글 입니다.)";
                                 break;
                             case -2:
                                 Response.ResultCode = 203;
@@ -348,6 +345,6 @@ namespace MvcBoardAdmin.Managers
 
             return Response;
         }
-        */
+
     }
 }

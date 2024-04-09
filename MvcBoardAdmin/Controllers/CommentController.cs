@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
+using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Models.Comment;
 using MvcBoardAdmin.Services;
 
@@ -41,22 +42,21 @@ namespace MvcBoardAdmin.Controllers
         }
 
         /* 댓글 정보 에디터 PartialView (상세 조회) */
-        /*
         [HttpGet]
-        public IActionResult PostEditorPartial(int PostId)
+        public IActionResult CommentEditorPartial(int CommentId)
         {
-            Console.WriteLine($"## PostController >> PostEditorPartial(PostId: {PostId}");
+            Console.WriteLine($"## CommentController >> CommentEditorPartial(CommentId: {CommentId}");
 
-            GetPostEditorServiceParams ServiceParams = new GetPostEditorServiceParams
+            GetCommentEditorServiceParams ServiceParams = new GetCommentEditorServiceParams
             {
-                PostId = PostId,
+                CommentId = CommentId,
                 ModelState = ModelState,
                 HttpContext = HttpContext
             };
 
-            PostEditorViewModel Model = _postService.GetPostEditorViewModel(ServiceParams);
+            CommentEditorViewModel Model = _commentService.GetCommentEditorViewModel(ServiceParams);
 
-            return PartialView("_PostEditor", Model);
+            return PartialView("_CommentEditor", Model);
         }
 
         /* 댓글 정보 상세 화면 PartialView (상세 조회) */
@@ -77,45 +77,42 @@ namespace MvcBoardAdmin.Controllers
             return PartialView("_CommentDetail", Model);
         }
 
-        /* 게시물 정보 수정 (게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함) */
-        /*
+        /* 댓글 정보 수정 (숨김(블라인드), 삭제, 영구삭제 포함) */
         [HttpPost]
-        public IActionResult Update(UpdatePostParams _params)
+        public IActionResult Update(UpdateCommentParams _params)
         {
-            Console.WriteLine($"## PostController >> Update(PostId: {_params.PostId}, Category: {_params.Category}, IsBlinded: {_params.IsBlinded}, IsDeleted: {_params.IsDeleted}, IsHardDelete: {_params.IsHardDelete})");
+            Console.WriteLine($"## CommentController >> Update(CommentId: {_params.CommentId}, IsBlinded: {_params.IsBlinded}, IsDeleted: {_params.IsDeleted}, ExDeleted: {_params.ExDeleted}, IsHardDelete: {_params.IsHardDelete})");
            
-            UpdatePostServiceParams ServiceParams = new UpdatePostServiceParams
+            UpdateCommentServiceParams ServiceParams = new UpdateCommentServiceParams
             {
                 UpdateParams = _params,
                 ModelState = ModelState,
                 HttpContext = HttpContext
             };
 
-            CommonResponse Response = _postService.UpdatePost(ServiceParams);
+            CommonResponse Response = _commentService.UpdateComment(ServiceParams);
 
             return Ok(Response);
         }
 
-        /* 게시물 삭제, 숨김(블라인드) */
-        /*
+        /* 댓글 삭제, 숨김(블라인드) */
         [HttpPost]
-        public IActionResult Delete(DeletePostParams _params)
+        public IActionResult Delete(DeleteCommentParams _params)
         {
-            Console.WriteLine($"## PostController >> Delete(PostId: {_params.PostId}, IsBlinded: {_params.IsBlinded}, IsHardDelete: {_params.IsHardDelete})");
+            Console.WriteLine($"## CommentController >> Delete(CommentId: {_params.CommentId}, IsBlinded: {_params.IsBlinded}, IsHardDelete: {_params.IsHardDelete})");
             
-            DeletePostServiceParams ServiceParams = new DeletePostServiceParams
+            DeleteCommentServiceParams ServiceParams = new DeleteCommentServiceParams
             {
                 DeleteParams = _params,
                 ModelState = ModelState,
                 HttpContext = HttpContext
             };
 
-            CommonResponse Response = _postService.DeletePost(ServiceParams);
+            CommonResponse Response = _commentService.DeleteComment(ServiceParams);
 
 
             return Ok(Response);
         }
 
-        */
     }
 }

@@ -216,7 +216,7 @@ namespace MvcBoardAdmin.Managers
             Response.ResultCode = 200;
             Response.Message = "DB Success";
 
-            Console.WriteLine($"## PostDataManager >> UpdatePost(PostId = {_params.PostId}, IsBlinded = {_params.IsBlinded}, IsDeleted = {_params.IsDeleted}, IsHardDelete = {_params.IsHardDelete})");
+            Console.WriteLine($"## PostDataManager >> UpdatePost(PostId = {_params.PostId}, IsBlinded = {_params.IsBlinded}, IsDeleted = {_params.IsDeleted}, ExDeleted = {_params.ExDeleted}, IsHardDelete = {_params.IsHardDelete})");
 
             try
             {

@@ -84,7 +84,7 @@ namespace MvcBoardAdmin.Controllers
         [HttpPost]
         public IActionResult Update(UpdatePostParams _params)
         {
-            Console.WriteLine($"## PostController >> Update(PostId: {_params.PostId}, Category: {_params.Category}, IsBlinded: {_params.IsBlinded}, IsDeleted: {_params.IsDeleted}, IsHardDelete: {_params.IsHardDelete})");
+            Console.WriteLine($"## PostController >> Update(PostId: {_params.PostId}, Category: {_params.Category}, IsBlinded: {_params.IsBlinded}, IsDeleted: {_params.IsDeleted}, ExDeleted: {_params.ExDeleted}, IsHardDelete: {_params.IsHardDelete})");
            
             UpdatePostServiceParams ServiceParams = new UpdatePostServiceParams
             {

@@ -40,7 +40,7 @@
 /* index_main ----------------------------------------------------------- */
 .manage_comment_index .index_main {
     /*width: 1122px; 게시물 번호 컬럼 포함 시*/
-    width: 1000px;
+    width: 1020px;
 }
 
 .comment_list_container {

@@ -1,0 +1,182 @@
+﻿@model MvcBoardAdmin.Models.Comment.CommentEditorViewModel;
+
+@{
+}
+
+<div id="comment_editor" class="comment_editor">
+    
+    @if (Model.Response.ResultCode == 200)
+    {
+        @using (Html.AjaxBeginForm("Update", "Comment", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnUpdateResponse" }, new { @id = "UpdateCommentForm", @class = "update_comment_form" }))
+        {
+            <div class="detail_row">
+                <label>고유 번호</label>
+                @Html.TextBox("CommentId", Model.CommentDetail.PostId, new { @class = "text_input", @autoComplete = "off", @readonly = "readonly" })
+            </div>
+               
+            <div class="detail_row">
+                @* TODO 게시물 이동 *@
+                @* <a asp-area="" asp-controller="Post" asp-action="index" asp-route-SearchFilter="PostId" asp-route-SearchWord="@Model.ViewModel.PostId"> *@
+                <label class="title">내용</label>
+                <span class="title">@Model.CommentDetail.Contents</span>
+            </div>
+
+            <div class="detail_row">
+                <label>작성자</label>
+                <span>@Model.CommentDetail.UserName</span>
+            </div>
+
+            <div class="detail_row">
+                <label>작성일자</label>
+                <span>@Model.CommentDetail.CreateDate.ToString("yyyy.MM.dd")</span>
+            </div>
+
+            @if (Model.CommentDetail.UpdateDate != null)
+            {
+                <div class="detail_row">
+                    <label>수정일자</label>
+                    <span>@Model.CommentDetail.UpdateDate?.ToString("yyyy.MM.dd")</span>
+                </div>
+            }
+
+            @if (Model.CommentDetail.DeleteDate != null)
+            {
+                <div class="detail_row">
+                    <label>삭제일자</label>
+                    <span>@Model.CommentDetail.DeleteDate?.ToString("yyyy.MM.dd")</span>
+                </div>
+            }
+            
+            @if (Model.CommentDetail.IsBlinded || Model.CommentDetail.IsDeleted)
+            {
+                <div class="detail_row">
+                    <label>상태</label>
+                    @if (Model.CommentDetail.IsBlinded) { <span class="icon blinded">숨김</span> }
+                    @if (Model.CommentDetail.IsDeleted) { <span class="icon deleted">삭제</span> }
+                </div>    
+            }
+
+            <div class="detail_row">
+                <label>숨김 처리</label>
+                @Html.CheckBox("IsBlinded", Model.CommentDetail.IsBlinded, new { @id = "checkbox_blind", @class = "text_input checkbox" })
+            </div>
+
+            <div class="detail_row">
+                <label>삭제 처리</label>
+                @Html.Hidden("ExDeleted", Model.CommentDetail.IsDeleted)
+                @Html.CheckBox("IsDeleted", Model.CommentDetail.IsDeleted, new { @id = "checkbox_delete", @class = "text_input checkbox" })
+            </div>
+
+            <div class="detail_row">
+                <label>영구 삭제</label>
+                @Html.CheckBox("IsHardDelete", false, new { @id = "checkbox_forece_delete", @class = "text_input checkbox" })
+            </div>
+
+            // TODO 변경한 값이 없는 경우 submit 요청 보내지 않는 처리
+            <div class="buttton_list">
+                <button type="button" onclick="EditorFormSubmit()" class="btn btn-outline-secondary btn-sm">저장</button>
+                <button type="button" onclick="CommentEditorExit()" class="btn btn-outline-secondary btn-sm">닫기</button>
+                @* <button type="button" onclick="HardDeleteComment(@Model.CommentDetail.PostId)" class="btn btn-outline-danger btn-sm">영구 삭제</button> *@
+            </div>
+        }
+
+        @* 영구 삭제용 
+        @using (Html.AjaxBeginForm("HardDelete", "Comment", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnUpdateResponse" }, new { id = "HardDeleteCommentForm" }))
+        {
+            @Html.Hidden("CommentId", Model.CommentDetail.CommentId)
+        }
+        *@
+    }
+</div>
+
+<script>
+
+    /* 최초 생성 시 ResultCode 에 따른 처리 */
+    (function () {
+        var msg = @Html.Raw(Json.Serialize(Model.Response.Message)); // Message 또는 ErrorMessage(Array) 출력
+        if (@Model.Response.ResultCode != 200) {
+            ShowAlert(msg, true);
+        }
+    })();
+    
+    /* PartialView 닫기 */
+    function CommentEditorExit() {
+        $("#comment_editor").remove();
+    }
+
+    /* 댓글 수정 요청 */
+    function EditorFormSubmit() {
+
+        var setBlind = $('#checkbox_blind').prop('checked');
+        var setDelete = $('#checkbox_delete').prop('checked');
+        var setHardDelete = $('#checkbox_forece_delete').prop('checked');
+        var message = "해당 댓글을 정말 ";
+        var words = [];
+       
+        if (setBlind) {
+            words.push("블라인드 처리");
+        }
+        if (setDelete) {
+            words.push(setBlind ? " 및 삭제" : "삭제")
+        }
+        for (var i = 0; i < words.length; i++) {
+            message += words[i];
+        }
+        message += "하시겠습니까?";
+
+        if (setHardDelete) {
+            message = "해당 댓글을 정말 영구적으로 삭제하시겠습니까?";
+        }
+
+        if (setBlind || setDelete || setHardDelete) {
+            if (confirm(message)) {
+                $('#UpdateCommentForm').submit();
+            }
+        }
+        else {
+            $('#UpdateCommentForm').submit();
+        }
+    }
+
+    /* 게시판 생성 or 수정 or 삭제 요청 응답 핸들러 */
+    function OnUpdateResponse(xhr, status) {
+        // if (xhr.status === 200) {} 항상 return OK 로 반환
+
+        var response = JSON.parse(xhr.responseText);
+        console.log("## _BoardEditor >> OnUpdateResponse() response: ", response);
+
+        /*
+            TODO 필요에 따라 가공, 수정하여 사용
+            response.message -> string
+            response.errorFields -> string array
+            response.errorMessages -> string array
+            response.errorSummary -> string
+        */
+        var AllMessages = ""; // 편의상 모두 노출
+
+        AllMessages += response.message + "\n";
+        for (var i = 0; i < response.errorMessages.length; i++)
+        {
+            AllMessages += response.errorMessages[i] + "\n";
+        }
+
+        switch (response.resultCode) {
+            // 성공
+            case 200: {
+                CommentEditorExit();
+                UpdateCommentList();
+                break;
+            }
+            // 입력값 오류 (ModelState 참고하여 처리 필요)
+            case 201: {
+                ShowAlert(AllMessages, false);
+                break;
+            }
+            default: {
+                ShowAlert(AllMessages, false);
+                break;
+            } 
+        }
+    }
+    
+</script>

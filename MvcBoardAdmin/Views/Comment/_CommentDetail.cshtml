@@ -11,6 +11,8 @@
     @if (Model.Response.ResultCode == 200)
     {
         <hr />
+        <button type="button" onclick="CommentDetailExit()" class=" btn btn-outline-secondary btn-sm edit_button">닫기</button>
+
         <div>@Model.CommentDetail.BoardName</div>
         <div>@Model.CommentDetail.PostTitle</div>
         <div>@Model.CommentDetail.Contents</div>

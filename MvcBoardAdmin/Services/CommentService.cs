@@ -3,7 +3,6 @@ using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Managers;
 using MvcBoardAdmin.Managers.Results;
 using MvcBoardAdmin.Models.Comment;
-using MvcBoardAdmin.Models.Post;
 using MvcBoardAdmin.Utills;
 
 namespace MvcBoardAdmin.Services
@@ -72,15 +71,14 @@ namespace MvcBoardAdmin.Services
             return Model;
         }
 
-        /* 
         /// <summary>
         /// 댓글 상세 조회하여 CommentEditorPartial 의 ViewModel 반환
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public PostEditorViewModel GetPostEditorViewModel(GetPostEditorServiceParams _params)
+        public CommentEditorViewModel GetCommentEditorViewModel(GetCommentEditorServiceParams _params)
         {
-            PostEditorViewModel Model = new PostEditorViewModel();
+            CommentEditorViewModel Model = new CommentEditorViewModel();
 
             // 입력값 유효성 검증
             CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
@@ -92,14 +90,14 @@ namespace MvcBoardAdmin.Services
             }
 
             // 검증 통과시 DB 요청
-            ReadCommentDetailResult Result = _commentDataManager.ReadCommentDetail(_params.PostId);
+            ReadCommentDetailResult Result = _commentDataManager.ReadCommentDetail(_params.CommentId);
 
             Model.Response = Result.Response;
             Model.CommentDetail = Result.CommentDetail;
 
             return Model;
         }
-        */
+        
 
         /// <summary>
         /// 댓글 상세 조회하여 CommentDetailPartial 의 ViewModel 반환
@@ -128,13 +126,12 @@ namespace MvcBoardAdmin.Services
             return Model;
         }
 
-        /*
         /// <summary>
-        /// 게시물 정보 수정 요청 - 게시판 이동, 숨김(블라인드), 삭제, 영구삭제 포함
+        /// 댓글 정보 수정 요청 - 숨김(블라인드), 삭제, 영구삭제 포함
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public CommonResponse UpdatePost(UpdatePostServiceParams _params)
+        public CommonResponse UpdateComment(UpdateCommentServiceParams _params)
         {
             // 입력값 유효성 검증
             CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
@@ -145,7 +142,7 @@ namespace MvcBoardAdmin.Services
             }
 
             // 검증 통과시 DB 요청
-            Response = _postDataManager.UpdatePost(_params.UpdateParams);
+            Response = _commentDataManager.UpdateComment(_params.UpdateParams);
 
             return Response;
         }
@@ -155,22 +152,21 @@ namespace MvcBoardAdmin.Services
         /// </summary>
         /// <param name="_params"></param>
         /// <returns></returns>
-        public CommonResponse DeletePost(DeletePostServiceParams _params)
+        public CommonResponse DeleteComment(DeleteCommentServiceParams _params)
         {
             CommonResponse Response = new CommonResponse();
 
-            if (_params.DeleteParams.PostId < 1)
+            if (_params.DeleteParams.CommentId < 1)
             {
                 Response.ResultCode = 201;
-                Response.Message = "입력값 오류 (유효하지 않은 PostId)";
+                Response.Message = "입력값 오류 (유효하지 않은 CommentId)";
                 return Response;
             }
             
-            Response = _postDataManager.DeletePost(_params.DeleteParams);
+            Response = _commentDataManager.DeleteComment(_params.DeleteParams);
 
             return Response;
         }
-        */
 
     }
 
