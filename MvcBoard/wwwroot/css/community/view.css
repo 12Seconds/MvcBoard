@@ -305,6 +305,13 @@
     margin-left: 12px;
 }
 
+.community_main.view .comments .comments_area .comments_list .comment_item .comment_item_body.deleted,
+.community_main.view .comments .comments_area .comments_list .comment_item .comment_item_body.blinded {
+    font-size: 14px;
+    font-weight: bold;
+    color: #969696;
+}
+
 .community_main.view .comments .comments_area .comments_list .comment_item .comment_item_footer {
     margin-left: 12px;
     margin-top: 10px;
