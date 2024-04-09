@@ -65,10 +65,8 @@
 
             <div class="detail_row">
                 <label>댓글</label>
-                @* TODO 댓글 이동 *@
-                @* <a asp-area="" asp-controller="Comment" asp-action="index" asp-route-SearchFilter="UserId" asp-route-SearchWord="@Model.ViewModel.UserId"> *@
-                <a>
-                <span>@Model.Post.CommentCount</span>
+                <a asp-area="" asp-controller="Comment" asp-action="index" asp-route-SearchFilter="PostId" asp-route-SearchWord="@Model.Post.PostId">
+                    <span>@Model.Post.CommentCount</span>
                 </a>
             </div>
 

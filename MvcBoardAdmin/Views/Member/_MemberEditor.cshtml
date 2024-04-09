@@ -52,9 +52,7 @@
 
             <div class="detail_row">
                 <label>작성한 댓글 수</label>
-                @* TODO 댓글 이동 *@
-                @* <a asp-area="" asp-controller="Comment" asp-action="index" asp-route-SearchFilter="UserId" asp-route-SearchWord="@Model.ViewModel.UserId"> *@
-                <a>
+                <a asp-area="" asp-controller="Comment" asp-action="index" asp-route-SearchFilter="UserId" asp-route-SearchWord="@Model.ViewModel.UserId">
                     <span>@Model.ViewModel.CommentCount </span>
                 </a>
             </div>

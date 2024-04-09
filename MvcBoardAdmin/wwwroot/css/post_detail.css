@@ -16,6 +16,7 @@
 }
 
 .post_detail .post_area .actions .category_btn {
+    font-weight: bold;
     font-size: 0.875rem;
     border-radius: 0.25rem;
     color: rgb(102, 102, 102);
