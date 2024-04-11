@@ -21,38 +21,46 @@ namespace MvcBoardAdmin.Controllers
 
         public IActionResult Index()
         {
-            // TODO 인증 해서 model 가공하여 넘겨줄 것 (IsLogined true/false)
+            HomeViewModel Model = _homeService.GetHomeViewModel(HttpContext);
 
-            HomeViewModel model = new HomeViewModel();
-            model.IsLogined = true;
-
-            return View(model);
+            return View(Model);
         }
 
+        /* 로그인 요청 */
         [HttpPost]
         public IActionResult Login(LoginParams _params)
         {
             // TODO _logger
-            // _logger.LogDebug($"## HomeController >> Login() _params.Id: {_params.Id}, _params.Password: {_params.Password}");
-            Console.WriteLine($"## HomeController >> Login() _params.Id: {_params.Id}, _params.Password: {_params.Password}");
+            // _logger.LogDebug($"## HomeController >> Login() Id: {_params.Id}, Password: {_params.Password}");
+            Console.WriteLine($"## HomeController >> Login() Id: {_params.Id}, Password: {_params.Password}");
 
-            LoginServiceParams serviceParams = new LoginServiceParams
+            LoginServiceParams ServiceParams = new LoginServiceParams
             {
                 LoginParams = _params,
                 ModelState = ModelState,
                 HttpContext = HttpContext
             };
 
-            LoginResponse response = _homeService.Login(serviceParams);
+            CommonResponse Response = _homeService.Login(ServiceParams);
 
-            return Ok(response); // return new JsonResult(response); 동일함
+            return Ok(Response); // return new JsonResult(Response); 동일함
         }
 
+        /* 로그아웃 요청 */
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            Console.WriteLine($"## HomeController >> Logout()");
+
+            _homeService.Logout(HttpContext);
+
+            return RedirectToAction("Index", "Home");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        }          
     }
 }

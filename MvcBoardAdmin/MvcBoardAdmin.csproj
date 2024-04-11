@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.Unobtrusive.Ajax" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.16" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.0" />
   </ItemGroup>
 
 </Project>

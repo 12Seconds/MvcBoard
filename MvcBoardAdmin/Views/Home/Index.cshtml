@@ -16,7 +16,7 @@
 
     <div class="login_container">
 
-        @if (Model.IsLogined)
+        @if (!Model.IsLogined)
         {
             <div class="login_form">
                 <div class="logo"></div>
@@ -34,7 +34,7 @@
         {
              <div class="login_form">
                 <div> @Model.UserName 관리자님 안녕하세요. </div>
-                <a asp-area="" asp-action="" asp-controller="">
+                <a asp-area="" asp-action="Logout" asp-controller="Home">
                     <button type="button" class="btn btn-secondary login_btn"> 로그아웃 </button>
                 </a>
             </div>
@@ -52,17 +52,34 @@
         var response = JSON.parse(xhr.responseText); // response = xhr.responseJSON; // 이렇게도 받아올 수 있으나 JSON.parse 로 생성한 복사본 사용
         console.log("OnLoginComplete() response: ", response);
 
-        // 입력값 오류
-        if (response.resultCode == 201) {
-            alert(response.errorMessage[0]);
-            return;
+        /*
+            TODO 필요에 따라 가공, 수정하여 사용
+            response.message -> string
+            response.errorFields -> string array
+            response.errorMessages -> string array
+            response.errorSummary -> string
+        */
+        var AllMessages = ""; // 편의상 모두 노출
+
+        AllMessages += response.message + "\n";
+        for (var i = 0; i < response.errorMessages.length; i++) {
+            AllMessages += response.errorMessages[i] + "\n";
         }
 
         // 로그인 성공
         if (response.resultCode == 200) {
+            alert(AllMessages);
             $('#route_home_index').submit();
         }
-        
+        // 201: 입력값 오류, 202: DB 오류, 203: DB 실패
+        else if (response.resultCode == 201) {
+            // alert(response.errorSummary); TODO Question ErrorSummary 가 왜 없지?
+            alert(AllMessages);
+        }
+        else {
+            alert(AllMessages);
+        }
+       
     }
 
    /*
