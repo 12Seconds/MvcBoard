@@ -10,12 +10,12 @@ namespace MvcBoardAdmin.Managers.JWT
     {
 
         // 주의. Program.cs 에서도 사용해야 함, Key값 환경변수 처리 필요
-        private readonly string issuer = "MusicGround";
-        private readonly string audience = "MvcBoardAdmin";
-        private readonly string _tempKey = "LetsGoHaul_ejaldjxjwlfakszmaekcodnj";
+        private static readonly string issuer = "MusicGround";
+        private static readonly string audience = "MvcBoardAdmin";
+        private static readonly string _tempKey = "LetsGoHaul_ejaldjxjwlfakszmaekcodnj";
 
         /* 토큰 생성 */
-        public string GenerateToken(LoginResult UserInfo)
+        public static string GenerateToken(LoginResult UserInfo)
         {
             // 클레임 생성
             var claims = new Claim[]
@@ -48,7 +48,7 @@ namespace MvcBoardAdmin.Managers.JWT
         }
 
         /* 토큰 검증 (수동) */
-        public ClaimsPrincipal ValidateJwtToken(string token)
+        public static ClaimsPrincipal ValidateJwtToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_tempKey); // 여기도 시크릿 키 필요
@@ -102,7 +102,7 @@ namespace MvcBoardAdmin.Managers.JWT
         /// AuthenticationResult.IsAuthenticated: 인증 성공 여부 (bool)
         /// AuthenticationResult.Principal: Principal 객체
         /// </returns>
-        public AuthenticationResult Authentication(string? cookie)
+        public static AuthenticationResult Authentication(string? cookie)
         {
             AuthenticationResult Result = new AuthenticationResult();
 
@@ -127,7 +127,7 @@ namespace MvcBoardAdmin.Managers.JWT
         /// </summary>
         /// <param name="Principal"></param>
         /// <returns>int: 유저 고유 번호 (UserId -> UserNumber 바꿀 것)</returns>
-        public int GetUserNumber(ClaimsPrincipal Principal)
+        public static int GetUserNumber(ClaimsPrincipal Principal)
         {
             int userNumber = 0;
             try
@@ -142,7 +142,7 @@ namespace MvcBoardAdmin.Managers.JWT
         }
 
         // 임시, 프로필 SP 작성 후 삭제할 것
-        public string GetUserId(ClaimsPrincipal Principal)
+        public static string GetUserId(ClaimsPrincipal Principal)
         {
             string loginId = "";
             try
@@ -161,7 +161,7 @@ namespace MvcBoardAdmin.Managers.JWT
         /// </summary>
         /// <param name="Principal"></param>
         /// <returns>string: 유저 닉네임</returns>
-        public string GetUserName(ClaimsPrincipal Principal)
+        public static string GetUserName(ClaimsPrincipal Principal)
         {
             string UserName = "";
             try

@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
+using MvcBoardAdmin.Filters;
 using MvcBoardAdmin.Models.Post;
 using MvcBoardAdmin.Services;
 
 namespace MvcBoardAdmin.Controllers
 {
     /* 게시물 관리 컨트롤러 */
+    [AuthenticationFilter]
     public class PostController : Controller
     {
         private readonly PostService _postService;

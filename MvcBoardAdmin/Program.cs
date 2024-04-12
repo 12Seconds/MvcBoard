@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 // 종속성 주입
 // builder.Services.AddSingleton<Utility>();
 
-builder.Services.AddSingleton<JWTManager>();
+// builder.Services.AddSingleton<JWTManager>();
 
 builder.Services.AddTransient<AdmUserDataManager>();
 builder.Services.AddSingleton<HomeService>();

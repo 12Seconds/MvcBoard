@@ -11,11 +11,9 @@ namespace MvcBoardAdmin.Services
     public class HomeService
     {
         private readonly AdmUserDataManager _admUserDataManager;
-        private readonly JWTManager _jwtManager;
-        public HomeService(AdmUserDataManager admUserDataManager, JWTManager jwtManager)
+        public HomeService(AdmUserDataManager admUserDataManager)
         {
             _admUserDataManager = admUserDataManager;
-            _jwtManager = jwtManager;
         }
 
         /// <summary>
@@ -26,12 +24,12 @@ namespace MvcBoardAdmin.Services
         {
             HomeViewModel Model = new HomeViewModel();
 
-            AuthenticationResult Result = _jwtManager.Authentication(_context.Request.Cookies["jwtToken"]);
+            AuthenticationResult Result = JWTManager.Authentication(_context.Request.Cookies["jwtToken"]);
 
             if (Result.IsAuthenticated && Result.Principal != null)
             {
                 Model.IsLogined = true;
-                Model.UserName = _jwtManager.GetUserName(Result.Principal);
+                Model.UserName = JWTManager.GetUserName(Result.Principal);
             }
 
             return Model;
@@ -59,7 +57,7 @@ namespace MvcBoardAdmin.Services
             if (Result.ResultCode == 1)
             {
                 // 토큰 발급
-                string token = _jwtManager.GenerateToken(Result);
+                string token = JWTManager.GenerateToken(Result);
 
                 // 요청 브라우저의 쿠키에 토큰 저장
                 _params.HttpContext.Response.Cookies.Append("jwtToken", token, new CookieOptions

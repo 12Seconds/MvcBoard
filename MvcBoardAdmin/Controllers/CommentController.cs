@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
+using MvcBoardAdmin.Filters;
 using MvcBoardAdmin.Models.Comment;
 using MvcBoardAdmin.Services;
 
 namespace MvcBoardAdmin.Controllers
 {
     /* 댓글 관리 컨트롤러 */
+    [AuthenticationFilter]
     public class CommentController : Controller
     {
         private readonly CommentService _commentService;

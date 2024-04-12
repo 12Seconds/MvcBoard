@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
+using MvcBoardAdmin.Filters;
 using MvcBoardAdmin.Services;
 
 namespace MvcBoardAdmin.Controllers
 {
+    /* 게시판 관리 컨트롤러 */
+    [AuthenticationFilter]
     public class BoardController : Controller
     {
         private readonly BoardService _boardService;

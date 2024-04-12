@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
+using MvcBoardAdmin.Filters;
 using MvcBoardAdmin.Models;
 using MvcBoardAdmin.Models.Home;
 using MvcBoardAdmin.Services;
@@ -8,6 +9,7 @@ using System.Diagnostics;
 
 namespace MvcBoardAdmin.Controllers
 {
+    /* 메인 홈 페이지 컨트롤러 (로그인/로그아웃) */
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger; // TODO 알아보고 사용할 것
@@ -48,6 +50,7 @@ namespace MvcBoardAdmin.Controllers
 
         /* 로그아웃 요청 */
         [HttpGet]
+        [AuthenticationFilter]
         public IActionResult Logout()
         {
             Console.WriteLine($"## HomeController >> Logout()");
