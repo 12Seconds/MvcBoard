@@ -7,9 +7,6 @@ using MvcBoardAdmin.Utills;
 
 namespace MvcBoardAdmin.Services
 {
-
-    // TODO 각 액션 메소드에 인증 로직 추가 필요
-
     public class CommentService
     {
         private readonly CommentDataManager _commentDataManager;
@@ -44,7 +41,7 @@ namespace MvcBoardAdmin.Services
         {
             CommentListViewModel Model = new CommentListViewModel();
 
-            // 입력값 유효성 검증 (TODO)
+            // 입력값 유효성 검증
             CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
 
             if (Response.ResultCode != 200)

@@ -1,6 +1,4 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using MvcBoardAdmin.Controllers.Params;
+﻿using MvcBoardAdmin.Controllers.Params;
 using MvcBoardAdmin.Controllers.Response;
 using MvcBoardAdmin.Managers;
 using MvcBoardAdmin.Models.Member;
@@ -8,9 +6,6 @@ using MvcBoardAdmin.Utills;
 
 namespace MvcBoardAdmin.Services
 {
-
-    // TODO 각 액션 메소드에 인증 로직 추가 필요
-
     public class MemberService
     {
         private readonly MemberDataManager _memberDataManager;

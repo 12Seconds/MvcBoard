@@ -7,9 +7,6 @@ using MvcBoardAdmin.Utills;
 
 namespace MvcBoardAdmin.Services
 {
-
-    // TODO 각 액션 메소드에 인증 로직 추가 필요
-
     public class BoardService
     {
 

@@ -20,7 +20,6 @@ namespace MvcBoardAdmin.Controllers
 
         public IActionResult Index(MemberManageViewParams _params)
         {
-            // TODO 인증
             MemberManageViewModel Model = _memberService.GetMemberManageViewModel(/* _params */);
 
             return View(Model);

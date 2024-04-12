@@ -7,13 +7,10 @@ using MvcBoardAdmin.Utills;
 
 namespace MvcBoardAdmin.Services
 {
-
-    // TODO 각 액션 메소드에 인증 로직 추가 필요
-
     public class PostService
     {
         private readonly PostDataManager _postDataManager;
-        private readonly BoardService _boardService; // TODO Question 한 서비스에서 다른 서비스 이용
+        private readonly BoardService _boardService; // TODO 한 서비스에서 다른 서비스 이용
         public PostService(PostDataManager postDataManager, BoardService boardService)
         {
             _postDataManager = postDataManager;
@@ -44,7 +41,7 @@ namespace MvcBoardAdmin.Services
         {
             PostListViewModel Model = new PostListViewModel();
 
-            // 입력값 유효성 검증 (TODO)
+            // 입력값 유효성 검증
             CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);
 
             if (Response.ResultCode != 200)
