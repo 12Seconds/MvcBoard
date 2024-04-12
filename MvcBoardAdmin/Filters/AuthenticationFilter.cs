@@ -25,7 +25,7 @@ namespace MvcBoardAdmin.Filters
             {
                 // 방법1. O
                 filterContext.Result = new RedirectToActionResult("Index", "Home", null);
-
+                return;
                 // 방법2. O but -> Home/Logout 접근 시 안됨, 한글 깨짐
                 // <script>alert('로그인이 필요한 서비스입니다.'); history.back()</script>
                 // filterContext.Result = new JavaScriptResult("<script>document.addEventListener('DOMContentLoaded', function (){ alert('This service requires login.'); history.back();});</script>");

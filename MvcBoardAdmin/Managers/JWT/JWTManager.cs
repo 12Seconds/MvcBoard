@@ -175,6 +175,20 @@ namespace MvcBoardAdmin.Managers.JWT
             return UserName;
         }
 
+        public static string GetAuthGroupId(ClaimsPrincipal Principal)
+        {
+            string AuthGroupId = "";
+            try
+            {
+                AuthGroupId = (Principal.FindFirst(MvcBoardClaimTypes.AuthorityGroup)?.Value)?.ToString() ?? "";
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return AuthGroupId;
+        }
+
     }
 
     // 서비스(앱) 인증 및 비즈니스 로직에 사용할 클레임 타임 정의

@@ -8,9 +8,9 @@ namespace MvcBoardAdmin.Managers
 
         private static string SERVER = "DESKTOP-5AFMG8G";
         private static string DATABASE = "MVC_BOARD_DB";
-        private string CONNECTION_STRING = "";
+        private static string CONNECTION_STRING = "";
 
-        private SqlConnection? connection { get; set; }
+        private static SqlConnection? connection { get; set; }
         public DBManager(IWebHostEnvironment env/*, IConfiguration config*/) {
 
             _env = env;
@@ -55,7 +55,7 @@ namespace MvcBoardAdmin.Managers
             }
         }
 
-        public SqlConnection GetConnection() {
+        public static SqlConnection GetConnection() {
             if (connection != null)
             {
                 return connection; // TODO 할당을 하는 곳이 없어서 사실상 재활용을 한번도 안하는데 의미가 있나

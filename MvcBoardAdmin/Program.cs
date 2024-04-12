@@ -13,6 +13,8 @@ builder.Services.AddControllersWithViews();
 
 // builder.Services.AddSingleton<JWTManager>();
 
+builder.Services.AddTransient<AuthorityDataManager>();
+
 builder.Services.AddTransient<AdmUserDataManager>();
 builder.Services.AddSingleton<HomeService>();
 

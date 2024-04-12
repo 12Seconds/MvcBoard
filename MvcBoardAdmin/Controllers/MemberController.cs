@@ -8,7 +8,9 @@ using MvcBoardAdmin.Services;
 namespace MvcBoardAdmin.Controllers
 {
     /* 유저 관리 컨트롤러 */
-    [AuthenticationFilter]
+
+    [AuthenticationFilter] // 1 순서
+    [AuthorizationFilter] // 2
     public class MemberController : Controller
     {
         private readonly MemberService _memberService;

@@ -8,6 +8,7 @@ namespace MvcBoardAdmin.Controllers
 {
     /* 게시판 관리 컨트롤러 */
     [AuthenticationFilter]
+    [AuthorizationFilter]
     public class BoardController : Controller
     {
         private readonly BoardService _boardService;

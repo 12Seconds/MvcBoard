@@ -9,6 +9,7 @@ namespace MvcBoardAdmin.Controllers
 {
     /* 댓글 관리 컨트롤러 */
     [AuthenticationFilter]
+    [AuthorizationFilter]
     public class CommentController : Controller
     {
         private readonly CommentService _commentService;

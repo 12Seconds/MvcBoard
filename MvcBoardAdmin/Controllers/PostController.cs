@@ -9,6 +9,7 @@ namespace MvcBoardAdmin.Controllers
 {
     /* 게시물 관리 컨트롤러 */
     [AuthenticationFilter]
+    [AuthorizationFilter]
     public class PostController : Controller
     {
         private readonly PostService _postService;
