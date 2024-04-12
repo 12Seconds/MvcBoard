@@ -22,12 +22,11 @@ namespace MvcBoardAdmin.Filters
             var Action = filterContext.ActionDescriptor.RouteValues["action"];
             string AuthGroupId;
 
-            // 요청으로부터 Cookie 의 JWT 토큰을 읽어서 인증
+            // 1. 요청으로부터 Cookie 의 JWT 토큰을 읽어서 인증
             AuthenticationResult Result = JWTManager.Authentication(filterContext.HttpContext.Request.Cookies["jwtToken"]);
 
-            Console.WriteLine($">> 222 [AuthorizationFilter] OnAuthorization() Requested From (Controller: {Controller}, Action: {Action}) Result.IsAuthenticated: {Result.IsAuthenticated}, UserName: {JWTManager.GetUserName(Result.Principal)}");
+            Console.WriteLine($">> [AuthorizationFilter] OnAuthorization() Requested From (Controller: {Controller}, Action: {Action}) Result.IsAuthenticated: {Result.IsAuthenticated}, UserName: {JWTManager.GetUserName(Result.Principal)}");
 
-            // 1. Context 로 부터 Cookie 의 JWT 토큰을 읽어서 
             // 인증 실패
             if (!Result.IsAuthenticated || Result.Principal == null)
             {
@@ -35,7 +34,7 @@ namespace MvcBoardAdmin.Filters
                 return;
             }
 
-            // 2-2. DB 권한 테이블 조회해서 비교하고 권한이 있는지 확인함
+            // 2. DB 권한 테이블 조회해서 비교하고 권한이 있는지 확인
             AuthGroupId = JWTManager.GetAuthGroupId(Result.Principal!);
             ReadAuthListResult AuthListResult = AuthorityDataManager.ReadAuthListByGroupId(AuthGroupId);
 

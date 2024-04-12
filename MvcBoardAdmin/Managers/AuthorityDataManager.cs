@@ -79,7 +79,7 @@ namespace MvcBoardAdmin.Managers
             return Result;
         }
 
-        
+        // TODO 권한 그룹 리스트 조회 (관리자 계정 관리 페이지 에디터 드롭다운에 필요)
 
     }
 }

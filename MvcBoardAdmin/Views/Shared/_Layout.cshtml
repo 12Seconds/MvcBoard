@@ -35,7 +35,9 @@
                         <li class="nav-item @(ViewData["NavIndex"] as int? == 4 ? "selected" : "")">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Comment" asp-action="Index">댓글 관리</a>
                         </li>
-                        
+                        <li class="nav-item @(ViewData["NavIndex"] as int? == 5 ? "selected" : "")">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AdminMember" asp-action="Index">관리자 계정 관리</a>
+                        </li>
                     </ul>
                 </div>
             </div>

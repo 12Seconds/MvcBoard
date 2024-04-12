@@ -10,10 +10,10 @@ namespace MvcBoardAdmin.Services
 {
     public class HomeService
     {
-        private readonly AdmUserDataManager _admUserDataManager;
-        public HomeService(AdmUserDataManager admUserDataManager)
+        private readonly AdminMemberDataManager _adminMemberDataManager;
+        public HomeService(AdminMemberDataManager adminMemberDataManager)
         {
-            _admUserDataManager = admUserDataManager;
+            _adminMemberDataManager = adminMemberDataManager;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace MvcBoardAdmin.Services
             }
 
             // 로그인 요청
-            LoginResult Result = _admUserDataManager.Login(_params.LoginParams);
+            LoginResult Result = _adminMemberDataManager.Login(_params.LoginParams);
 
             // 로그인 성공
             if (Result.ResultCode == 1)

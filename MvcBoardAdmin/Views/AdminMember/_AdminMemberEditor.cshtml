@@ -1,0 +1,134 @@
+﻿@model MvcBoardAdmin.Controllers.Response.ReadAdminMemberDetailResponse
+
+@{
+    // TODO DB 권한 그룹 조회 SP 작성 및 연동 필요
+    List<SelectListItem> AuthOptions = new List<SelectListItem>();
+
+    if (Model.ResultCode == 200)
+    {
+        AuthOptions.Add(new SelectListItem { Text = "(권한 없음)", Value = "User", Selected = (Model.ViewModel.AuthorityGroup == "User") });
+        AuthOptions.Add(new SelectListItem { Text = "마스터", Value = "Master", Selected = (Model.ViewModel.AuthorityGroup == "Master") });
+        AuthOptions.Add(new SelectListItem { Text = "관리자", Value = "Admin", Selected = (Model.ViewModel.AuthorityGroup == "Admin") });
+        AuthOptions.Add(new SelectListItem { Text = "유저 관리자", Value = "UserAdmin", Selected = (Model.ViewModel.AuthorityGroup == "UserAdmin") });
+        AuthOptions.Add(new SelectListItem { Text = "게시판 관리자", Value = "BoardAdmin", Selected = (Model.ViewModel.AuthorityGroup == "BoardAdmin") });
+    }
+}
+
+<div id="member_editor" class="member_editor @(Model.ViewModel.AuthorityGroup) @(Model.ViewModel.IsDeleted ? "deleted" : "")">
+    
+    @if (Model.ResultCode == 200)
+    {
+        @using (Html.AjaxBeginForm("Update", "AdminMember", new AjaxOptions { HttpMethod = "Post", OnComplete = "OnUpdateResponse" }, new { @id = "UpdateMemberForm", @class = "update_member_form" }))
+        {
+            <div class="detail_row">
+                <label>고유 번호</label>
+                <span>@Model.ViewModel.UserNo</span>
+                @Html.Hidden("UserId", Model.ViewModel.UserNo)
+            </div>
+               
+            <div class="detail_row">
+                <label>아이디</label>
+                @Html.TextBox("Id", Model.ViewModel.Id, new { @class = "text_input", @autoComplete = "off", @disabled = "disabled" })
+            </div>
+
+            <div class="detail_row">
+                <label>닉네임</label>
+                @Html.TextBox("Name", Model.ViewModel.Name, new { @class = "text_input", @autoComplete = "off" })
+            </div>
+
+            <div class="detail_row">
+                <label>프로필 이미지</label>
+                @Html.TextBox("Image", Model.ViewModel.Image, new { @class = "text_input", @autoComplete = "off" })
+            </div>
+
+            <div class="detail_row">
+                <label>권한</label>
+                @Html.DropDownList("Authority", AuthOptions, new { @class = "auth_drop"})
+            </div>
+
+            @* TODO 일반 유저와 구분하여 link 이동 필요 *@
+            <div class="detail_row">
+                <label>작성한 게시물 수</label>
+                @* <a asp-area="" asp-controller="Post" asp-action="index" asp-route-SearchFilter="UserId" asp-route-SearchWord="@Model.ViewModel.UserNo"> *@
+                <a>
+                    <span>@Model.ViewModel.PostCount</span>
+                </a>
+            </div>
+
+            <div class="detail_row">
+                <label>작성한 댓글 수</label>
+                @* <a asp-area="" asp-controller="Comment" asp-action="index" asp-route-SearchFilter="UserId" asp-route-SearchWord="@Model.ViewModel.UserNo"> *@
+                <a>
+                    <span>@Model.ViewModel.CommentCount </span>
+                </a>
+            </div>
+
+            <div class="detail_row">
+                <label>가입 일자</label>
+                <span>@Model.ViewModel.CreateDate.ToString("yyyy년 MM월 dd일")</span>
+            </div>
+
+            if (Model.ViewModel.IsDeleted && Model.ViewModel.DeleteDate.HasValue)
+            {
+                <div class="detail_row">
+                    <label>탈퇴 일자</label>
+                    <span>@Model.ViewModel.DeleteDate.Value.ToString("yyyy년 MM월 dd일")</span>
+                </div>
+            }
+
+            // TODO 변경한 값이 없는 경우 submit 요청 보내지 않는 처리
+            <div class="buttton_list">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">저장</button>
+                <button type="button" onclick="memberEditorExit()" class="btn btn-outline-secondary btn-sm">닫기</button>
+            </div>
+        }
+    }
+
+</div>
+
+<script>
+
+    /* 최초 생성 시 ResultCode 에 따른 처리 */
+    (function () {
+        var msg = @Html.Raw(Json.Serialize(Model.Message)); // Message 또는 ErrorMessage(Array) 출력
+        if (@Model.ResultCode != 200) {
+            showAlert(msg, true);
+        }
+
+        $("#board_nav_container").show();
+    })();
+
+    /* PartialView 닫기 */
+    function memberEditorExit() {
+        $("#member_editor").remove();
+    }
+
+    /* 정보 수정 요청 응답 핸들러 */
+    function OnUpdateResponse(xhr, status) {
+        // if (xhr.status === 200) {} 항상 return OK 로 반환
+
+        var response = JSON.parse(xhr.responseText);
+        console.log("## _MemberEditor >> OnUpdateResponse()");
+        console.log("response: ", response);
+
+        switch (response.resultCode) {
+            // 성공
+            case 200: {
+                updateMemeberList(0);
+                memberEditorExit();
+                break;
+            }
+            // 입력값 오류 (ModelState 참고하여 처리 필요)
+            case 201: {
+                showAlert(response.message, false);
+                break;
+            }
+            default: {
+                showAlert(response.message, false);
+                break;
+            } 
+        }
+    }
+    
+
+</script>

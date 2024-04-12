@@ -1,0 +1,195 @@
+﻿.manage_member_index {
+    /*width: fit-content;*/
+    display: flex;
+    margin-top: 100px;
+
+}
+
+.manage_member_index .member_editor a {
+    all:unset;
+    text-decoration: underline;
+    color: #0d6efd;
+    font-weight: bold;
+}
+
+.manage_member_index .member_editor a:hover {
+    all:unset;
+    cursor: pointer;
+    text-decoration: underline;
+    color: #0d6efd;
+    font-weight: bold;
+}
+
+.manage_member_index .title_anchor {
+    /*text-decoration: none;*/
+    /*color: #333333;*/
+    display: block;
+    width: fit-content;
+}
+
+/* index_main ----------------------------------------------------------- */
+.manage_member_index .index_main {
+    width: 820px;
+}
+
+.member_list_container {
+
+}
+
+.member_list {
+    
+}
+
+.member_list .total_count {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.member_list .item {
+    display: flex;
+    /*flex-direction: column;*/
+    /*text-align: center;*/
+
+    /*text-overflow: ellipsis;
+    white-space: nowrap; 
+    overflow: hidden;*/
+}
+
+.member_list .labels {
+    border-top: 2px solid #e6e6e6;
+    border-bottom: 2px solid #e6e6e6;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.member_list .member {
+    border-bottom: 1px solid rgb(225 225 225);
+}
+
+.member_list .member.Master {
+    color: #ff6b6b;
+    /*background-color: rgb(255,232,232);*/
+}
+
+.member_list .member.deleted {
+    color: #969696;
+    /*background-color: #e6e6e6;*/
+}
+
+.member_list .item .number {
+    width: 90px;
+    min-width: 90px;
+    margin-right: 10px;
+    padding: 5px 10px;
+}
+
+.member_list .item .id {
+    width: 150px;
+    min-width: 150px;
+    margin-right: 10px;
+    padding: 5px 1px;
+}
+
+.member_list .item .name {
+    width: 150px;
+    min-width: 150px;
+    margin-right: 10px;
+    padding: 5px 1px;
+}
+
+.member_list .item .image {
+    width: 100px;
+    min-width: 100px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    text-align: center;
+}
+
+.member_list .item .authority {
+    width: 80px;
+    min-width: 80px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    text-align: center;
+}
+
+.member_list .item .tags {
+    width: 80px;
+    min-width: 50px;
+    margin-right: 10px;
+    padding: 5px 1px;
+    text-align: center;
+}
+
+.member_list .item .icon {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 3px;
+    border-radius: 3px;
+}
+
+.member_list .item .icon.notice {
+    background-color: #e6e6e6;
+    color: #666666;
+}
+
+.member_list .item .icon.deleted {
+    background-color: rgb(255, 232, 232);
+    color: #a10000;
+    /*border: 1px solid #a10000;*/
+}
+
+.member_list .item .edit_button {
+    width: 50px;
+    min-width: 50px;
+    margin-left: 5px;
+    padding: 5px 1px;
+    text-align: center;
+}
+
+/* index_right ----------------------------------------------------------- */
+.manage_member_index .index_right {
+    width: 400px;
+    margin-left: 50px;
+}
+
+/* 유저 정보 에디터 */
+.member_editor {
+    width: 400px;
+    height: 400px;
+    margin-top: 44px;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    padding-top: 20px;
+    padding-left: 28px;
+}
+
+.member_editor.master {
+    background-color: rgb(255,232,232);
+}
+
+.member_editor.deleted {
+    background-color: #e6e6e6;
+}
+
+.member_editor .detail_row {
+    margin-bottom: 7px;
+}
+
+.member_editor .detail_row label {
+    width: 130px;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.member_editor .detail_row input {
+    padding-left: 7px;
+}
+
+.member_editor .buttton_list {
+    text-align: center;
+    margin-top: 20px;
+    margin-left: -20px;
+}

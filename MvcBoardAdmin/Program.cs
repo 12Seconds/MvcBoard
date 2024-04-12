@@ -15,7 +15,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<AuthorityDataManager>();
 
-builder.Services.AddTransient<AdmUserDataManager>();
+builder.Services.AddTransient<AdminMemberDataManager>();
+builder.Services.AddSingleton<AdminMemberService>();
+
 builder.Services.AddSingleton<HomeService>();
 
 builder.Services.AddTransient<MemberDataManager>();
