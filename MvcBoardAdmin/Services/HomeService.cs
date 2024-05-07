@@ -24,7 +24,7 @@ namespace MvcBoardAdmin.Services
         {
             HomeViewModel Model = new HomeViewModel();
 
-            AuthenticationResult Result = JWTManager.Authentication(_context.Request.Cookies["jwtToken_admin"]);
+            AuthenticationResult Result = JWTManager.Authentication(_context.Request.Cookies["jwtTokenAdmin"]);
 
             if (Result.IsAuthenticated && Result.Principal != null)
             {
@@ -60,13 +60,14 @@ namespace MvcBoardAdmin.Services
                 string token = JWTManager.GenerateToken(Result);
 
                 // 요청 브라우저의 쿠키에 토큰 저장
-                _params.HttpContext.Response.Cookies.Append("jwtToken_admin", token, new CookieOptions
+                _params.HttpContext.Response.Cookies.Append("jwtTokenAdmin", token, new CookieOptions
                 {
                     Path = "/",
                     HttpOnly = true,
-                    Secure = true
+                    Secure = false,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(30), // 유효기간 설정
                 });
-                // document.cookie = `jwtToken_admin=${data.token}; path=/`;  // 추가 속성 `jwtToken_admin=${data.token}; path=/; HttpOnly; Secure`;
+                // document.cookie = `jwtTokenAdmin=${data.token}; path=/`;  // 추가 속성 `jwtTokenAdmin=${data.token}; path=/; HttpOnly; Secure`;
             }
 
             return Result.Response;
@@ -77,7 +78,7 @@ namespace MvcBoardAdmin.Services
         /// </summary>
         public void Logout(HttpContext _context)
         {
-            _context.Response.Cookies.Delete("jwtToken_admin");
+            _context.Response.Cookies.Delete("jwtTokenAdmin");
         }
 
     }
