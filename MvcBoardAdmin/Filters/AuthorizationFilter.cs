@@ -23,7 +23,7 @@ namespace MvcBoardAdmin.Filters
             string AuthGroupId;
 
             // 1. 요청으로부터 Cookie 의 JWT 토큰을 읽어서 인증
-            AuthenticationResult Result = JWTManager.Authentication(filterContext.HttpContext.Request.Cookies["jwtToken"]);
+            AuthenticationResult Result = JWTManager.Authentication(filterContext.HttpContext.Request.Cookies["jwtToken_admin"]);
 
             Console.WriteLine($">> [AuthorizationFilter] OnAuthorization() Requested From (Controller: {Controller}, Action: {Action}) Result.IsAuthenticated: {Result.IsAuthenticated}, UserName: {JWTManager.GetUserName(Result.Principal)}");
 

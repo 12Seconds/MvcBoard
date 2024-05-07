@@ -10,7 +10,7 @@ namespace MvcBoardAdmin.Managers.JWT
     {
 
         // 주의. Program.cs 에서도 사용해야 함, Key값 환경변수 처리 필요
-        private static readonly string issuer = "MusicGround";
+        private static readonly string issuer = "MusicGroundAdmin";
         private static readonly string audience = "MvcBoardAdmin";
         private static readonly string _tempKey = "LetsGoHaul_ejaldjxjwlfakszmaekcodnj";
 

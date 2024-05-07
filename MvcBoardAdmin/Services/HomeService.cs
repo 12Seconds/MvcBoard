@@ -24,7 +24,7 @@ namespace MvcBoardAdmin.Services
         {
             HomeViewModel Model = new HomeViewModel();
 
-            AuthenticationResult Result = JWTManager.Authentication(_context.Request.Cookies["jwtToken"]);
+            AuthenticationResult Result = JWTManager.Authentication(_context.Request.Cookies["jwtToken_admin"]);
 
             if (Result.IsAuthenticated && Result.Principal != null)
             {
@@ -60,13 +60,13 @@ namespace MvcBoardAdmin.Services
                 string token = JWTManager.GenerateToken(Result);
 
                 // 요청 브라우저의 쿠키에 토큰 저장
-                _params.HttpContext.Response.Cookies.Append("jwtToken", token, new CookieOptions
+                _params.HttpContext.Response.Cookies.Append("jwtToken_admin", token, new CookieOptions
                 {
                     Path = "/",
                     HttpOnly = true,
                     Secure = true
                 });
-                // document.cookie = `jwtToken=${data.token}; path=/`;  // 추가 속성 `jwtToken=${data.token}; path=/; HttpOnly; Secure`;
+                // document.cookie = `jwtToken_admin=${data.token}; path=/`;  // 추가 속성 `jwtToken_admin=${data.token}; path=/; HttpOnly; Secure`;
             }
 
             return Result.Response;
@@ -77,7 +77,7 @@ namespace MvcBoardAdmin.Services
         /// </summary>
         public void Logout(HttpContext _context)
         {
-            _context.Response.Cookies.Delete("jwtToken");
+            _context.Response.Cookies.Delete("jwtToken_admin");
         }
 
     }
