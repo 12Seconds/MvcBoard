@@ -21,7 +21,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item @(ViewData["NavIndex"] as int? == 0 ? "selected" : "")"> @* 또는 @(ViewData["NavIndex"] as string == "0" ? "selected" : "") *@
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a> @* TODO 로그인/로그아웃, Question _Layout 에서도 Model 접근 가능한가 *@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a> @* TODO 로그인/로그아웃 토글 버튼 처리 *@
                         </li>
                         <li class="nav-item @(ViewData["NavIndex"] as int? == 1 ? "selected" : "")">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Member" asp-action="Index">유저 관리</a>

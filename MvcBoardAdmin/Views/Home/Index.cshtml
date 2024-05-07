@@ -73,7 +73,7 @@
         }
         // 201: 입력값 오류, 202: DB 오류, 203: DB 실패
         else if (response.resultCode == 201) {
-            // alert(response.errorSummary); TODO Question ErrorSummary 가 왜 없지?
+            // alert(response.errorSummary); TODO ErrorSummary 가 왜 없지? -> 멤버 변수에 { get; set; } 누락
             alert(AllMessages);
         }
         else {
@@ -83,7 +83,7 @@
     }
 
    /*
-    // TODO Question: $ is not defined 오류 발생함
+    // TODO Jquery 참조 오류 발생함 ($ is not defined) 
     $(document).ready(function () {
         // 로그인 버튼 동작
         $('#login_submit_btn').on("click", function () {

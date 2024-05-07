@@ -144,7 +144,7 @@ namespace MvcBoardAdmin.Managers
 
                         SqlDataReader reader = command.ExecuteReader();
 
-                        PostWithUser? Post = null; // TODO Question PostDetail ?
+                        PostWithUser? Post = null; // TODO PostDetail ?
 
                         /* 게시물 데이터 */
                         while (reader.Read())

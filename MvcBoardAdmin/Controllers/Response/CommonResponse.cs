@@ -15,8 +15,7 @@ namespace MvcBoardAdmin.Controllers.Response
         public string Message { get; set; } = "";
         public List<string> ErrorFields { get; set; } = new List<string>();
         public List<string> ErrorMessages { get; set; } = new List<string>();
-
-        public string ErrorSummary = "";
+        public string ErrorSummary { get; set; } = "";
         public ModelStateDictionary ModelState { get; set; }
     }
 }

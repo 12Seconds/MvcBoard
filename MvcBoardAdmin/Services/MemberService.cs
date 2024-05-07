@@ -67,7 +67,7 @@ namespace MvcBoardAdmin.Services
         public CommonResponse UpdateMember(UpdateMemberServiceParams _params)
         {
             // 입력값 유효성 검증 
-            // TODO Question 직접 각 필드들을 조사해서 response 를 만들어서 넘겨주거나 (1)
+            // TODO 직접 각 필드들을 조사해서 response 를 만들어서 넘겨주거나 (1)
             // ModelState 객체를 통채로 넘겨주어서 클라이언트 측에서 Javascript 로 추출하여 가공 및 Validataion Message 처리 (2) ?
 
             CommonResponse Response = Utility.ModelStateValidation(_params.ModelState);

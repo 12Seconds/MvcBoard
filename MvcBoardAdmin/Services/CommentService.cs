@@ -10,7 +10,7 @@ namespace MvcBoardAdmin.Services
     public class CommentService
     {
         private readonly CommentDataManager _commentDataManager;
-        private readonly BoardService _boardService; // TODO Question 한 서비스에서 다른 서비스 이용
+        private readonly BoardService _boardService; // TODO 한 서비스에서 다른 서비스 이용하는 구조..
         public CommentService(CommentDataManager commentDataManager, BoardService boardService)
         {
             _commentDataManager = commentDataManager;

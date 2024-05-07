@@ -90,9 +90,6 @@ namespace MvcBoardAdmin.Managers
             return Model;
         }
 
-
-        // TODO Question UserDataManager 에 정의? 
-
         /// <summary>
         /// 멤버(유저) 상세 조회
         /// </summary>
