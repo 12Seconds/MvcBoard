@@ -15,7 +15,8 @@
 + 관리 페이지 프로젝트 (MvcBoardAdmin)
   - Live URL: http://43.200.65.126:8080/
   - 테스트 계정
-    -  링크 참고 
+    - <span style='background-color: #fff5b1'>링크 참고 부탁드립니다.</span>   
+      (https://www.notion.so/C-ASP-NET-MVC-82f4c047bb574e8d801f8e98a9602931?pvs=4#c21751954c984f2cbce2e49b94b2c5a1)
   - 구현 기능
     - 일반 유저 관리 (검색 및 조회, 수정, 삭제)
     - 관리자 계정 관리 (검색 및 조회, 수정, 삭제)
